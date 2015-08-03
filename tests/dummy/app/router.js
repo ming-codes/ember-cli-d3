@@ -6,6 +6,12 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('bars', function () {
+    this.route('stacked');
+    this.route('grouped');
+    this.route('waterfall');
+  });
+  this.route('lines');
 });
 
 export default Router;

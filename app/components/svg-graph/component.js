@@ -1,0 +1,1 @@
+export { default } from 'ember-d3/components/svg-graph/component';

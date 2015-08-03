@@ -1,0 +1,64 @@
+
+<!--
+
+  # Composibility Principle
+
+  - Components yields decorateable selections
+
+  # Visualizable Data Types
+
+  - Dimensional
+  - Graphical
+  - Geospatial
+
+  # Scales
+
+  Scales are mostly used by dimensional visuals
+
+  - ordinal
+  - linear
+  - quantile
+  - quantize
+  - time
+  - power
+  - log
+
+-->
+
+<ul>
+  <li>Grouped: {{isGrouped}}</li>
+  <li>Stacked: {{isStacked}}</li>
+  <li>Waterfall: {{isWaterfall}}</li>
+</ul>
+
+{{#cart-graph as |svg width height|}}
+  {{#cart-grouped-bars select=(d3-transition svg.chart data) model=dim
+        width=width height=height orient="" margin="10 10 50 50"
+      as |selection x-scale y-scale width height|}}
+
+    // Use the selection for any additional decoration
+    // Cause: on rerender due to data change, helper was not called
+    // Cause2: on rerender, previous transition was over, so no more attached __transition__
+
+    {{cart-axis select=(d3-transition svg.chart.x-axis data) orient="bottom" tickSize=height scale=x-scale}}
+    {{cart-axis select=(d3-transition svg.chart.y-axis data) orient="left" tickSize=width scale=y-scale}}
+
+  {{/cart-grouped-bars}}
+{{/cart-graph}}
+
+<button {{action generate}}>Generate</button>
+
+<!--
+{{#cart-split-graph
+      width=width height=height
+      model=dim
+      data=data series=series key=key
+    as |top bottom shared|}}
+
+  {{cart-bars select=svg.top}}
+
+  {{cart-axis source=top.y-scale}}
+  {{cart-axis source=bottom.y-scale}}
+
+{{/cart-split-graph}}
+-->
