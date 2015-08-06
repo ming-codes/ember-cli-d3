@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
-export function d3Transition([ sel ]) {
-  return sel && sel.$el.transition();
+export function transition([ sel ]) {
+  return Ember.tryInvoke(sel, 'transition') || sel;
 }
 
-export default Ember.Helper.helper(d3Transition);
+export default Ember.Helper.helper(transition);

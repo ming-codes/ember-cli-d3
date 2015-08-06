@@ -82,47 +82,75 @@ export default Ember.Component.extend(EmberD3, {
     }
   }).readOnly(),
 
-  call: join('model.series', '.series', {
-    call(sel) {
-      var top = this.get('margin.top');
-      var left = this.get('margin.left');
-      var height = this.get('contentHeight');
-      var width = this.get('contentWidth');
+  call(sel) {
+    var context = this;
+    var top = this.get('margin.top');
+    var left = this.get('margin.left');
+    var height = this.get('contentHeight');
 
-      sel.attr('transform', `translate(${left} ${top + height})`);
+    sel.each(function () {
+      context.series(d3.select(this).attr('transform', `translate(${left} ${top + height})`));
+    });
+  },
 
-    },
-    update(sel) {
+  series: join('model.series', '.series', {
+    enter(sel) {
+      var context = this;
       var zScale = this.get('zScale');
 
-      return sel
-        .attr('transform', (series) => {
-          return `translate(${zScale(series)} 0)`;
-        })
+      sel.append('g').attr('class', 'series')
+          .attr('transform', series => `translate(${zScale(series)} 0)`)
+        .each(function (data) {
+          context.bars(d3.select(this), data);
+        });
     },
-    each: join('model.data[model.key]', '.bar', {
-      enter(sel) {
-        sel
+
+    update(sel) {
+      var context = this;
+      var zScale = this.get('zScale');
+
+      sel.attr('transform', series => `translate(${zScale(series)} 0)`)
+        .each(function (data) {
+          context.bars(d3.select(this), data);
+        });
+    }
+
+  }),
+
+  bars: join('model.data[model.key]', '.bar', {
+    enter(sel, series) {
+      var xScale = this.get('xScale');
+      var yScale = this.get('yScale');
+      var key = this.get('model.key');
+      var zero = yScale(0);
+
+      var entered = sel
           .append('g')
-            .classed('bar', true)
+        .attr('class', 'bar')
+        .attr('transform', translateX(data => xScale(Ember.get(data, key))))
           .append('line')
-            .classed('shape', true);
-      },
-      update(sel, series) {
-        var xScale = this.get('xScale');
-        var yScale = this.get('yScale');
-        var zero = yScale(0);
-        var key = this.get('model.key');
+        .attr('class', 'shape')
+          .attr('x1', 0)
+          .attr('x2', 0)
+          .attr('y1', zero)
+          .attr('y2', zero);
 
-        sel
-          .attr('transform', translateX(data => xScale(Ember.get(data, key))))
-          .select('.shape')
-            .attr('x1', 0)
-            .attr('x2', 0)
-            .attr('y1', zero)
-            .attr('y2', data => yScale(data[series]));
-      }
-    })
+      d3.transition(entered)
+          .attr('y2', data => yScale(data[series]));
+    },
+    update(sel, series) {
+      var xScale = this.get('xScale');
+      var yScale = this.get('yScale');
+      var zero = yScale(0);
+      var key = this.get('model.key');
+
+      sel
+        .attr('transform', translateX(data => xScale(Ember.get(data, key))))
+        .select('.shape')
+          .attr('x1', 0)
+          .attr('x2', 0)
+          .attr('y1', zero)
+          .attr('y2', data => yScale(data[series]));
+    }
   })
-
 });
