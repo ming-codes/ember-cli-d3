@@ -38,7 +38,7 @@ export function translateX(fn) {
 }
 
 // TODO allow cssExpr to contain attributes
-export function join(dataExpr, cssExpr, { update, enter, exit, each, call }) {
+export function join(dataExpr, cssExpr, { update, enter, exit }) {
   var [ , dataPath, , keyPath ] = dataExpr.match(/([\w\.]+)(\[([\w\.]+)\])?/);
 
   var [ tagName, cssName ] = cssExpr.split('.');
@@ -49,8 +49,6 @@ export function join(dataExpr, cssExpr, { update, enter, exit, each, call }) {
   enter = enter || (sel => sel.append(tagName).classed(cssName, true));
   exit = exit || (sel => sel.remove());
   update = update || noop;
-  each = each || noop;
-  call = call || noop;
 
   return function (sel, ...parentData) {
     var context = this;
@@ -64,27 +62,17 @@ export function join(dataExpr, cssExpr, { update, enter, exit, each, call }) {
       key = accessor(key);
     }
 
-    function bind(selection) {
-      return function (sel) {
-        return selection.apply(context, [ sel ].concat(parentData));
-      };
-    }
+    var bind = joined => sel => joined.apply(context, [ sel ].concat(parentData));
 
-    return sel
-      .call(bind(call))
-      .each(function () {
-        var joined = d3.select(this).selectAll(cssExpr).data(data, key);
-        var enterSel = joined.enter();
-        var updateSel = d3.transition(joined.order());
-        var exitSel = d3.transition(joined.exit());
+    var updateSel = sel.selectAll(cssExpr).data(data, key);
+    var enterSel = updateSel.enter();
+    var exitSel = updateSel.exit();
 
-        enterSel.call(bind(enter));
-        updateSel.call(bind(update))
-          .each(function (data) {
-            each.apply(context, [ d3.select(this) ].concat(data).concat(parentData));
-          });
-        exitSel.call(bind(exit));
-      });
+    enterSel.call(bind(enter));
+    updateSel.call(bind(update))
+    exitSel.call(bind(exit));
+
+    return updateSel;
   }
 }
 

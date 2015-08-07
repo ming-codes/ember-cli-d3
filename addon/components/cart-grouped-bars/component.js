@@ -141,9 +141,6 @@ export default Ember.Component.extend(EmberD3, {
           .attr('x2', 0)
           .attr('y1', zero)
           .attr('y2', zero);
-
-      d3.transition(entered)
-          .attr('y2', data => yScale(data[series]));
     },
     update(sel, series) {
       var xScale = this.get('xScale');
@@ -151,11 +148,13 @@ export default Ember.Component.extend(EmberD3, {
       var zero = yScale(0);
       var key = this.get('model.key');
 
-      sel
+      var updated = sel
         .attr('transform', translateX(data => xScale(Ember.get(data, key))))
         .select('.shape')
           .attr('x1', 0)
-          .attr('x2', 0)
+          .attr('x2', 0);
+
+      d3.transition(updated)
           .attr('y1', zero)
           .attr('y2', data => yScale(data[series]));
     }
