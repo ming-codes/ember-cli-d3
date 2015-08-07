@@ -8,21 +8,35 @@ export default Ember.Service.extend({
     this.generate();
   },
 
-  random() {
-    return Math.random() * Date.now() >> 16;
+  random(shifts = 0) {
+    return Math.random() * Date.now() >> shifts;
   },
 
   generate() {
     this.set('data', [ {
       _id: 1,
-      asian: this.random(),
-      black: this.random(),
-      white: this.random()
+      timestamp: this.random(),
+      asian: this.random(16),
+      black: this.random(16),
+      white: this.random(16)
     }, {
       _id: 2,
-      asian: this.random(),
-      black: this.random(),
-      white: this.random()
+      timestamp: this.random(),
+      asian: this.random(16),
+      black: this.random(16),
+      white: this.random(16)
+    }, {
+      _id: 3,
+      timestamp: this.random(),
+      asian: this.random(16),
+      black: this.random(16),
+      white: this.random(16)
+    }, {
+      _id: 4,
+      timestamp: this.random(),
+      asian: this.random(16),
+      black: this.random(16),
+      white: this.random(16)
     } ]);
   }
 

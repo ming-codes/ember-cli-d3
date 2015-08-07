@@ -11,7 +11,10 @@ Router.map(function() {
     this.route('grouped');
     this.route('waterfall');
   });
-  this.route('lines');
+  this.route('lines', function () {
+    this.route('area');
+    this.route('stacked');
+  });
 });
 
 export default Router;

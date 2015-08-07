@@ -24,4 +24,11 @@ export function box(expr) {
 }
 
 box.asSet = (name, value) => box(value);
-box.asComputed = () => Ember.computed({ set: box.asSet });
+box.asComputed = (defaultProp) => {
+  return Ember.computed({
+    set: box.asSet,
+    get(name) {
+      return this.cacheFor(name) || this.get(defaultProp);
+    }
+  });
+};
