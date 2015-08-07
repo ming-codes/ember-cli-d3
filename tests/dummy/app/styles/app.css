@@ -1,6 +1,5 @@
 
 .bar {
-  stroke: black;
   stroke-width: 20;
 }
 
@@ -22,3 +21,4 @@
 .tick line {
   stroke: black;
 }
+

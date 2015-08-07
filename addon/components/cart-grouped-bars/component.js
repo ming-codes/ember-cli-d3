@@ -15,7 +15,9 @@ export default Ember.Component.extend(EmberD3, {
     margin: { left: 50, right: 0, top: 0, bottom: 50 },
     orient: null,
     width: 300,
-    height: 150
+    height: 150,
+
+    stroke: d3.scale.category10()
   },
 
   contentWidth: Ember.computed('width', 'margin.left', 'margin.right', {
@@ -96,9 +98,12 @@ export default Ember.Component.extend(EmberD3, {
   series: join('model.series', '.series', {
     enter(sel) {
       var context = this;
+      var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      sel.append('g').attr('class', 'series')
+      sel.append('g')
+          .style('stroke', color)
+          .attr('class', 'series')
           .attr('transform', series => `translate(${zScale(series)} 0)`)
         .each(function (data) {
           context.bars(d3.select(this), data);
@@ -107,9 +112,11 @@ export default Ember.Component.extend(EmberD3, {
 
     update(sel) {
       var context = this;
+      var color = this.get('stroke');
       var zScale = this.get('zScale');
 
       sel.attr('transform', series => `translate(${zScale(series)} 0)`)
+        .style('stroke', color)
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
