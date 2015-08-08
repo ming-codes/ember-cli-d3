@@ -1,19 +1,24 @@
 
 import Ember from 'ember';
 
+import { assign } from '../../utils/d3';
+
 var SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
     return SelectionProxy.proxyElement(this, 'append', 'g', key);
   },
 
-  transition() {
-    return TransitionSelectionProxy.create({
-      selection: this.get('selection')
-    });
+  transition(options) {
+    var ret = TransitionSelectionProxy.create({});
+
+    ret._selection = this.get('selection');
+    ret._options = options;
+
+    return ret;
   },
 
   toString() {
-    return '<SelectionProxy>'
+    return '<SelectionProxy>';
   }
 });
 
@@ -31,15 +36,12 @@ SelectionProxy.reopenClass({
 });
 
 var TransitionSelectionProxy = SelectionProxy.extend({
+  _selection: null,
+  _options: null,
+
   selection: Ember.computed({
     get() {
-      return this._selection.transition();
-    },
-
-    set(name, value, cached) {
-      this._selection = value;
-
-      return value;
+      return assign(this._selection.transition(), this._options);
     }
   }).volatile(),
 
