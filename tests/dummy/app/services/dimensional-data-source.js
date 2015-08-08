@@ -13,31 +13,15 @@ export default Ember.Service.extend({
   },
 
   generate() {
-    this.set('data', [ {
-      _id: 1,
-      timestamp: this.random(),
-      asian: this.random(16),
-      black: this.random(16),
-      white: this.random(16)
-    }, {
-      _id: 2,
-      timestamp: this.random(),
-      asian: this.random(16),
-      black: this.random(16),
-      white: this.random(16)
-    }, {
-      _id: 3,
-      timestamp: this.random(),
-      asian: this.random(16),
-      black: this.random(16),
-      white: this.random(16)
-    }, {
-      _id: 4,
-      timestamp: this.random(),
-      asian: this.random(16),
-      black: this.random(16),
-      white: this.random(16)
-    } ]);
+    this.set('data', d3.range(0, 5).map(id => {
+      return {
+        _id: id,
+        timestamp: this.random(),
+        asian: this.random(16),
+        black: this.random(16),
+        white: this.random(16)
+      };
+    }));
   }
 
 });
