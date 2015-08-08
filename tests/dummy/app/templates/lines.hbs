@@ -1,6 +1,6 @@
 
 {{#data-visual as |svg width height|}}
-  {{#cart-area select=svg.chart model=dim width=width height=height
+  {{#cart-area select=(transition svg.chart) model=dim width=width height=height
         margin="10 10 20 60" stroke=(color-scale "category10")
       as |selection x-scale y-scale width height|}}
 

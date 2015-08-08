@@ -103,15 +103,26 @@ export default Ember.Component.extend(EmberD3, {
       sel
         .style('stroke', color)
         .each(function (series) {
-          d3.select(this)
-            .select('path').datum(data)
-          .attr('d', d3.svg.line()
-            .x(record => xScale(record[key]))
-            .y(record => yScale(record[series]))
-          )
-          .style('fill', 'none')
-          .style('stroke-width', 5)
+          var path = d3.transition(d3.select(this)
+              .select('path').datum(data)
+            .attr('d', d3.svg.line()
+              .x(record => xScale(record[key]))
+              .y(record => yScale(record[series]))
+            )
+            .style('fill', 'none')
+            .style('stroke-width', 5));
+
+          if (path.delay && path.duration) {
+            d3.transition(path).duration(2000)
+              .styleTween('stroke-dasharray', function dashTween() {
+                var total = this.getTotalLength();
+                var interp = d3.interpolateString(`0,${total}`, `${total},${total}`);
+
+                return (time) => interp(time);
+              });
+          }
         });
+
     }
   })
 });
