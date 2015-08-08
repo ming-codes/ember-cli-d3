@@ -40,7 +40,8 @@ export default Ember.Component.extend(EmberD3, {
   width: 300,
   height: 150,
 
-  xScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
+  exportedXScale: null,
+  computedXScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
     get() {
       var width = this.get('contentWidth');
       var data = this.get('model.data');
@@ -55,7 +56,8 @@ export default Ember.Component.extend(EmberD3, {
         .range([ 0, width ])
     }
   }).readOnly(),
-  yScale: Ember.computed('contentHeight', 'model.extent', {
+  exportedYScale: null,
+  computedYScale: Ember.computed('contentHeight', 'model.extent', {
     get() {
       var height = this.get('contentHeight');
       var extent = this.get('model.extent');
@@ -93,10 +95,11 @@ export default Ember.Component.extend(EmberD3, {
     },
 
     update(sel) {
+      var self = this;
       var data = this.get('model.data');
       var key = this.get('model.key');
-      var xScale = this.get('xScale');
-      var yScale = this.get('yScale');
+      var xScale = this.get('computedXScale');
+      var yScale = this.get('computedYScale');
 
       var color = this.get('stroke');
 
@@ -105,24 +108,32 @@ export default Ember.Component.extend(EmberD3, {
         .each(function (series) {
           var path = d3.transition(d3.select(this)
               .select('path').datum(data)
-            .attr('d', d3.svg.line()
-              .x(record => xScale(record[key]))
-              .y(record => yScale(record[series]))
-            )
             .style('fill', 'none')
             .style('stroke-width', 5));
 
           if (path.delay && path.duration) {
-            d3.transition(path).duration(2000)
-              .styleTween('stroke-dasharray', function dashTween() {
-                var total = this.getTotalLength();
-                var interp = d3.interpolateString(`0,${total}`, `${total},${total}`);
+            d3.transition(path)
+              .style('opacity', 0)
+              .each('end', function () {
+                self.set('exportedXScale', xScale);
+                self.set('exportedYScale', yScale);
 
-                return (time) => interp(time);
-              });
+                d3.select(this)
+                    .attr('d', d3.svg.line()
+                      .x(record => xScale(record[key]))
+                      .y(record => yScale(record[series]))
+                    )
+                  .transition()
+                    .style('opacity', 1)
+                    .styleTween('stroke-dasharray', function dashTween() {
+                      var total = this.getTotalLength();
+                      var interp = d3.interpolateString(`0,${total}`, `${total},${total}`);
+
+                      return (time) => interp(time);
+                    });
+                })
           }
         });
-
     }
   })
 });

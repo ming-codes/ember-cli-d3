@@ -8,9 +8,7 @@ import EmberD3 from '../../mixins/d3-support';
 export default Ember.Component.extend(EmberD3, {
   layout,
 
-  attrs: {
-    tickSize: 6
-  },
+  tickSize: 6,
 
   axis: Ember.computed('scale', 'tickSize', {
     get() {
@@ -18,7 +16,7 @@ export default Ember.Component.extend(EmberD3, {
       var scale = this.get('scale');
       var orient = this.get('orient');
 
-      return d3.svg.axis()
+      return scale && d3.svg.axis()
         .scale(scale)
         .orient(orient)
         .tickSize(tickSize);
@@ -28,10 +26,12 @@ export default Ember.Component.extend(EmberD3, {
   call(sel) {
     var axis = this.get('axis');
 
-    sel.call(axis).each(function () {
-      d3.select(this).selectAll('.tick')
-        .classed('zero', (data) => !data);
-    });
+    if (axis) {
+      sel.call(axis).each(function () {
+        d3.select(this).selectAll('.tick')
+          .classed('zero', (data) => !data);
+      });
+    }
   }
 
 });
