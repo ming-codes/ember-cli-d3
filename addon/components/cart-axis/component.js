@@ -12,22 +12,9 @@ export default Ember.Component.extend(EmberD3, {
     tickSize: 6
   },
 
-  normalizedTickSize: Ember.computed('orient', 'tickSize', {
+  axis: Ember.computed('scale', 'tickSize', {
     get() {
-      var orient = this.get('orient');
-      var value = Math.abs(this.get('tickSize'));
-
-      if (orient === 'left' || orient === 'bottom') {
-        value = -value;
-      }
-
-      return value;
-    }
-  }).readOnly(),
-
-  axis: Ember.computed('scale', {
-    get() {
-      var tickSize = this.get('normalizedTickSize');
+      var tickSize = this.get('tickSize');
       var scale = this.get('scale');
       var orient = this.get('orient');
 
