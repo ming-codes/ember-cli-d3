@@ -5,20 +5,12 @@ import EmberD3 from '../../mixins/d3-support';
 
 import { join, translateX } from '../../utils/d3';
 
+import { scan } from '../../utils/lodash';
+
 import { box } from '../../utils/css';
 
 export default Ember.Component.extend(EmberD3, {
   layout,
-
-  attrs: {
-    model: null,
-    margin: { left: 50, right: 0, top: 0, bottom: 50 },
-    orient: null,
-    width: 300,
-    height: 150,
-
-    stroke: d3.scale.category10()
-  },
 
   contentWidth: Ember.computed('width', 'margin.left', 'margin.right', {
     get() {
@@ -42,8 +34,64 @@ export default Ember.Component.extend(EmberD3, {
   margin: box.asComputed(),
   orient: null, // TODO
 
-  width: null,
-  height: null,
+  signedValues: Ember.computed('model.data', 'model.series', {
+    get() {
+      var data = this.get('model.data');
+      var series = this.get('model.series');
+
+      return data.map(record => {
+        var positives = [];
+        var negatives = [];
+
+        positives.length = negatives.length = series.length;
+
+        series.forEach((series, index) => {
+          (record[series] > 0 ? positives : negatives)[index] = record[series];
+        });
+
+        return { negatives, positives };
+      });
+    }
+  }).readOnly(),
+
+  layoutValues: Ember.computed('signedValues', 'model.data', 'model.series', 'model.key', {
+    get() {
+      var data = this.get('model.data');
+      var series = this.get('model.series');
+      var key = this.get('model.key');
+      var signedValues = this.get('signedValues');
+
+      return signedValues
+        .map(({ negatives, positives }) => {
+          positives = layout(positives);
+          negatives = layout(negatives);
+
+          return series.map((_, index) => {
+            return positives[index] || negatives[index];
+          });
+        })
+        .reduce((accum, bySeries, index) => {
+          var keyValue = Ember.get(data[index], key);
+
+          accum[keyValue] = bySeries.reduce((accum, { series, start, end }) => {
+            accum[series] = { start, end };
+
+            return accum;
+          }, {});
+
+          return accum;
+        }, {});
+
+      function layout(col) {
+        return scan(col, (prev, value, index) => {
+          var start = prev.end;
+          var end = start + value;
+
+          return { start, end, series: series[index] };
+        }, { end: 0 });
+      }
+    }
+  }).readOnly(),
 
   xScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
     get() {
@@ -53,13 +101,19 @@ export default Ember.Component.extend(EmberD3, {
 
       return d3.scale.ordinal()
         .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangeBands([ 0, width ])
+        .rangePoints([ 0, width ], 1)
     }
   }).readOnly(),
-  yScale: Ember.computed('contentHeight', 'model.extent', {
+  yScale: Ember.computed('contentHeight', 'signedValues', {
     get() {
       var height = this.get('contentHeight');
-      var extent = this.get('model.extent');
+      var data = this.get('signedValues');
+      var extent = [ Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY ];
+
+      data.forEach(({ negatives, positives }) => {
+        extent[0] = Math.min(extent[0], d3.sum(negatives));
+        extent[1] = Math.max(extent[1], d3.sum(positives));
+      });
 
       extent[0] = Math.min(extent[0], 0);
       extent[1] = Math.max(extent[1], 0);
@@ -71,16 +125,6 @@ export default Ember.Component.extend(EmberD3, {
       return d3.scale.linear()
         .domain(extent)
         .range([ 0, -height ]);
-    }
-  }).readOnly(),
-  zScale: Ember.computed('xScale', 'model.series', {
-    get() {
-      var series = this.get('model.series');
-      var band = this.get('xScale').rangeBand();
-
-      return d3.scale.ordinal()
-        .domain(series)
-        .rangePoints([ 0, band ], 1)
     }
   }).readOnly(),
 
@@ -99,12 +143,11 @@ export default Ember.Component.extend(EmberD3, {
     enter(sel) {
       var context = this;
       var color = this.get('stroke');
-      var zScale = this.get('zScale');
 
       sel.append('g')
           .style('stroke', color)
           .attr('class', 'series')
-          .attr('transform', series => `translate(${zScale(series)} 0)`)
+          .attr('transform', series => 'translate(0 0)')
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -113,15 +156,13 @@ export default Ember.Component.extend(EmberD3, {
     update(sel) {
       var context = this;
       var color = this.get('stroke');
-      var zScale = this.get('zScale');
 
-      d3.transition(sel).attr('transform', series => `translate(${zScale(series)} 0)`)
+      d3.transition(sel).attr('transform', series => `translate(0 0)`)
         .style('stroke', color)
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
     }
-
   }),
 
   bars: join('model.data[model.key]', '.bar', {
@@ -134,7 +175,7 @@ export default Ember.Component.extend(EmberD3, {
       var entered = sel
           .append('g')
         .attr('class', 'bar')
-        .attr('transform', translateX(data => xScale(Ember.get(data, key))))
+        .attr('transform', translateX(record => xScale(Ember.get(record, key))))
           .append('line')
         .attr('class', 'shape')
           .attr('x1', 0)
@@ -148,13 +189,15 @@ export default Ember.Component.extend(EmberD3, {
       var zero = yScale(0);
       var key = this.get('model.key');
 
+      var layout = this.get('layoutValues');
+
       d3.transition(sel)
-          .attr('transform', translateX(data => xScale(Ember.get(data, key))))
+          .attr('transform', translateX(record => xScale(Ember.get(record, key))))
         .select('.shape')
           .attr('x1', 0)
           .attr('x2', 0)
-          .attr('y1', zero)
-          .attr('y2', data => yScale(data[series]));
+          .attr('y1', record => yScale(layout[record[key]][series].start))
+          .attr('y2', record => yScale(layout[record[key]][series].end));
     }
   })
 });
