@@ -1,9 +1,5 @@
 
-<ul>
-  <li>Grouped: {{isGrouped}}</li>
-  <li>Stacked: {{isStacked}}</li>
-  <li>Waterfall: {{isWaterfall}}</li>
-</ul>
+<button class="data-control" {{action "reorder"}}>Reorder</button>
 
 {{#data-visual as |svg width height|}}
   {{#if isGrouped}}

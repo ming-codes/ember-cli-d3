@@ -54,9 +54,7 @@
 </nav>
 
 <div class="container">
-  {{currentRouteName}}
-  {{outlet}}
+  <button class="data-control" {{action "generate"}}>Generate</button>
 
-  <button {{action "generate"}}>Generate</button>
-  <button {{action "reorder"}}>Reorder</button>
+  {{outlet}}
 </div>

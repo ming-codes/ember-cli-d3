@@ -9,6 +9,10 @@
   height: 500px;
 }
 
+.data-control {
+  margin: 12px 0;
+}
+
 .domain {
   fill: none;
 }
