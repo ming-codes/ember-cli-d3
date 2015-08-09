@@ -53,8 +53,16 @@
   </div><!-- /.container-fluid -->
 </nav>
 
+{{#if isIndex}}
+  <div class="container">
+    About
+  </div>
+{{/if}}
+
 <div class="container">
-  <button class="data-control" {{action "generate"}}>Generate</button>
+  {{#unless isIndex}}
+    <button class="data-control" {{action "generate"}}>Generate</button>
+  {{/unless}}
 
   {{outlet}}
 </div>
