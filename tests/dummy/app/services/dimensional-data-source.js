@@ -22,6 +22,17 @@ export default Ember.Service.extend({
         white: this.random(16)
       };
     }));
+  },
+
+  reorder() {
+    var oldData = this.get('data');
+    var newData = [];
+
+    while (oldData.length) {
+      newData = newData.concat(oldData.splice(Math.floor(Math.random() * oldData.length), 1));
+    }
+
+    this.set('data', newData);
   }
 
 });

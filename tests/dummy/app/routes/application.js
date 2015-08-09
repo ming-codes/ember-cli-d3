@@ -8,7 +8,9 @@ export default Ember.Route.extend({
   actions: {
     generate() {
       this.get('dataSource').generate();
+    },
+    reorder() {
+      this.get('dataSource').reorder();
     }
-
   }
 });

@@ -56,7 +56,7 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
     var key = keyPath && this.get(keyPath);
 
     if (keyPath) {
-      key = this.get('keyPath');
+      key = this.get(keyPath);
     }
     if (typeof key === 'string') {
       key = accessor(key);

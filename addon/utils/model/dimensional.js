@@ -10,12 +10,12 @@ export default Ember.Object.extend({
     get() {
       return this.get('extent.0');
     }
-  }),
+  }).readOnly(),
   max: Ember.computed('extent', {
     get() {
       return this.get('extent.1');
     }
-  }),
+  }).readOnly(),
   extent: Ember.computed('data', 'series', {
     get() {
       var data = this.get('data');
@@ -35,6 +35,7 @@ export default Ember.Object.extend({
 
       return extent;
     }
-  })
+  }).readOnly()
+
 });
 
