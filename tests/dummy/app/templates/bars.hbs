@@ -4,20 +4,30 @@
 {{#data-visual as |svg width height|}}
   {{#if isGrouped}}
     {{#cart-grouped-bars select=(transition svg.chart) model=dim width=width height=height
-          margin="10 10 20 60" stroke=(color-scale "category10")
+          margin="10 60 20 10" stroke=(color-scale "category10")
         as |selection x-scale y-scale width height|}}
 
-      {{cart-axis select=(transition svg.chart.x-axis) orient="bottom" tickSize=(negative height) scale=x-scale}}
-      {{cart-axis select=(transition svg.chart.y-axis) orient="left" tickSize=(negative width) scale=y-scale}}
+      {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+        orient="bottom" tickSize=(negative height)
+      }}
+      {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+        orient="right" tickSize=(negative width)
+        transform=(translate width)
+      }}
 
     {{/cart-grouped-bars}}
-  {{else}}
+  {{else if isStacked}}
     {{#cart-stacked-bars select=(transition svg.chart) model=dim width=width height=height
-          margin="10 10 20 60" stroke=(color-scale "category10")
+          margin="10 60 20 10" stroke=(color-scale "category10")
         as |selection x-scale y-scale width height|}}
 
-      {{cart-axis select=(transition svg.chart.x-axis) orient="bottom" tickSize=(negative height) scale=x-scale}}
-      {{cart-axis select=(transition svg.chart.y-axis) orient="left" tickSize=(negative width) scale=y-scale}}
+      {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+        orient="bottom" tickSize=(negative height)
+      }}
+      {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+        orient="right" tickSize=(negative width)
+        transform=(translate width)
+      }}
 
     {{/cart-stacked-bars}}
   {{/if}}

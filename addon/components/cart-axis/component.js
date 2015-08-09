@@ -9,6 +9,7 @@ export default Ember.Component.extend(EmberD3, {
   layout,
 
   tickSize: 6,
+  transform: null,
 
   axis: Ember.computed('scale', 'tickSize', {
     get() {
@@ -25,12 +26,16 @@ export default Ember.Component.extend(EmberD3, {
 
   call(sel) {
     var axis = this.get('axis');
+    var transform = this.get('transform');
 
     if (axis) {
-      sel.call(axis).each(function () {
-        d3.select(this).selectAll('.tick')
-          .classed('zero', (data) => !data);
-      });
+      sel
+        .attr('transform', transform)
+        .call(axis)
+        .each(function () {
+          d3.select(this).selectAll('.tick')
+            .classed('zero', (data) => !data);
+        });
     }
   }
 
