@@ -1,5 +1,6 @@
 {
   "predef": [
+    "d3",
     "document",
     "window",
     "-Promise"
