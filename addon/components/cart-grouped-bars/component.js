@@ -53,7 +53,7 @@ export default Ember.Component.extend(EmberD3, {
 
       return d3.scale.ordinal()
         .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangeBands([ 0, width ])
+        .rangeBands([ 0, width ]);
     }
   }).readOnly(),
   yScale: Ember.computed('contentHeight', 'model.extent', {
@@ -80,7 +80,7 @@ export default Ember.Component.extend(EmberD3, {
 
       return d3.scale.ordinal()
         .domain(series)
-        .rangePoints([ 0, band ], 1)
+        .rangePoints([ 0, band ], 1);
     }
   }).readOnly(),
 

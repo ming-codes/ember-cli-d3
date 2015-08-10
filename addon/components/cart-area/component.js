@@ -53,7 +53,7 @@ export default Ember.Component.extend(EmberD3, {
 
       return d3.scale.linear()
         .domain(!key ? data : d3.extent(data, record => Ember.get(record, key)))
-        .range([ 0, width ])
+        .range([ 0, width ]);
     }
   }).readOnly(),
   exportedYScale: null,
@@ -131,7 +131,7 @@ export default Ember.Component.extend(EmberD3, {
 
                       return (time) => interp(time);
                     });
-                })
+              });
           }
         });
     }
