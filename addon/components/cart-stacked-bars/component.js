@@ -61,6 +61,15 @@ export default Ember.Component.extend(EmberD3, {
       var key = this.get('model.key');
       var signedValues = this.get('signedValues');
 
+      function layout(col) {
+        return scan(col, (prev, value, index) => {
+          var start = prev.end;
+          var end = start + value;
+
+          return { start, end, series: series[index] };
+        }, { end: 0 });
+      }
+
       return signedValues
         .map(({ negatives, positives }) => {
           positives = layout(positives);
@@ -82,14 +91,6 @@ export default Ember.Component.extend(EmberD3, {
           return accum;
         }, {});
 
-      function layout(col) {
-        return scan(col, (prev, value, index) => {
-          var start = prev.end;
-          var end = start + value;
-
-          return { start, end, series: series[index] };
-        }, { end: 0 });
-      }
     }
   }).readOnly(),
 
@@ -101,7 +102,7 @@ export default Ember.Component.extend(EmberD3, {
 
       return d3.scale.ordinal()
         .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangePoints([ 0, width ], 1)
+        .rangePoints([ 0, width ], 1);
     }
   }).readOnly(),
   yScale: Ember.computed('contentHeight', 'signedValues', {
@@ -147,7 +148,7 @@ export default Ember.Component.extend(EmberD3, {
       sel.append('g')
           .style('stroke', color)
           .attr('class', 'series')
-          .attr('transform', series => 'translate(0 0)')
+          .attr('transform', () => 'translate(0 0)')
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -157,7 +158,7 @@ export default Ember.Component.extend(EmberD3, {
       var context = this;
       var color = this.get('stroke');
 
-      d3.transition(sel).attr('transform', series => `translate(0 0)`)
+      d3.transition(sel).attr('transform', () => `translate(0 0)`)
         .style('stroke', color)
         .each(function (data) {
           context.bars(d3.select(this), data);
@@ -166,13 +167,13 @@ export default Ember.Component.extend(EmberD3, {
   }),
 
   bars: join('model.data[model.key]', '.bar', {
-    enter(sel, series) {
+    enter(sel) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
       var zero = yScale(0);
 
-      var entered = sel
+      sel
           .append('g')
         .attr('class', 'bar')
         .attr('transform', translateX(record => xScale(Ember.get(record, key))))
@@ -186,7 +187,6 @@ export default Ember.Component.extend(EmberD3, {
     update(sel, series) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
-      var zero = yScale(0);
       var key = this.get('model.key');
 
       var layout = this.get('layoutValues');

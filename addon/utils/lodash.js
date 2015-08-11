@@ -9,7 +9,7 @@ export function scan(col, fn, init) {
   }
   else {
     col.reduce((prev, item, index, arr) => {
-      ret[index] = fn;
+      return ret[index] = fn(prev, item, index, arr);
     });
   }
 

@@ -23,7 +23,7 @@ export function assign(target, values) {
   var key;
 
   for (key in values) {
-    if (typeof target[key] == 'function') {
+    if (typeof target[key] === 'function') {
       target[key](values[key]);
     }
   }
@@ -69,10 +69,10 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
     var exitSel = updateSel.exit();
 
     enterSel.call(bind(enter));
-    updateSel.call(bind(update))
+    updateSel.call(bind(update));
     exitSel.call(bind(exit));
 
     return updateSel;
-  }
+  };
 }
 

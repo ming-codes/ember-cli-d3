@@ -46,7 +46,7 @@ var TransitionSelectionProxy = SelectionProxy.extend({
   }).volatile(),
 
   toString() {
-    return '<TransitionSelectionProxy>'
+    return '<TransitionSelectionProxy>';
   }
 });
 
@@ -58,7 +58,7 @@ var SVGSelectionProxy = SelectionProxy.extend({
   }),
 
   toString() {
-    return '<SVGSelectionProxy>'
+    return '<SVGSelectionProxy>';
   }
 });
 
