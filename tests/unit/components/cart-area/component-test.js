@@ -1,17 +1,25 @@
 import { moduleForComponent, test } from 'ember-qunit';
 
-moduleForComponent('cart-area/component', 'Unit | Component | cart area/component.js', {
-  // Specify the other units that are required for this test
-  // needs: ['component:foo', 'helper:bar'],
+moduleForComponent('cart-area/component', 'Unit | Component | cart-area', {
   unit: true
 });
 
-test('it renders', function(assert) {
-  assert.expect(1);
+test('cart-area#contentWidth', function(assert) {
+  var component = this.subject({
+    width: 300,
+    height: 150,
+    margin: '0 20 0 30'
+  });
 
-  // Creates the component instance
-  var component = this.subject();
-  // Renders the component to the page
-  this.render();
-  //assert.equal(this.$().text(), '');
+  assert.equal(component.get('contentWidth'), 250);
+});
+
+test('cart-area#contentHeight', function(assert) {
+  var component = this.subject({
+    width: 300,
+    height: 150,
+    margin: '2 20 15 30'
+  });
+
+  assert.equal(component.get('contentHeight'), 133);
 });
