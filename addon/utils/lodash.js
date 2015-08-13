@@ -1,4 +1,6 @@
 
+export var slice = Array.prototype.slice;
+
 export function scan(col, fn, init) {
   var ret = [];
 
@@ -14,4 +16,10 @@ export function scan(col, fn, init) {
   }
 
   return ret;
+}
+
+export function wrap(target, wrapper) {
+  return function wrapped() {
+    return wrapper.apply(this, [ target ].concat(slice.call(arguments)));
+  };
 }
