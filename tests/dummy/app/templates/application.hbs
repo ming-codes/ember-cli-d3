@@ -13,18 +13,15 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bars <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cartesian <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li>{{#link-to "bars.grouped"}}Grouped{{/link-to}}</li>
-            <li>{{#link-to "bars.stacked"}}Stacked{{/link-to}}</li>
-            <li>{{#link-to "bars.waterfall"}}Waterfall{{/link-to}}</li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lines <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li>{{#link-to "lines.area"}}Area{{/link-to}}</li>
-            <li>{{#link-to "lines.stacked"}}Stacked{{/link-to}}</li>
+            <li>{{#link-to "bars.grouped"}}Grouped Bar Chart{{/link-to}}</li>
+            <li>{{#link-to "bars.stacked"}}Stacked Bars Chart{{/link-to}}</li>
+            <li>{{#link-to "bars.waterfall" disabled=true}}Waterfall Chart{{/link-to}}</li>
+            <li>{{#link-to "lines"}}Line Chart{{/link-to}}</li>
+            <li>{{#link-to "lines.area"}}Area Chart{{/link-to}}</li>
+            <li>{{#link-to "lines.stacked"}}Stacked Area Chart{{/link-to}}</li>
+            <li>{{#link-to "histogram" disabled=true}}Histogram{{/link-to}}</li>
           </ul>
         </li>
       </ul>

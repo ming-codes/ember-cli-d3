@@ -1,11 +1,11 @@
 
 {{#data-visual as |svg width height|}}
-  {{#cart-area select=(transition svg.chart duration=200) model=dim width=width height=height
+  {{#cart-lines select=(transition svg.chart duration=200) model=dim width=width height=height
         margin="10 10 20 60" stroke=(color-scale "category10")
       as |selection x-scale y-scale width height|}}
 
     {{cart-axis select=(transition svg.chart.x-axis) orient="bottom" tickSize=(negative height) scale=x-scale}}
     {{cart-axis select=(transition svg.chart.y-axis) orient="left" tickSize=(negative width) scale=y-scale}}
 
-  {{/cart-area}}
+  {{/cart-lines}}
 {{/data-visual}}

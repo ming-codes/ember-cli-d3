@@ -69,7 +69,6 @@ export default Ember.Component.extend(EmberD3, {
           return { start, end, series: series[index] };
         }, { end: 0 });
       }
-
       return signedValues
         .map(({ negatives, positives }) => {
           positives = layout(positives);
