@@ -45,8 +45,10 @@ export default Ember.Component.extend(EmberD3, {
 
         positives.length = negatives.length = series.length;
 
-        series.forEach((series, index) => {
-          (record[series] > 0 ? positives : negatives)[index] = record[series];
+        series.forEach(({ metricPath }, index) => {
+          var value = Ember.get(record, metricPath);
+
+          (value > 0 ? positives : negatives)[index] = value;
         });
 
         return { negatives, positives };
@@ -82,7 +84,7 @@ export default Ember.Component.extend(EmberD3, {
           var keyValue = Ember.get(data[index], key);
 
           accum[keyValue] = bySeries.reduce((accum, { series, start, end }) => {
-            accum[series] = { start, end };
+            accum[series.metricPath] = { start, end };
 
             return accum;
           }, {});
@@ -145,7 +147,7 @@ export default Ember.Component.extend(EmberD3, {
       var color = this.get('stroke');
 
       sel.append('g')
-          .style('stroke', color)
+          .style('stroke', ({ metricPath }) => color(metricPath))
           .attr('class', 'series')
           .attr('transform', () => 'translate(0 0)')
         .each(function (data) {
@@ -158,7 +160,7 @@ export default Ember.Component.extend(EmberD3, {
       var color = this.get('stroke');
 
       d3.transition(sel).attr('transform', () => `translate(0 0)`)
-        .style('stroke', color)
+        .style('stroke', ({ metricPath }) => color(metricPath))
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -183,7 +185,7 @@ export default Ember.Component.extend(EmberD3, {
           .attr('y1', zero)
           .attr('y2', zero);
     },
-    update(sel, series) {
+    update(sel, { metricPath }) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
@@ -195,8 +197,8 @@ export default Ember.Component.extend(EmberD3, {
         .select('.shape')
           .attr('x1', 0)
           .attr('x2', 0)
-          .attr('y1', record => yScale(layout[record[key]][series].start))
-          .attr('y2', record => yScale(layout[record[key]][series].end));
+          .attr('y1', record => yScale(layout[record[key]][metricPath].start))
+          .attr('y2', record => yScale(layout[record[key]][metricPath].end));
     }
   })
 });

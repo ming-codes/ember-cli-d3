@@ -79,7 +79,7 @@ export default Ember.Component.extend(EmberD3, {
       var band = this.get('xScale').rangeBand();
 
       return d3.scale.ordinal()
-        .domain(series)
+        .domain(series.map(({ metricPath }) => metricPath))
         .rangePoints([ 0, band ], 1);
     }
   }).readOnly(),
@@ -102,9 +102,9 @@ export default Ember.Component.extend(EmberD3, {
       var zScale = this.get('zScale');
 
       sel.append('g')
-          .style('stroke', color)
+          .style('stroke', ({ metricPath }) => color(metricPath))
           .attr('class', 'series')
-          .attr('transform', series => `translate(${zScale(series)} 0)`)
+          .attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -115,8 +115,8 @@ export default Ember.Component.extend(EmberD3, {
       var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      d3.transition(sel).attr('transform', series => `translate(${zScale(series)} 0)`)
-        .style('stroke', color)
+      d3.transition(sel).attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
+        .style('stroke', ({ metricPath }) => color(metricPath))
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -154,7 +154,7 @@ export default Ember.Component.extend(EmberD3, {
           .attr('x1', 0)
           .attr('x2', 0)
           .attr('y1', zero)
-          .attr('y2', data => yScale(data[series]));
+          .attr('y2', data => yScale(data[series.metricPath]));
     }
   })
 });

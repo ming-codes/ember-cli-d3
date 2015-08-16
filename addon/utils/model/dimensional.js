@@ -2,9 +2,24 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
-  data: null,
-  series: null, // series contains metadata like format and labeling
   key: null,
+  data: null,
+  // series contains metadata like format and labeling
+  series: Ember.computed({
+    set(name, newValue, oldValue) {
+      return newValue.map(series => {
+        Ember.assert(`${name} must be a collection of strings or object { metricPath, labelPath, format }`, () => {
+          return ~[ 'string', 'object' ].indexOf(typeof series);
+        });
+
+        if (typeof series === 'object') {
+          return series;
+        }
+
+        return { metricPath: series, labelPath: series, format: series };
+      });
+    }
+  }),
 
   min: Ember.computed('extent', {
     get() {
@@ -28,8 +43,8 @@ export default Ember.Object.extend({
 
       for (dataIndex = 0; dataIndex < dataLen; dataIndex++) {
         for (seriesIndex = 0; seriesIndex < seriesLen; seriesIndex++) {
-          extent[0] = Math.min(extent[0], data[dataIndex][series[seriesIndex]]);
-          extent[1] = Math.max(extent[1], data[dataIndex][series[seriesIndex]]);
+          extent[0] = Math.min(extent[0], data[dataIndex][series[seriesIndex].metricPath]);
+          extent[1] = Math.max(extent[1], data[dataIndex][series[seriesIndex].metricPath]);
         }
       }
 

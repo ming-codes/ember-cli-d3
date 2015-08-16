@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
 
   data: Ember.computed.alias('dataSource.data'),
   series: [ 'black', 'asian' ],
-  key: '_id',
+  key: 'timestamp',
 
   dim: Ember.computed('data', 'series', 'key', {
     get() {

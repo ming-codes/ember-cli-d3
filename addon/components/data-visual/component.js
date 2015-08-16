@@ -22,9 +22,13 @@ export default Ember.Component.extend({
   },
 
   didInsertElement() {
-    Ember.$(window).on('resize', Ember.run.bind(this, this.measure));
+    Ember.$(window).on(`resize.${this.get('elementId')}`, Ember.run.bind(this, this.measure));
 
     Ember.run.scheduleOnce('afterRender', this, this.initElementProxy);
+  },
+
+  willDestroyElement() {
+    Ember.$(window).off(`resize.${this.get('elementId')}`);
   }
 
 });

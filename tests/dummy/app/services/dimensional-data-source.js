@@ -10,6 +10,18 @@ export default Ember.Service.extend({
     this.generate();
   },
 
+  data: Ember.computed({
+    set(name, value) {
+      return value
+        .sort((valueA, valueB) => valueB.timestamp - valueA.timestamp)
+        .map(({ city, timestamp, asian, black, white }) => {
+          return { city, asian, black, white,
+            timestamp: new Date(timestamp)
+          };
+        });
+    }
+  }),
+
   generate() {
     var generator = d3.random.normal(2000, 2000);
 
@@ -23,6 +35,7 @@ export default Ember.Service.extend({
     function cityData(city) {
       return {
         city,
+        timestamp: Math.floor(Date.now() * Math.random()),
         asian: generator(),
         black: generator(),
         white: generator()

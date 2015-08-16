@@ -46,14 +46,15 @@ export default Ember.Component.extend(EmberD3, {
       var width = this.get('contentWidth');
       var data = this.get('model.data');
       var key = this.get('model.key');
+      var domain, scale;
 
-      if (!data.length) {
-        return d3.scale.linear();
-      }
+      domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
+      domain = domain.length ? domain : [ 0, 1 ];
 
-      return d3.scale.linear()
-        .domain(!key ? data : d3.extent(data, record => Ember.get(record, key)))
-        .range([ 0, width ]);
+      scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
+      scale = scale ? d3.time.scale() : d3.scale.linear();
+
+      return scale.domain(domain).range([ 0, width ]);
     }
   }).readOnly(),
   exportedYScale: null,
@@ -104,7 +105,7 @@ export default Ember.Component.extend(EmberD3, {
       var color = this.get('stroke');
 
       sel
-        .style('stroke', color)
+        .style('stroke', ({ metricPath }) => color(metricPath))
         .each(function (series) {
           var path = d3.transition(d3.select(this)
               .select('path').datum(data)
@@ -121,7 +122,7 @@ export default Ember.Component.extend(EmberD3, {
                 d3.select(this)
                     .attr('d', d3.svg.line()
                       .x(record => xScale(record[key]))
-                      .y(record => yScale(record[series]))
+                      .y(record => yScale(Ember.get(record, series.metricPath)))
                     )
                   .transition()
                     .style('opacity', 1)
