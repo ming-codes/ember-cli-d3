@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+
+
 export default Ember.Service.extend({
 
   init() {
@@ -8,20 +10,24 @@ export default Ember.Service.extend({
     this.generate();
   },
 
-  random(shifts = 0) {
-    return Math.random() * Date.now() >> shifts;
-  },
-
   generate() {
-    this.set('data', d3.range(0, 5).map(id => {
+    var generator = d3.random.normal(2000, 2000);
+
+    this.set('data', [
+      cityData('New York'),
+      cityData('San Francisco'),
+      cityData('Chicago'),
+      cityData('Los Angeles')
+    ]);
+
+    function cityData(city) {
       return {
-        _id: id,
-        timestamp: this.random(),
-        asian: this.random(16),
-        black: this.random(16),
-        white: this.random(16)
+        city,
+        asian: generator(),
+        black: generator(),
+        white: generator()
       };
-    }));
+    }
   },
 
   reorder() {
