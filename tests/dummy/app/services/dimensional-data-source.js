@@ -13,7 +13,7 @@ export default Ember.Service.extend({
   data: Ember.computed({
     set(name, value) {
       return value
-        .sort((valueA, valueB) => valueB.timestamp - valueA.timestamp)
+        .sort((valueA, valueB) => valueA.timestamp - valueB.timestamp)
         .map(({ city, timestamp, asian, black, white }) => {
           return { city, asian, black, white,
             timestamp: new Date(timestamp)
