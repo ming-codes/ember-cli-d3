@@ -1,1 +1,1 @@
-export { default, initialize } from 'ember-d3/initializers/d3';
+export { default, initialize } from 'ember-cli-d3/initializers/d3';

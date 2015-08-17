@@ -1,1 +1,1 @@
-export { default } from 'ember-d3/components/data-visual/component';
+export { default } from 'ember-cli-d3/components/data-visual/component';

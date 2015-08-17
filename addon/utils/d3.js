@@ -6,7 +6,7 @@ var noop = d3.functor();
 var guidCounter = 0;
 
 export function guid() {
-  return `ember-d3-${guidCounter++}`;
+  return `ember-cli-d3-${guidCounter++}`;
 }
 
 export function accessor(path) {

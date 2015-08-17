@@ -1,6 +1,6 @@
-# Ember-d3
+# ember-cli-d3
 
-This README outlines the details of collaborating on this Ember addon.
+`ember-cli-d3` aims to be an integration library that bridges Ember's rendering cycle with D3.
 
 ## Installation
 
@@ -23,3 +23,7 @@ This README outlines the details of collaborating on this Ember addon.
 * `ember build`
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+
+## License
+
+MIT

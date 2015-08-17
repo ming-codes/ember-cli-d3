@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-d3',
+  name: 'ember-cli-d3',
   included: function(app) {
     this._super.included(app);
 

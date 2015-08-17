@@ -1,1 +1,1 @@
-export { default, transition } from 'ember-d3/helpers/transition';
+export { default, transition } from 'ember-cli-d3/helpers/transition';

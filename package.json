@@ -1,5 +1,5 @@
 {
-  "name": "ember-d3",
+  "name": "ember-cli-d3",
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {

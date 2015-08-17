@@ -1,1 +1,1 @@
-export { default } from 'ember-d3/svg/text/util';
+export { default } from 'ember-cli-d3/svg/text/util';

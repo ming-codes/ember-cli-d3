@@ -1,1 +1,1 @@
-export { default, negative } from 'ember-d3/helpers/negative';
+export { default, negative } from 'ember-cli-d3/helpers/negative';

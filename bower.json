@@ -1,5 +1,5 @@
 {
-  "name": "ember-d3",
+  "name": "ember-cli-d3",
   "dependencies": {
     "ember": "canary",
     "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",

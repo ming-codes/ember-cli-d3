@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { scan } from 'ember-d3/utils/lodash';
+import { scan } from 'ember-cli-d3/utils/lodash';
 
 module('Unit | Utility | lodash');
 
