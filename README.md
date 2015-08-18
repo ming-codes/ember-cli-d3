@@ -1,6 +1,26 @@
 # ember-cli-d3
 
-`ember-cli-d3` aims to be an integration library that bridges Ember's rendering cycle with D3.
+`ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
+to integrate [d3](http://d3js.org) visualizations into Ember applications.
+
+## Composability
+
+`ember-cli-d3` tries to follow the composability pattern of d3 as much as possible while
+fully utilizing the advantage of having HTMLBars templates. The result is that it allows
+you to integrate many of the d3 plugins that exists out there.
+
+## Bundled Visuals
+
+* Cartesian
+ * Bar Chart
+  * Grouped Bars
+  * Stacked Bars
+  * ~~Waterfall~~ TODO
+ * Line Chart
+  * ~~Area Chart~~ TODO
+  * ~~Stacked Area~~ TODO
+
+# Usage
 
 ## Installation
 
