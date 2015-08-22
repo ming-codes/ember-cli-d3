@@ -6,16 +6,18 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('bars', function () {
-    this.route('stacked');
-    this.route('grouped');
-    this.route('waterfall');
+  this.route('cart', function () {
+    this.route('bars', function () {
+      this.route('stacked');
+      this.route('grouped');
+      this.route('waterfall');
+    });
+    this.route('lines', function () {
+      this.route('area');
+      this.route('stacked');
+    });
+    this.route('histogram');
   });
-  this.route('lines', function () {
-    this.route('area');
-    this.route('stacked');
-  });
-  this.route('histogram');
 });
 
 export default Router;

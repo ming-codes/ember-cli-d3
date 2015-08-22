@@ -8,9 +8,9 @@ export default Ember.Controller.extend({
 
   dataSource: Ember.inject.service('dimensional-data-source'),
 
-  isStacked: Ember.computed.equal('app.currentRouteName', 'bars.stacked'),
-  isGrouped: Ember.computed.equal('app.currentRouteName', 'bars.grouped'),
-  isWaterfall: Ember.computed.equal('app.currentRouteName', 'bars.waterfall'),
+  isStacked: Ember.computed.equal('app.currentRouteName', 'cart.bars.stacked'),
+  isGrouped: Ember.computed.equal('app.currentRouteName', 'cart.bars.grouped'),
+  isWaterfall: Ember.computed.equal('app.currentRouteName', 'cart.bars.waterfall'),
 
   data: Ember.computed.alias('dataSource.data'),
   series: [ 'dogs', 'cats' ],
