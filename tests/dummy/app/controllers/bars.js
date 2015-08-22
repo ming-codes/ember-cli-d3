@@ -13,8 +13,8 @@ export default Ember.Controller.extend({
   isWaterfall: Ember.computed.equal('app.currentRouteName', 'bars.waterfall'),
 
   data: Ember.computed.alias('dataSource.data'),
-  series: [ 'black', 'asian' ],
-  key: 'city',
+  series: [ 'dogs', 'cats' ],
+  key: 'state',
 
   dim: Ember.computed('data', 'series', 'key', {
     get() {
