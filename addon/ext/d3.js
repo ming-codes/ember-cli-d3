@@ -1,18 +1,6 @@
 
 import { wrap, slice } from 'ember-cli-d3/utils/lodash';
 
-export function id() {
-  d3.selection.prototype.id = d3.selection.prototype.id || function (newId) {
-    if (arguments.length) {
-      this.node().id = newId;
-
-      return this;
-    }
-
-    return this.node().id;
-  };
-}
-
 export function type() {
   d3.selection.prototype.isSelection = true;
   d3.transition.prototype.isTransition = true;

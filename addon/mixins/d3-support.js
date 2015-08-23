@@ -1,8 +1,7 @@
 import Ember from 'ember';
 
-import { timer, type, id } from '../ext/d3';
+import { timer, type } from '../ext/d3';
 
-id();
 timer();
 type();
 
