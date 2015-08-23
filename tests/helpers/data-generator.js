@@ -13,4 +13,4 @@ export function dimensional(series, count = 4, options = {}) {
 
     return base;
   });
-};
+}

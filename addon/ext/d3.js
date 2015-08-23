@@ -1,4 +1,6 @@
 
+import Ember from 'ember';
+
 import { wrap, slice } from 'ember-cli-d3/utils/lodash';
 
 export function type() {
@@ -17,7 +19,6 @@ export function timer() {
   d3.timer = wrap(d3.timer, function() {
     var args = slice.call(arguments);
     var fn = args.shift();
-    var callbacks = args[0];
 
     if (wait) {
       sem++;

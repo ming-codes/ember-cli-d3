@@ -51,6 +51,8 @@ var TransitionSelectionProxy = SelectionProxy.extend({
 });
 
 var SVGSelectionProxy = SelectionProxy.extend({
+  selection: d3.select(document.createElementNS(d3.ns.prefix.svg, 'svg')),
+
   defs: Ember.computed({
     get() {
       return SelectionProxy.proxyElement(this, 'insert', 'defs', 'data-visual-defs');

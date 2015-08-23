@@ -6,7 +6,7 @@ export default Ember.Object.extend({
   data: null,
   // series contains metadata like format and labeling
   series: Ember.computed({
-    set(name, newValue, oldValue) {
+    set(name, newValue) {
       return newValue.map(series => {
         Ember.assert(`${name} must be a collection of strings or object { metricPath, labelPath, format }`, () => {
           return ~[ 'string', 'object' ].indexOf(typeof series);

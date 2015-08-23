@@ -99,7 +99,7 @@ export default function graph(context, assert) {
               node = transition[count * 2 - 1];
               key = transition[count * 2];
 
-              done = done && !node[key]
+              done = done && !node[key];
 
               count--;
             }

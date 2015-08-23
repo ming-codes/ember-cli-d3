@@ -126,13 +126,13 @@ export default Ember.Component.extend(EmberD3, {
   }),
 
   bars: join('model.data[model.key]', '.bar', {
-    enter(sel, series) {
+    enter(sel) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
       var zero = yScale(0);
 
-      var entered = sel
+      sel
           .append('g')
         .attr('class', 'bar')
         .attr('transform', translateX(data => xScale(Ember.get(data, key))))
