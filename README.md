@@ -12,13 +12,13 @@ you to integrate many of the d3 plugins that exists out there.
 ## Bundled Visuals
 
 * [ ] Cartesian
- * [ ] Bar Chart
-  * [x] Grouped Bars
-  * [x] Stacked Bars
-  * [ ] Waterfall
- * [x] Line Chart
-  * [ ] Area Chart
-  * [ ] Stacked Area
+  * [ ] Bar Chart
+    * [x] Grouped Bars
+    * [x] Stacked Bars
+    * [ ] Waterfall
+  * [x] Line Chart
+    * [ ] Area Chart
+    * [ ] Stacked Area
 
 # Usage
 
