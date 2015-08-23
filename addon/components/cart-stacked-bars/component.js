@@ -135,9 +135,10 @@ export default Ember.Component.extend(EmberD3, {
     var top = this.get('margin.top');
     var left = this.get('margin.left');
     var height = this.get('contentHeight');
+    var elementId = context.elementId;
 
     sel.each(function () {
-      context.series(d3.select(this).attr('transform', `translate(${left} ${top + height})`));
+      context.series(d3.select(this).attr('id', elementId).attr('transform', `translate(${left} ${top + height})`));
     });
   },
 

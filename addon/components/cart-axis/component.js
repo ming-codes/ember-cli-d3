@@ -29,7 +29,7 @@ export default Ember.Component.extend(EmberD3, {
     var transform = this.get('transform');
 
     if (axis) {
-      sel
+      sel.attr('id', this.elementId)
         .attr('transform', transform)
         .call(axis)
         .each(function () {
