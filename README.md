@@ -1,5 +1,11 @@
 # ember-cli-d3
 
+[![Build Status](https://travis-ci.org/lightblade/ember-cli-d3.svg?branch=master)](https://travis-ci.org/lightblade/ember-cli-d3)
+[![npm version](https://badge.fury.io/js/ember-cli-d3.svg)](http://badge.fury.io/js/ember-cli-d3)
+[![Code Climate](https://codeclimate.com/github/lightblade/ember-cli-d3/badges/gpa.svg)](https://codeclimate.com/github/lightblade/ember-cli-d3)
+[![Dependency Status](https://david-dm.org/lightblade/ember-cli-d3.svg)](https://david-dm.org/lightblade/ember-cli-d3)
+[![devDependency Status](https://david-dm.org/lightblade/ember-cli-d3/dev-status.svg)](https://david-dm.org/lightblade/ember-cli-d3#info=devDependencies)
+
 `ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
 to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
