@@ -11,6 +11,9 @@ to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
 See [github pages](http://lightblade.github.io/ember-cli-d3/) for demo.
 
+Please note that this project is still in pre-alpha stage and I'm seeking feedback on how it
+can be improved.
+
 ## Composability
 
 `ember-cli-d3` tries to follow the composability pattern of d3 as much as possible while
@@ -18,6 +21,8 @@ fully utilizing the advantage of having HTMLBars templates. The result is that i
 you to integrate many of the d3 plugins that exists out there.
 
 ## Bundled Visuals
+
+Currently, these visuals are bundled with the addon. However, it is not the goal of this project to become a widget library. It is possible that these visuals will be removed from the addon and exist only as part of demo in the dummy app. They will not be officially supported, but you are welcome to copy the source code from the dummy app to your own application.
 
 * [ ] Cartesian
   * [ ] Bar Chart
