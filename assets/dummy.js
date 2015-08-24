@@ -334,16 +334,6 @@ define('dummy/helpers/translate', ['exports', 'ember-cli-d3/helpers/translate'],
 	exports.translate = translate.translate;
 
 });
-define('dummy/initializers/d3', ['exports', 'ember-cli-d3/initializers/d3'], function (exports, d3) {
-
-	'use strict';
-
-
-
-	exports.default = d3.default;
-	exports.initialize = d3.initialize;
-
-});
 define('dummy/initializers/export-application-global', ['exports', 'ember', 'dummy/config/environment'], function (exports, Ember, config) {
 
   'use strict';
@@ -2202,7 +2192,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.0.0+9170ac7a"});
+  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.0.0+6cb13031"});
 }
 
 /* jshint ignore:end */
