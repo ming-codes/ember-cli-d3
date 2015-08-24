@@ -1,0 +1,28 @@
+
+.bar {
+  stroke-width: 20;
+}
+
+.data-visual {
+  border: 1px solid black;
+  width: 100%;
+  height: 500px;
+}
+
+.data-control {
+  margin: 12px 0;
+}
+
+.domain {
+  fill: none;
+}
+
+.tick.zero .tick-mark {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.tick line {
+  stroke: black;
+}
+
