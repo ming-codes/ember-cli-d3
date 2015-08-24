@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-d3",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "An ember-cli addon to provide a framework to integrate d3 visualizations into Ember applications.",
   "directories": {
     "doc": "doc",
     "test": "tests"
