@@ -31,6 +31,11 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
   * [x] Line Chart
     * [ ] Area Chart
     * [ ] Stacked Area
+  * [ ] Histogram
+* [ ] Polar
+  * [ ] Pie Chart
+  * [ ] Donut Chart
+  * [ ] Aster Plot
 
 # Usage
 
