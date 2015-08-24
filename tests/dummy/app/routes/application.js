@@ -5,13 +5,10 @@ export default Ember.Route.extend({
 
   dataSource: Ember.inject.service('dimensional-data-source'),
 
-  setupController(controller, model, transition) {
-    if (transition.targetName === 'index') {
-      controller.set('isIndex', true);
-    }
-  },
-
   actions: {
+    willTransition({ targetName }) {
+      this.controllerFor('application').set('isIndex', targetName === 'index');
+    },
     generate() {
       this.get('dataSource').generate();
     },
