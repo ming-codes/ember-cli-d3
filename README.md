@@ -9,6 +9,8 @@
 `ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
 to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
+See [github pages](http://lightblade.github.io/ember-cli-d3/) for demo.
+
 ## Composability
 
 `ember-cli-d3` tries to follow the composability pattern of d3 as much as possible while

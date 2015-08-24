@@ -11,7 +11,8 @@
     "build": "ember build",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": "https://github.com/lightblade/ember-cli-d3.git",
+  "homepage": "https://github.com/lightblade/ember-cli-d3",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -42,6 +43,7 @@
     "ember-cli-babel": "^5.0.0"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "demoURL": "http://lightblade.github.io/ember-cli-d3"
   }
 }
