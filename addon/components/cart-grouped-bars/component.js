@@ -39,7 +39,8 @@ export default Ember.Component.extend(EmberD3, {
     }
   }).readOnly(),
 
-  margin: box.asComputed(),
+  defaultMargin: box(60),
+  margin: box.asComputed('defaultMargin'),
   orient: null, // TODO
 
   width: null,
