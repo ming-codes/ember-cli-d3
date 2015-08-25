@@ -39,7 +39,14 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
 
 # Usage
 
-## Installation
+ember-cli version | cli command
+-----------------|--------------
+`> 0.2.3` | `ember install ember-cli-d3`
+`> 0.1.5 < 0.2.3` | `ember install:addon ember-cli-d3`
+`< 0.1.4` | `npm install --save-dev ember-cli-d3`<br>`ember generate ember-cli-d3`
+
+
+# Contributing
 
 * `git clone` this repository
 * `npm install`
