@@ -36,6 +36,11 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
   * [ ] Donut Chart
   * [ ] Aster Plot
 
+## Resources 
+
+* [Data Viz Catalogue](http://www.datavizcatalogue.com) - Catalogues different visualization techniques.
+* [Awesome D3](https://github.com/wbkd/awesome-d3) - Catalogues libraries/frameworks/plugins related to D3.
+
 # Usage
 
 ember-cli version | cli command
