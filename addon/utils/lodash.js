@@ -1,6 +1,25 @@
 
 export var slice = Array.prototype.slice;
 
+export var concat = Array.prototype.concat;
+
+// Create (and cache) an identity function that returns the
+// argument at specified index.
+export function identity(index = 0) {
+  return identity[index] || (identity[index] = function () {
+    return arguments[index];
+  });
+}
+
+// like compose, but from left to right
+export function flow(...fns) {
+  return function (arg) {
+    return fns.reduce((result, fn) => {
+      return fn.call(this, result);
+    }, arg);
+  };
+}
+
 export function scan(col, fn, init) {
   var ret = [];
 
