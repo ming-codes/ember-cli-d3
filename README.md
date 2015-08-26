@@ -11,7 +11,7 @@ to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
 See [github pages](http://lightblade.github.io/ember-cli-d3/) for demo.
 
-Please note that this project is still in pre-alpha stage and I'm seeking feedback on how it
+Please note that this project is still in alpha stage and I'm seeking feedback on how it
 can be improved.
 
 ## Composability
