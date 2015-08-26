@@ -16,8 +16,7 @@ can be improved.
 
 ## Composability
 
-`ember-cli-d3` follows the composability pattern of d3 (`.call`) while utilizing the advantage of Ember's yielding components. The result is that it allows
-you to take advantage of the many d3 plugins that exists out there.
+`ember-cli-d3` follows the composability pattern of d3 (`.call`) while utilizing the advantage of Ember's yielding components. The result is that it allows you to easily compose different components together while at the same time tap into the massive d3 plugin community to create ambitious visualization.
 
 ## Bundled Visuals
 
