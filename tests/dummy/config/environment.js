@@ -45,6 +45,7 @@ module.exports = function(environment) {
 
   if (environment === 'gh-pages') {
     ENV.baseURL = '/ember-cli-d3';
+    ENV.locationType = 'hash';
   }
 
   return ENV;
