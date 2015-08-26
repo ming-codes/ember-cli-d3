@@ -76060,7 +76060,8 @@ define('ember-cli-d3/components/cart-grouped-bars/component', ['exports', 'ember
       }
     }).readOnly(),
 
-    margin: css.box.asComputed(),
+    defaultMargin: css.box(60),
+    margin: css.box.asComputed('defaultMargin'),
     orient: null, // TODO
 
     width: null,
@@ -76430,7 +76431,8 @@ define('ember-cli-d3/components/cart-stacked-bars/component', ['exports', 'ember
       }
     }).readOnly(),
 
-    margin: css.box.asComputed(),
+    defaultMargin: css.box(60),
+    margin: css.box.asComputed('defaultMargin'),
     orient: null, // TODO
 
     signedValues: Ember['default'].computed('model.data', 'model.series', {

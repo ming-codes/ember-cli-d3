@@ -428,13 +428,12 @@ define('dummy/routes/application', ['exports', 'ember'], function (exports, Embe
 
     dataSource: Ember['default'].inject.service('dimensional-data-source'),
 
-    setupController: function setupController(controller, model, transition) {
-      if (transition.targetName === 'index') {
-        controller.set('isIndex', true);
-      }
-    },
-
     actions: {
+      willTransition: function willTransition(_ref) {
+        var targetName = _ref.targetName;
+
+        this.controllerFor('application').set('isIndex', targetName === 'index');
+      },
       generate: function generate() {
         this.get('dataSource').generate();
       },
@@ -484,6 +483,46 @@ define('dummy/svg/text/util', ['exports', 'ember-cli-d3/svg/text/util'], functio
 
 
 	exports.default = util.default;
+
+});
+define('dummy/templates/about', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.1+1dbbcc5a",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/about.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("About\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes() { return []; },
+      statements: [
+
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
 
 });
 define('dummy/templates/application', ['exports'], function (exports) {
@@ -755,16 +794,24 @@ define('dummy/templates/application', ['exports'], function (exports) {
           dom.appendChild(el0, el1);
           var el1 = dom.createElement("div");
           dom.setAttribute(el1,"class","container");
-          var el2 = dom.createTextNode("\n    About\n  ");
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n  ");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
           dom.appendChild(el0, el1);
           return el0;
         },
-        buildRenderNodes: function buildRenderNodes() { return []; },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
+          return morphs;
+        },
         statements: [
-
+          ["inline","partial",["about"],[],["loc",[null,[55,4],[55,23]]]]
         ],
         locals: [],
         templates: []
@@ -2192,7 +2239,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.0.0+6cb13031"});
+  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.0.2+b4a81912"});
 }
 
 /* jshint ignore:end */
