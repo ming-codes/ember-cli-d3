@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import d3 from 'd3';
 import layout from './template';
 
 import EmberD3 from '../../mixins/d3-support';

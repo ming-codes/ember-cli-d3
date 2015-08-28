@@ -1,3 +1,4 @@
+import d3 from 'd3';
 import { dimensional } from 'dummy/tests/helpers/data-generator';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';

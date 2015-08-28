@@ -1,5 +1,6 @@
 import { colorScale } from '../../../helpers/color-scale';
 import { module, test } from 'qunit';
+import d3 from 'd3';
 
 module('Unit | Helper | color scale');
 

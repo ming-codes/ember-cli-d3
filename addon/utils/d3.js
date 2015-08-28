@@ -1,5 +1,6 @@
 
 import Ember from 'ember';
+import d3 from 'd3';
 
 var noop = d3.functor();
 

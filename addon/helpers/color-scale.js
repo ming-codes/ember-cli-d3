@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import d3 from 'd3';
 
 function makeColorScale(colors) {
   return d3.scale.ordinal().range(colors);
