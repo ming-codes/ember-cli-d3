@@ -44,6 +44,7 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
 
 * [Data Viz Catalogue](http://www.datavizcatalogue.com) - Catalogues different visualization techniques.
 * [Awesome D3](https://github.com/wbkd/awesome-d3) - Catalogues libraries/frameworks/plugins related to D3.
+* [i want hue](http://tools.medialab.sciences-po.fr/iwanthue/) - Color palette generator.
 
 # Usage
 
