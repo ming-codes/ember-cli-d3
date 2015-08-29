@@ -36,6 +36,10 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
   * [ ] Donut Chart
   * [ ] Aster Plot
 
+## Test Helpers
+
+`ember-cli-d3` offers first class support on testing graphs. This includes integration with `d3.timer` to make Ember aware of any d3 transitions. See `tests/integration` for example on how to use the test helpers.
+
 ## Resources 
 
 * [Data Viz Catalogue](http://www.datavizcatalogue.com) - Catalogues different visualization techniques.
