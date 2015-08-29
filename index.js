@@ -21,11 +21,11 @@ module.exports = {
     this.app.import('vendor/ember-d3-shim/ember-d3-shim.js');
   },
   treeForTestSupport: function () {
-    return new Funnel('tests/helpers', {
-      srcDir: '/',
-      destDir: 'tests/helpers',
-      include: exportedTestHelpers,
-      description: 'testHelpers'
+    return new Funnel(__dirname, {
+      srcDir: 'tests/helpers',
+      destDir: 'helpers',
+      files: exportedTestHelpers,
+      annotation: 'testHelpers'
     });
   }
 };
