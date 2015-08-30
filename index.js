@@ -20,6 +20,7 @@ module.exports = {
       production: app.bowerDirectory + '/d3/d3.min.js'
     });
     this.app.import('vendor/ember-d3-shim/ember-d3-shim.js');
+    // DO NOT FORGET to include them in package.json too
   },
   treeForTestSupport: function () {
     return new Funnel(__dirname, {
