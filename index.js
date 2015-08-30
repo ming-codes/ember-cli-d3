@@ -1,6 +1,8 @@
 
 var Funnel = require('ember-cli/node_modules/broccoli-funnel');
 
+var path = require('path');
+
 /* jshint node: true */
 'use strict';
 
@@ -23,8 +25,8 @@ module.exports = {
     // DO NOT FORGET to include them in package.json too
   },
   treeForTestSupport: function () {
-    return new Funnel(__dirname, {
-      srcDir: 'tests/helpers',
+    return new Funnel(path.join(__dirname, 'tests'), {
+      srcDir: 'helpers',
       destDir: 'helpers',
       files: exportedTestHelpers,
       annotation: 'testHelpers'
