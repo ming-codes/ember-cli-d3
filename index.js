@@ -7,6 +7,7 @@ var Funnel = require('ember-cli/node_modules/broccoli-funnel');
 var exportedTestHelpers = [
   'data-generator.js',
   'graph.js'
+  // DO NOT FORGET to include them in package.json too
 ];
 
 module.exports = {
