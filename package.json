@@ -8,7 +8,7 @@
     "blueprints/",
     "tests/helpers/graph.js",
     "tests/helpers/data-generator.js",
-    "vendor/ember-d3-shim/ember-d3-shim.js",
+    "vendor/",
     "LICENSE.md",
     "README.md",
     "index.js"
