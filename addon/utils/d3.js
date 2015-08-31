@@ -38,6 +38,12 @@ export function translateX(fn) {
   };
 }
 
+export function rotate(fn) {
+  return function rotate() {
+    return `rotate(${fn.apply(this, arguments)})`;
+  };
+}
+
 // TODO allow cssExpr to contain attributes
 export function join(dataExpr, cssExpr, { update, enter, exit }) {
   var [ , dataPath, , keyPath ] = dataExpr.match(/([\w\.]+)(\[([\w\.]+)\])?/);
