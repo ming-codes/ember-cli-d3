@@ -40,7 +40,20 @@ Currently, these visuals are bundled with the addon. However, it is not the goal
 
 `ember-cli-d3` offers first class support on testing graphs. This includes integration with `d3.timer` to make Ember aware of any d3 transitions. See `tests/integration` for example on how to use the test helpers.
 
-## Resources 
+## Plugins
+
+Starting from `0.3.0`, `ember-cli-d3` integrates with `d3-plugins-dist` to let you include plugins as ES6 modules by configuring an options.
+
+```javascript
+  var app = new EmberApp(defaults, {
+    // Add options here
+    d3: {
+      plugins: [ 'sankey', 'hexbin' ]
+    }
+  });
+```
+
+## Resources
 
 * [Data Viz Catalogue](http://www.datavizcatalogue.com) - Catalogues different visualization techniques.
 * [Awesome D3](https://github.com/wbkd/awesome-d3) - Catalogues libraries/frameworks/plugins related to D3.
