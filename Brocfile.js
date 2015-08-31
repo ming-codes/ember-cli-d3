@@ -11,7 +11,11 @@ var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
   behave. You most likely want to be modifying `./index.js` or app's Brocfile
 */
 
-var app = new EmberAddon();
+var app = new EmberAddon({
+  d3: {
+    plugins: [ 'sankey', 'hexbin' ]
+  }
+});
 
 app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/js/bootstrap.js');
