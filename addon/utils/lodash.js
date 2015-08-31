@@ -13,10 +13,10 @@ export function identity(index = 0) {
 
 // like compose, but from left to right
 export function flow(...fns) {
-  return function (arg) {
+  return function () {
     return fns.reduce((result, fn) => {
-      return fn.call(this, result);
-    }, arg);
+      return [ fn.apply(this, result) ];
+    }, arguments);
   };
 }
 
