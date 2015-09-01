@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-d3",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An ember-cli addon to provide a framework to integrate d3 visualizations into Ember applications.",
   "files": [
     "addon/",
@@ -22,8 +22,8 @@
     "build": "ember build",
     "test": "ember try:testall"
   },
-  "repository": "https://github.com/lightblade/ember-cli-d3.git",
-  "homepage": "https://github.com/lightblade/ember-cli-d3",
+  "repository": "https://github.com/ming-codes/ember-cli-d3.git",
+  "homepage": "https://github.com/ming-codes/ember-cli-d3",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -55,6 +55,6 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
-    "demoURL": "http://lightblade.github.io/ember-cli-d3"
+    "demoURL": "http://ming-codes.github.io/ember-cli-d3"
   }
 }
