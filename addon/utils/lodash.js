@@ -15,7 +15,11 @@ export function identity(index = 0) {
 export function flow(...fns) {
   return function () {
     return fns.reduce((result, fn) => {
-      return [ fn.apply(this, result) ];
+      if (typeof fn === 'function') {
+        fn = fn.apply(this, result);
+      }
+
+      return [ fn ];
     }, arguments);
   };
 }

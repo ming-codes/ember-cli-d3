@@ -45,6 +45,7 @@ export function rotate(fn) {
 }
 
 // TODO allow cssExpr to contain attributes
+// TODO allow inlined data
 export function join(dataExpr, cssExpr, { update, enter, exit }) {
   var [ , dataPath, , keyPath ] = dataExpr.match(/([\w\.]+)(\[([\w\.]+)\])?/);
 
