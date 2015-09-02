@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ming-codes/ember-cli-d3.svg?branch=master)](https://travis-ci.org/ming-codes/ember-cli-d3)
 [![npm version](https://badge.fury.io/js/ember-cli-d3.svg)](http://badge.fury.io/js/ember-cli-d3)
+[![Ember Observer Score](http://emberobserver.com/badges/ember-cli-d3.svg)](http://emberobserver.com/addons/ember-cli-d3)
 [![Code Climate](https://codeclimate.com/github/ming-codes/ember-cli-d3/badges/gpa.svg)](https://codeclimate.com/github/ming-codes/ember-cli-d3)
 [![Dependency Status](https://david-dm.org/ming-codes/ember-cli-d3.svg)](https://david-dm.org/ming-codes/ember-cli-d3)
 [![devDependency Status](https://david-dm.org/ming-codes/ember-cli-d3/dev-status.svg)](https://david-dm.org/ming-codes/ember-cli-d3#info=devDependencies)
