@@ -120,7 +120,7 @@ export default function graph(context, assert) {
     assert(id, callback) {
       promise = Ember.RSVP.resolve(promise).then(() => {
         var component = viewIndex[id];
-        var selection = component && component.get('select._selection') || component.get('select.selection');
+        var selection = component && (component.get('select._selection') || component.get('select.selection'));
 
         callback(selection, component);
       });

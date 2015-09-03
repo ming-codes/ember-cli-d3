@@ -6,7 +6,7 @@ import DimensiontalModel from 'ember-cli-d3/utils/model/dimensional';
 import graph from 'dummy/tests/helpers/graph';
 
 moduleForComponent('cart-grouped-bars', 'Integration | Component | cart grouped bars', {
-  integration: true
+  integration: true,
 });
 
 test('it renders alone', function(assert) {
