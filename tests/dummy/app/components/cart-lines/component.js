@@ -2,11 +2,11 @@ import Ember from 'ember';
 import d3 from 'd3';
 import layout from './template';
 
-import EmberD3 from '../../mixins/d3-support';
+import EmberD3 from 'ember-cli-d3/mixins/d3-support';
 
-import { join } from '../../utils/d3';
+import { join } from 'ember-cli-d3/utils/d3';
 
-import { box } from '../../utils/css';
+import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(EmberD3, {
   layout,

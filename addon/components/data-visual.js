@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import d3 from 'd3';
-import layout from './template';
+import layout from '../templates/components/data-visual';
 
 import SelectionProxy from '../system/selection-proxy';
 

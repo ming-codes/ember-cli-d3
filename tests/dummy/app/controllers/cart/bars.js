@@ -1,6 +1,6 @@
 
 import Ember from 'ember';
-import DimensionalDataModel from 'ember-cli-d3/utils/model/dimensional';
+import DimensionalDataModel from 'dummy/utils/model/dimensional';
 
 export default Ember.Controller.extend({
 
