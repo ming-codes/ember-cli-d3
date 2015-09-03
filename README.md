@@ -10,32 +10,18 @@
 `ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
 to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
-See [github pages](http://ming-codes.github.io/ember-cli-d3/) for demo.
+Just like D3 itself, it is not the goal of this project to become a widget library. Instead, this project will provide a framework to integrate D3 visuals into Ember application. This includes integrating `d3.timer` with Ember's run loop, `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
 
 Please note that this project is still in alpha stage and I'm seeking feedback on how it
 can be improved.
 
+## Gallery
+
+The dummy app (and [github pages](http://ming-codes.github.io/ember-cli-d3/)) of this addon serves as an gallery of visuals that can be produced by this addon.
+
 ## Composability
 
 `ember-cli-d3` follows the composability pattern of d3 (`.call`) while utilizing the advantage of Ember's yielding components. The result is that it allows you to easily compose different components together while at the same time tap into the massive d3 plugin community to create ambitious visualization.
-
-## Bundled Visuals
-
-Currently, these visuals are bundled with the addon. However, it is not the goal of this project to become a widget library. It is possible that these visuals will be removed from the addon and exist only as part of demo in the dummy app. They will not be officially supported, but you are welcome to copy the source code from the dummy app to your own application.
-
-* [ ] Cartesian
-  * [ ] Bar Chart
-    * [x] Grouped Bars
-    * [x] Stacked Bars
-    * [ ] Waterfall
-  * [x] Line Chart
-    * [ ] Area Chart
-    * [ ] Stacked Area
-  * [ ] Histogram
-* [ ] Polar
-  * [ ] Pie Chart
-  * [ ] Donut Chart
-  * [ ] Aster Plot
 
 ## Test Helpers
 
