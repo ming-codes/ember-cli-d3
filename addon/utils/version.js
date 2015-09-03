@@ -4,9 +4,7 @@ const [ , MAJOR, MINOR, PATCH ] = Ember.VERSION.match(/^(\d+)\.(\d+)\.(\d+)/).ma
 
 export default { MAJOR, MINOR, PATCH };
 
-export function hasGlimmer() {
-  return MAJOR === 2 || MINOR === 13;
-}
+export var hasGlimmer = MAJOR === 2 || MINOR === 13;
 
 export function helper(fn) {
   if (Ember.Helper) {

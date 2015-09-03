@@ -28,7 +28,7 @@ const GraphicSupport = Ember.Mixin.create({
 
 });
 
-if (!hasGlimmer()) {
+if (!hasGlimmer) {
   GraphicSupport.reopen({
     init() {
       var key, index;
