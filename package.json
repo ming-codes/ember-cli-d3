@@ -44,7 +44,8 @@
     "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.0",
     "ember-export-application-global": "^1.0.2",
-    "ember-try": "0.0.8"
+    "ember-try": "0.0.8",
+    "ember-cli-auto-register-helpers": "~1.0.2"
   },
   "keywords": [ "ember-addon", "d3" ],
   "dependencies": {
