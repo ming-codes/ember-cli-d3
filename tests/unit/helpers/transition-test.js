@@ -1,4 +1,4 @@
-import SelectionProxy from 'ember-cli-d3/components/data-visual/d3-selection-proxy';
+import SelectionProxy from 'ember-cli-d3/system/selection-proxy';
 import { transition } from '../../../helpers/transition';
 import { module, test } from 'qunit';
 

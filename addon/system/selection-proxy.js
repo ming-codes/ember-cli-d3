@@ -2,7 +2,7 @@
 import Ember from 'ember';
 import d3 from 'd3';
 
-import { assign } from '../../utils/d3';
+import { assign } from '../utils/d3';
 
 var SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
