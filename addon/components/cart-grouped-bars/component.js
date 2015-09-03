@@ -11,15 +11,9 @@ import { box } from '../../utils/css';
 export default Ember.Component.extend(EmberD3, {
   layout,
 
-  attrs: {
-    model: null,
-    margin: { left: 50, right: 0, top: 0, bottom: 50 },
-    orient: null,
-    width: 300,
-    height: 150,
+  model: null,
 
-    stroke: d3.scale.category10()
-  },
+  stroke: d3.scale.category10(),
 
   contentWidth: Ember.computed('width', 'margin.left', 'margin.right', {
     get() {
@@ -44,8 +38,8 @@ export default Ember.Component.extend(EmberD3, {
   margin: box.asComputed('defaultMargin'),
   orient: null, // TODO
 
-  width: null,
-  height: null,
+  width: 300,
+  height: 150,
 
   xScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
     get() {
