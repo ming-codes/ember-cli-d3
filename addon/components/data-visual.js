@@ -2,7 +2,7 @@ import Ember from 'ember';
 import d3 from 'd3';
 import layout from './template';
 
-import SelectionProxy from './d3-selection-proxy';
+import SelectionProxy from '../system/selection-proxy';
 
 export default Ember.Component.extend({
   tagName: 'svg',
