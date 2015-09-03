@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-import VERSION from 'ember-cli-d3/utils/version';
+import { hasGlimmer } from 'ember-cli-d3/utils/version';
 import { timer, type } from '../ext/d3';
 
 timer();
@@ -28,7 +28,7 @@ const GraphicSupport = Ember.Mixin.create({
 
 });
 
-if (VERSION.MAJOR < 2 && VERSION.MINOR < 13) {
+if (!hasGlimmer()) {
   GraphicSupport.reopen({
     init() {
       var key, index;
