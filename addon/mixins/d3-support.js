@@ -31,12 +31,11 @@ const GraphicSupport = Ember.Mixin.create({
 if (VERSION.MAJOR < 2 && VERSION.MINOR < 13) {
   GraphicSupport.reopen({
     init() {
-      var bindings = [];
       var key, index;
 
       this._super(...arguments);
 
-      for (let key in this) {
+      for (key in this) {
         if ((index = key.indexOf('Binding')) > 0 && key[0] !== '_') {
           this.addObserver(key.substring(0, index), this, () => {
             Ember.run.scheduleOnce('afterRender', this, this.didRender);
