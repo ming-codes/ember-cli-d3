@@ -3,6 +3,7 @@ import Ember from 'ember';
 import d3 from 'd3';
 
 import { assign } from '../utils/d3';
+import { computed } from '../utils/version';
 
 var SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
@@ -40,7 +41,7 @@ var TransitionSelectionProxy = SelectionProxy.extend({
   _selection: null,
   _options: null,
 
-  selection: Ember.computed({
+  selection: computed({
     get() {
       return assign(this._selection.transition(), this._options);
     }
@@ -54,7 +55,7 @@ var TransitionSelectionProxy = SelectionProxy.extend({
 var SVGSelectionProxy = SelectionProxy.extend({
   selection: d3.select(document.createElementNS(d3.ns.prefix.svg, 'svg')),
 
-  defs: Ember.computed({
+  defs: computed({
     get() {
       return SelectionProxy.proxyElement(this, 'insert', 'defs', 'data-visual-defs');
     }
