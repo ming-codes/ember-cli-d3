@@ -48,7 +48,7 @@ Starting from `0.3.0`, `ember-cli-d3` integrates with `d3-plugins-dist` to let y
 
 # Usage
 
-Currently only supporting Ember >= `1.13.0`
+Currently supporting Ember >= `1.10.0`
 
 ember-cli version | cli command
 -----------------|--------------
