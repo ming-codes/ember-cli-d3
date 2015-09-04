@@ -10,10 +10,14 @@
 `ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
 to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
-Just like D3 itself, it is not the goal of this project to become a widget library. Instead, this project will provide a framework to integrate D3 visuals into Ember application. This includes integrating `d3.timer` with Ember's run loop, `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
+Just like D3 itself, it is not the goal of this project to become a widget library. Instead, this project will provide a framework to integrate D3 visuals into Ember application. Those with experience in both D3 and Ember will gain the most from this addon as it integrates the finer details of D3 and Ember.
 
-Please note that this project is in beta stage and I'm seeking feedback on how it
-can be improved.
+Please note that this project is in beta stage and I'm seeking feedback on how it can be improved.
+
+## Features
+
+* Integrating `d3.timer` with `Ember.run` so that 
+* , `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
 
 ## Gallery
 
