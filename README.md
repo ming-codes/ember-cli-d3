@@ -16,8 +16,8 @@ Please note that this project is in beta stage and I'm seeking feedback on how i
 
 ## Features
 
-* Integrating `d3.timer` with `Ember.run` so that 
-* , `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
+* Integrating `d3.timer` with Ember's test waiter so that we can wait for any graph transitions to finish.
+* Easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist). See below.
 
 ## Gallery
 
