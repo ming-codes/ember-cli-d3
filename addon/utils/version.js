@@ -17,3 +17,21 @@ export function helper(fn) {
     return Ember.Handlebars.makeBoundHelper(fn);
   }
 }
+
+export function computed(...deps) {
+  var options = deps.pop();
+
+  if (MAJOR === 1 && MINOR < 12) {
+    return Ember.computed.apply(null, deps.concat(function () {
+      var { set, get } = options;
+
+      if (arguments.length > 1) {
+        return set && set.apply(this, arguments);
+      }
+
+      return get && get.apply(this, arguments);
+    }));
+  }
+
+  return Ember.computed.apply(null, deps.concat(options));
+}
