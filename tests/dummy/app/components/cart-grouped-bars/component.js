@@ -6,7 +6,7 @@ import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
 import { join, translateX } from 'ember-cli-d3/utils/d3';
-
+import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
@@ -22,7 +22,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   width: 300,
   height: 150,
 
-  xScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
+  xScale: computed('contentWidth', 'model.data', 'model.key', {
     get() {
       var width = this.get('contentWidth');
       var data = this.get('model.data');
@@ -33,7 +33,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         .rangeBands([ 0, width ]);
     }
   }).readOnly(),
-  yScale: Ember.computed('contentHeight', 'model.extent', {
+  yScale: computed('contentHeight', 'model.extent', {
     get() {
       var height = this.get('contentHeight');
       var extent = this.get('model.extent');
@@ -50,7 +50,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         .range([ 0, -height ]);
     }
   }).readOnly(),
-  zScale: Ember.computed('xScale', 'model.series', {
+  zScale: computed('xScale', 'model.series', {
     get() {
       var series = this.get('model.series');
       var band = this.get('xScale').rangeBand();

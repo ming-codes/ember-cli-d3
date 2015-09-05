@@ -6,7 +6,7 @@ import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
 import { join } from 'ember-cli-d3/utils/d3';
-
+import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
@@ -23,7 +23,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   height: 150,
 
   exportedXScale: null,
-  computedXScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
+  computedXScale: computed('contentWidth', 'model.data', 'model.key', {
     get() {
       var width = this.get('contentWidth');
       var data = this.get('model.data');
@@ -40,7 +40,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     }
   }).readOnly(),
   exportedYScale: null,
-  computedYScale: Ember.computed('contentHeight', 'model.extent', {
+  computedYScale: computed('contentHeight', 'model.extent', {
     get() {
       var height = this.get('contentHeight');
       var extent = this.get('model.extent');

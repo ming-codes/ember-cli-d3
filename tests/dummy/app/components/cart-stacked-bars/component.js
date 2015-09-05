@@ -7,6 +7,7 @@ import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
 import { join, translateX } from 'ember-cli-d3/utils/d3';
 import { scan } from 'ember-cli-d3/utils/lodash';
+import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
@@ -15,7 +16,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   defaultMargin: box(60),
   orient: null, // TODO
 
-  signedValues: Ember.computed('model.data', 'model.series', {
+  signedValues: computed('model.data', 'model.series', {
     get() {
       var data = this.get('model.data');
       var series = this.get('model.series');
@@ -37,7 +38,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     }
   }).readOnly(),
 
-  layoutValues: Ember.computed('signedValues', 'model.data', 'model.series', 'model.key', {
+  layoutValues: computed('signedValues', 'model.data', 'model.series', 'model.key', {
     get() {
       var data = this.get('model.data');
       var series = this.get('model.series');
@@ -76,7 +77,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     }
   }).readOnly(),
 
-  xScale: Ember.computed('contentWidth', 'model.data', 'model.key', {
+  xScale: computed('contentWidth', 'model.data', 'model.key', {
     get() {
       var width = this.get('contentWidth');
       var data = this.get('model.data');
@@ -87,7 +88,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         .rangePoints([ 0, width ], 1);
     }
   }).readOnly(),
-  yScale: Ember.computed('contentHeight', 'signedValues', {
+  yScale: computed('contentHeight', 'signedValues', {
     get() {
       var height = this.get('contentHeight');
       var data = this.get('signedValues');
