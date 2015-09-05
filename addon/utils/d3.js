@@ -54,11 +54,8 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
   keyPath = keyPath || null;
 
   tagName = tagName || 'g';
-  enter = enter || (sel => sel.append(tagName).classed(cssName, true));
-  exit = exit || (sel => sel.remove());
-  update = update || noop;
 
-  return function (sel, ...parentData) {
+  function visual(sel, ...parentData) {
     var context = this;
     var data = this.get(dataPath);
     var key = keyPath && this.get(keyPath);
@@ -76,11 +73,17 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
     var enterSel = updateSel.enter();
     var exitSel = updateSel.exit();
 
-    enterSel.call(bind(enter));
-    updateSel.call(bind(update));
-    exitSel.call(bind(exit));
+    enterSel.call(bind(visual.enter));
+    updateSel.call(bind(visual.update));
+    exitSel.call(bind(visual.exit));
 
     return updateSel;
-  };
+  }
+
+  visual.enter = enter || (sel => sel.append(tagName).classed(cssName, true));
+  visual.exit = exit || (sel => sel.remove());
+  visual.update = update || noop;
+
+  return visual;
 }
 
