@@ -2,6 +2,8 @@
 import Ember from 'ember';
 import DimensionalDataModel from 'dummy/utils/model/dimensional';
 
+import { computed } from 'ember-cli-d3/utils/version';
+
 export default Ember.Controller.extend({
 
   app: Ember.inject.controller('application'),
@@ -16,7 +18,7 @@ export default Ember.Controller.extend({
   series: [ 'dogs', 'cats' ],
   key: 'state',
 
-  dim: Ember.computed('data', 'series', 'key', {
+  dim: computed('data', 'series', 'key', {
     get() {
       return DimensionalDataModel.create(this.getProperties('data', 'series', 'key'));
     }

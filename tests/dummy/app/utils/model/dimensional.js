@@ -1,11 +1,13 @@
 
 import Ember from 'ember';
 
+import { computed } from 'ember-cli-d3/utils/version';
+
 export default Ember.Object.extend({
   key: null,
   data: null,
   // series contains metadata like format and labeling
-  series: Ember.computed({
+  series: computed({
     set(name, newValue) {
       return newValue.map(series => {
         Ember.assert(`${name} must be a collection of strings or object { metricPath, labelPath, format }`, () => {
@@ -21,17 +23,17 @@ export default Ember.Object.extend({
     }
   }),
 
-  min: Ember.computed('extent', {
+  min: computed('extent', {
     get() {
       return this.get('extent.0');
     }
   }).readOnly(),
-  max: Ember.computed('extent', {
+  max: computed('extent', {
     get() {
       return this.get('extent.1');
     }
   }).readOnly(),
-  extent: Ember.computed('data', 'series', {
+  extent: computed('data', 'series', {
     get() {
       var data = this.get('data');
       var series = this.get('series');
