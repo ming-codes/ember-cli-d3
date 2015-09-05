@@ -45,7 +45,7 @@ export default function graph(context, assert) {
         context.set(name, value);
       }
 
-      viewIndex = indexComponents(Object.keys(registry).map(key => {
+      viewIndex = (Ember.View && Ember.View.views) || indexComponents(Object.keys(registry).map(key => {
         return registry[key];
       }));
 
