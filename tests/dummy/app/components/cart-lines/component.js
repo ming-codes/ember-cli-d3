@@ -2,38 +2,19 @@ import Ember from 'ember';
 import d3 from 'd3';
 import layout from './template';
 
-import EmberD3 from 'ember-cli-d3/mixins/d3-support';
+import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
+import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
 import { join } from 'ember-cli-d3/utils/d3';
 
 import { box } from 'ember-cli-d3/utils/css';
 
-export default Ember.Component.extend(EmberD3, {
+export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   layout,
 
   stroke: d3.scale.category10(),
 
-  contentWidth: Ember.computed('width', 'margin.left', 'margin.right', {
-    get() {
-      var width = this.get('width');
-      var left = this.get('margin.left');
-      var right = this.get('margin.right');
-
-      return width - left - right;
-    }
-  }).readOnly(),
-  contentHeight: Ember.computed('height', 'margin.top', 'margin.bottom', {
-    get() {
-      var height = this.get('height');
-      var top = this.get('margin.top');
-      var bottom = this.get('margin.bottom');
-
-      return height - top - bottom;
-    }
-  }).readOnly(),
-
   defaultMargin: { left: 50, right: 0, top: 0, bottom: 50 },
-  margin: box.asComputed('defaultMargin'),
   orient: null, // TODO
 
   model: null,
