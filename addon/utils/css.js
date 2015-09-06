@@ -1,7 +1,10 @@
+import Ember from 'ember';
 import { computed } from '../utils/version';
 
 export function box(expr) {
   expr = String(expr).split(/\s+/).map(Number);
+
+  Ember.assert('Box expr must be have 1-4 numbers', expr.reduce((prev, expr) => prev && !isNaN(expr)));
 
   switch (expr.length) {
     // 1 value = all four sides
