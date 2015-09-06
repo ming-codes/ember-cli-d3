@@ -1,34 +1,7 @@
-<h1>Cartesian</h1>
 <ul class="row">
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-    <div class="inner"></div>
-  </li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-    <div class="inner"></div>
-  </li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-    <div class="inner"></div>
-  </li>
-</ul>
-<h1>Polar</h1>
-<ul class="row">
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-</ul>
-<h1>Tree</h1>
-<ul class="row">
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
-</ul>
-<h1>Graph</h1>
-<ul class="row">
-  <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"></li>
+  {{#each model as |visual|}}
+    <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+      {{visual.name}}
+    </li>
+  {{/each}}
 </ul>
