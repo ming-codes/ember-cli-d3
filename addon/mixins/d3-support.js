@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-import version, { hasGlimmer } from 'ember-cli-d3/utils/version';
+import { hasGlimmer } from 'ember-cli-d3/utils/version';
 import { timer, type } from '../ext/d3';
 
 timer();
@@ -53,8 +53,7 @@ if (!hasGlimmer) {
 
   });
 }
-
-if (version.MAJOR === 1 && version.MINOR === 13) {
+else {
   GraphicSupport.reopen({
     didInsertElement() {
       var index = this.container.lookup("-view-registry:main");
