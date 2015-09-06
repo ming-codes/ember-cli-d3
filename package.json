@@ -33,6 +33,7 @@
     "broccoli-asset-rev": "^2.0.2",
     "ember-cli": "1.13.8",
     "ember-cli-app-version": "^1.0.0",
+    "ember-cli-auto-register-helpers": "~1.0.2",
     "ember-cli-content-security-policy": "0.4.0",
     "ember-cli-dependency-checker": "^1.0.0",
     "ember-cli-htmlbars-inline-precompile": "^0.3.0",
@@ -41,13 +42,17 @@
     "ember-cli-qunit": "1.0.1",
     "ember-cli-release": "0.2.6",
     "ember-cli-uglify": "^1.0.1",
+    "ember-data": "1.13.11",
+    "ember-data-fixture-adapter": "1.13.0",
     "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.0",
     "ember-export-application-global": "^1.0.2",
-    "ember-try": "0.0.8",
-    "ember-cli-auto-register-helpers": "~1.0.2"
+    "ember-try": "0.0.8"
   },
-  "keywords": [ "ember-addon", "d3" ],
+  "keywords": [
+    "ember-addon",
+    "d3"
+  ],
   "dependencies": {
     "ember-cli-htmlbars": "^1.0.0",
     "ember-cli-babel": "^5.0.0",
