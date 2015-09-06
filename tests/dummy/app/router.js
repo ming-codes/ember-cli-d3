@@ -7,20 +7,18 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('home');
-  this.route('gallery');
   this.route('docs');
-
-  this.route('cart', function () {
+  this.route('gallery', function () {
     this.route('bars', function () {
       this.route('stacked');
       this.route('grouped');
-      this.route('waterfall');
+      //this.route('waterfall');
     });
-    this.route('lines', function () {
-      this.route('area');
-      this.route('stacked');
-    });
-    this.route('histogram');
+    //this.route('lines', function () {
+    //  this.route('area');
+    //  this.route('stacked');
+    //});
+    //this.route('histogram');
   });
 });
 

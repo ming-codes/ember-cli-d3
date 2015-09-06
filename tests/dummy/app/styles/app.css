@@ -1,12 +1,47 @@
 
-.bar {
-  stroke-width: 20;
+.gallery .row {
+  list-style: none;
 }
 
-.data-visual {
-  border: 1px solid black;
+.visual-name {
+  display: inline-block;
+}
+
+.visual-content-stretcher {
+  /*width: 50%;*/
+  /* whatever width you want */
+  display: inline-block;
+  position: relative;
+}
+.visual-content-stretcher:after {
+  padding-top: 56.25%;
+  /* 16:9 ratio */
+  display: block;
+  content: '';
+}
+
+.visual-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 15px;
+  left: 15px;
+}
+
+.gallery .data-visual {
   width: 100%;
-  height: 500px;
+  height: 100%;
+
+  /* fill parent */
+  background-color: deepskyblue;
+  /* let's see it! */
+  color: white;
+  border: 1px solid black;
+}
+
+/* These can go now */
+.bar {
+  stroke-width: 20;
 }
 
 .data-control {
