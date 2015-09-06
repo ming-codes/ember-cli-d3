@@ -1,7 +1,9 @@
-<ul class="row">
+<div class="row">
   {{#each model as |visual|}}
-    <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-      {{visual.name}}
-    </li>
+    <div class="col-sm-4 aspect-ratio aspect-ratio-16-9">
+      {{#link-to visual.route classNames="thumbnail"}}
+        <img alt="{{visual.name}}">
+      {{/link-to}}
+    </div>
   {{/each}}
-</ul>
+</div>

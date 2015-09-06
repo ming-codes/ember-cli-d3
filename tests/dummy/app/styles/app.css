@@ -7,13 +7,13 @@
   display: inline-block;
 }
 
-.visual-content-stretcher {
+.aspect-ratio {
   /*width: 50%;*/
   /* whatever width you want */
-  display: inline-block;
+  display: block;
   position: relative;
 }
-.visual-content-stretcher:after {
+.aspect-ratio-16-9:after {
   padding-top: 56.25%;
   /* 16:9 ratio */
   display: block;
@@ -37,6 +37,15 @@
   /* let's see it! */
   color: white;
   border: 1px solid black;
+}
+
+.gallery .thumbnail {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 0;
+  bottom: 0;
+  margin-bottom: 5px;
 }
 
 /* These can go now */

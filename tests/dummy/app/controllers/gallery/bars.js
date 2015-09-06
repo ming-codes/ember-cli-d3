@@ -5,13 +5,7 @@ import DimensionalDataModel from 'dummy/utils/model/dimensional';
 import { computed } from 'ember-cli-d3/utils/version';
 
 export default Ember.Controller.extend({
-  model: {
-    id: 0,
-    name: 'Grouped Bars',
-    tags: [ 'comparison' ],
-    route: '',
-    description: ''
-  }
+  model: null
 
   //app: Ember.inject.controller('application'),
 

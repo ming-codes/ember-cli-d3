@@ -3,7 +3,7 @@
   <span>{{tag}}</span>
 {{/each}}
 <div class="row">
-  <div class="visual-content-stretcher col-xs-12">
+  <div class="aspect-ratio aspect-ratio-16-9 col-xs-12">
     <div class="visual-content">
       {{yield}}
     </div>
@@ -15,6 +15,7 @@
   </div>
   <div class="col-sm-6">
     <h2>Description</h2>
+    <p>{{visual.description}}</p>
   </div>
 </div>
 <div class="row">
