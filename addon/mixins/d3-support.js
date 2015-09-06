@@ -1,13 +1,13 @@
 import Ember from 'ember';
 
-import { hasGlimmer } from 'ember-cli-d3/utils/version';
+import version, { hasGlimmer } from 'ember-cli-d3/utils/version';
 import { timer, type } from '../ext/d3';
 
 timer();
 type();
 
 const GraphicSupport = Ember.Mixin.create({
-  tagName: 'noscript',
+  tagName: '',
 
   select: null,
   model: null,
@@ -49,6 +49,27 @@ if (!hasGlimmer) {
       this._super(...arguments);
 
       Ember.run.scheduleOnce('afterRender', this, this.didRender);
+    }
+
+  });
+}
+
+if (version.MAJOR === 1 && version.MINOR === 13) {
+  GraphicSupport.reopen({
+    didInsertElement() {
+      var index = this.container.lookup("-view-registry:main");
+
+      this._super(...arguments);
+
+      index[this.elementId] = this;
+    },
+
+    willDestroyElement() {
+      var index = this.container.lookup("-view-registry:main");
+
+      this._super(...arguments);
+
+      delete index[this.elementId];
     }
 
   });
