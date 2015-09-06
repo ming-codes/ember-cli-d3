@@ -1,4 +1,31 @@
 {{#block-page visual=model}}
-  {{#data-visual}}
+  {{#data-visual as |svg width height|}}
+    {{#if isGrouped}}
+      {{#cart-grouped-bars select=(transition svg.chart) model=dimensionalData width=width height=height
+            margin="10 10 20 60" stroke=(color-scale "category10")
+          as |selection x-scale y-scale width height|}}
+
+        {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+          orient="bottom" tickSize=(negative height)
+        }}
+        {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+          orient="left" tickSize=(negative width)
+        }}
+
+      {{/cart-grouped-bars}}
+    {{else if isStacked}}
+      {{#cart-stacked-bars select=(transition svg.chart) model=dimensionalData width=width height=height
+            margin="10 10 20 60" stroke=(color-scale "category10")
+          as |selection x-scale y-scale width height|}}
+
+        {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+          orient="bottom" tickSize=(negative height)
+        }}
+        {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+          orient="left" tickSize=(negative width)
+        }}
+
+      {{/cart-stacked-bars}}
+    {{/if}}
   {{/data-visual}}
 {{/block-page}}

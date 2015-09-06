@@ -32,10 +32,6 @@
   width: 100%;
   height: 100%;
 
-  /* fill parent */
-  background-color: deepskyblue;
-  /* let's see it! */
-  color: white;
   border: 1px solid black;
 }
 
