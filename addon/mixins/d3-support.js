@@ -7,7 +7,7 @@ timer();
 type();
 
 const GraphicSupport = Ember.Mixin.create({
-  tagName: '',
+  tagName: 'noscript',
 
   select: null,
   model: null,

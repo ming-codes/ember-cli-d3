@@ -13,41 +13,18 @@ function elementToString(el) {
   return `<${base}>`;
 }
 
-function indexComponents(views, hash = {}) {
-  var count = views.length;
-  var view;
-
-  while (view = views[--count]) {
-    hash[view.elementId] = view;
-
-    indexComponents(view.get('childViews'), hash);
-  }
-
-  return hash;
-}
-
 export default function graph(context, assert) {
   var container = document.getElementById('ember-testing');
-  var viewIndex;
   var promise;
 
   return {
     render(template) {
       context.render(template);
 
-      return this.update();
+      return this;
     },
     update(name, value) {
-      // XXX This uses private API
-      var registry = context.container.lookup("-view-registry:main");
-
-      if (name) {
-        context.set(name, value);
-      }
-
-      viewIndex = (Ember.View && Ember.View.views) || indexComponents(Object.keys(registry).map(key => {
-        return registry[key];
-      }));
+      context.set(name, value);
 
       return this;
     },
@@ -119,8 +96,13 @@ export default function graph(context, assert) {
     },
     assert(id, callback) {
       promise = Ember.RSVP.resolve(promise).then(() => {
-        var component = viewIndex[id];
+        // XXX This uses private API
+        var index = context.container.lookup("-view-registry:main") || Ember.View.views;
+        var component = index[id];
         var selection = component && (component.get('select._selection') || component.get('select.selection'));
+
+        assert.ok(!!component, `Found the component #${id}`);
+        assert.ok(!!selection, `Found the component selection #${id}`);
 
         callback(selection, component);
       });
