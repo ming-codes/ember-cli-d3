@@ -6,6 +6,10 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('home');
+  this.route('gallery');
+  this.route('docs');
+
   this.route('cart', function () {
     this.route('bars', function () {
       this.route('stacked');
