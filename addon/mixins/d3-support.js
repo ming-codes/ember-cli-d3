@@ -53,5 +53,25 @@ if (!hasGlimmer) {
 
   });
 }
+else {
+  GraphicSupport.reopen({
+    didInsertElement() {
+      var index = this.container.lookup("-view-registry:main");
+
+      this._super(...arguments);
+
+      index[this.elementId] = this;
+    },
+
+    willDestroyElement() {
+      var index = this.container.lookup("-view-registry:main");
+
+      this._super(...arguments);
+
+      delete index[this.elementId];
+    }
+
+  });
+}
 
 export default GraphicSupport;
