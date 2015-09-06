@@ -76,7 +76,7 @@ export default function graph(context, assert) {
 
         allPass = false;
 
-        assert.ok(false, `No transition found on ${elementToString(item)} from selector \`${selector}\``);
+        assert.push(false, 'Not Found', 'Found', `No transition found on ${elementToString(item)} from selector \`${selector}\``);
       }
 
       assert.ok(allPass, `All elements in \`${selector}\` are transitioning`);
