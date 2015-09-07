@@ -33,31 +33,53 @@ export function assign(target, values) {
 }
 
 export function translateX(fn) {
+  fn = d3.functor(fn);
+
   return function translate() {
     return `translate(${fn.apply(this, arguments)} 0)`;
   };
 }
 
 export function rotate(fn) {
+  fn = d3.functor(fn);
+
   return function rotate() {
     return `rotate(${fn.apply(this, arguments)})`;
   };
 }
 
-// TODO allow cssExpr to contain attributes
+
 // TODO allow inlined data
-export function join(dataExpr, cssExpr, { update, enter, exit }) {
-  var [ , dataPath, , keyPath ] = dataExpr.match(/([\w\.]+)(\[([\w\.]+)\])?/);
+join.parseDataExpr = function (expr) {
+  if (typeof expr === 'string') {
+    var [ , dataPath, , keyPath ] = expr.match(/([\w\.]+)(\[([\w\.]+)\])?/);
 
-  var [ tagName, cssName ] = cssExpr.split('.');
+    keyPath = keyPath || null;
+    dataPath = dataPath || null;
 
-  keyPath = keyPath || null;
+    return { dataPath, keyPath };
+  }
+  else {
+    return { inlineData: expr };
+  }
+};
+
+// TODO allow cssExpr to contain attributes
+join.parseCssExpr = function (expr) {
+  var [ tagName, cssName ] = expr.split('.');
 
   tagName = tagName || 'g';
 
+  return { tagName, cssName };
+};
+
+export function join(dataExpr, cssExpr, { update, enter, exit }) {
+  var { inlineData, dataPath, keyPath } = join.parseDataExpr(dataExpr);
+  var { tagName, cssName } = join.parseCssExpr(cssExpr);
+
   function visual(sel, ...parentData) {
     var context = this;
-    var data = this.get(dataPath);
+    var data = inlineData || this.get(dataPath);
     var key = keyPath && this.get(keyPath);
 
     if (keyPath) {
@@ -86,4 +108,3 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
 
   return visual;
 }
-

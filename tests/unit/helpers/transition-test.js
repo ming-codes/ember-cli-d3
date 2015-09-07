@@ -4,13 +4,13 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | transition');
 
-test('empty selection should not throw', function(assert) {
+test('empty selection should not throw', assert => {
   assert.expect(0);
 
   transition([], {});
 });
 
-test('apply d3 transition options when set', function(assert) {
+test('apply d3 transition options when set', assert => {
   var delay = Math.floor(Math.random() * 1000);
   var duration = Math.floor(Math.random() * 1000);
   var sel = transition([ SelectionProxy.create() ], { delay, duration }).get('selection');

@@ -4,8 +4,7 @@ import d3 from 'd3';
 
 module('Unit | Helper | color scale');
 
-// Replace this with your real tests.
-test('Scales preset on d3.scale.* can be accessed as alias', function(assert) {
+test('Scales preset on d3.scale.* can be accessed as alias', assert => {
   var checks = [
     [ colorScale([ 'category10' ]).range(), d3.scale.category10().range() ],
     [ colorScale([ 'category20' ]).range(), d3.scale.category20().range() ],
@@ -19,7 +18,7 @@ test('Scales preset on d3.scale.* can be accessed as alias', function(assert) {
 
 });
 
-test('Pass in custom color hex for custom color scale', function(assert) {
+test('Pass in custom color hex for custom color scale', assert => {
   var checks = [
     [ colorScale([ '#fff', '#f00' ]).range(), [ '#fff', '#f00' ] ],
     [ colorScale([ '#00f', '#f00' ]).range(), [ '#00f', '#f00' ] ]
