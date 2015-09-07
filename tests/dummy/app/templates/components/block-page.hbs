@@ -15,5 +15,10 @@
   </div>
   <div class="col-sm-6">
     <h2>Variations</h2>
+    {{#each visual.variations as |visual|}}
+      <div class="col-sm-6">
+        {{block-thumb visual=visual}}
+      </div>
+    {{/each}}
   </div>
 </div>

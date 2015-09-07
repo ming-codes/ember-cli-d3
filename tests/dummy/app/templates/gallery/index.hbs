@@ -1,5 +1,7 @@
 <div class="row">
   {{#each model as |visual|}}
-    {{block-thumb visual=visual}}
+    <div class="col-sm-4">
+      {{block-thumb visual=visual}}
+    </div>
   {{/each}}
 </div>
