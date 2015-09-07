@@ -29,7 +29,7 @@ VisualModel.reopenClass({
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
       description: 'This is a stacked bar chart',
-      variations: [ 'gallery.bars.grouped' ]
+      variations: [ 'gallery.bars' ]
     },
     {
       id: 'gallery.lines',
