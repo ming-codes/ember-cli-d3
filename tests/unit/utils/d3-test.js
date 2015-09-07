@@ -69,11 +69,34 @@ test('d3#join.parseDataExpr', assert => {
 });
 
 test('d3#join.parseCssExpr', assert => {
-  var { tagName, cssName } = join.parseCssExpr('rect.bar');
+  var { tagName: rectTag, cssName: barCls } = join.parseCssExpr('rect.bar');
+  var { tagName: gTag, cssName: groupCls } = join.parseCssExpr('.group');
 
-  assert.equal(tagName, 'rect', 'Parsed tagName');
-  assert.equal(cssName, 'bar', 'Parsed class name');
+  assert.equal(rectTag, 'rect', 'Parsed tagName');
+  assert.equal(barCls, 'bar', 'Parsed class name');
+
+  assert.equal(gTag, 'g', 'default tag is <g>');
+  assert.equal(groupCls, 'group', 'Parsed class name');
 });
 
-//test('d3#join', assert => {
-//});
+test('d3#join', assert => {
+  var data = [0, 1];
+  var chart = join(data, '.group', {
+    update(selection) {
+      selection.attr('transform', translateX(index => index * 10));
+    }
+  });
+  var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
+  var update = chart(d3.select(svg));
+  var children = svg.children;
+
+  assert.equal(typeof update.enter, 'function', '`join` returns update selection with enter');
+  assert.equal(typeof update.exit, 'function', '`join` returns update selection with exit');
+
+  assert.equal(data.length, children.length, '`join` update selection with same number of children');
+
+  assert.equal(typeof chart.enter, 'function', '`join` exposes enter on itself');
+  assert.equal(typeof chart.update, 'function', '`join` exposes update on itself');
+  assert.equal(typeof chart.exit, 'function', '`join` exposes exit on itself');
+
+});
