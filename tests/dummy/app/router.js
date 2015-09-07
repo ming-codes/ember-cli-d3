@@ -6,18 +6,17 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('home');
+  this.route('home', { path: '/' });
   this.route('docs');
   this.route('gallery', function () {
     this.route('bars', function () {
       this.route('stacked');
-      this.route('grouped');
       //this.route('waterfall');
     });
-    //this.route('lines', function () {
-    //  this.route('area');
-    //  this.route('stacked');
-    //});
+    this.route('lines', function () {
+      this.route('area');
+      this.route('stacked');
+    });
     //this.route('histogram');
   });
 });

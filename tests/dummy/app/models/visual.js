@@ -14,7 +14,7 @@ const VisualModel = DS.Model.extend({
 VisualModel.reopenClass({
   FIXTURES: [
     {
-      id: 'gallery.bars.grouped',
+      id: 'gallery.bars',
       name: 'Grouped Bars',
       alias: [],
       component: 'cart-grouped-bars',
@@ -31,11 +31,15 @@ VisualModel.reopenClass({
       description: 'This is a stacked bar chart',
       variations: [ 'gallery.bars.grouped' ]
     },
-    //{
-    //  id: 2,
-    //  name: 'Waterfall',
-    //  id: 'gallery.bars/waterfall'
-    //}
+    {
+      id: 'gallery.lines',
+      name: 'Lines',
+      alias: [],
+      component: 'cart-lines',
+      modelType: 'dimensional',
+      description: 'This is a line chart',
+      variations: []
+    },
   ]
 });
 
