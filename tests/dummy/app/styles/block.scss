@@ -1,0 +1,38 @@
+
+.gallery .row {
+  list-style: none;
+}
+
+.visual-name {
+  display: inline-block;
+}
+
+.visual-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 15px;
+  left: 15px;
+}
+
+.gallery .data-visual {
+  width: 100%;
+  height: 100%;
+
+  border: 1px solid black;
+}
+
+.gallery .thumbnail .data-visual {
+  border: none;
+}
+
+.gallery .thumbnail {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 0;
+  bottom: 0;
+  margin-bottom: 5px;
+  padding-bottom: 0;
+}
+

@@ -1,0 +1,25 @@
+{{#each visual.tags as |tag|}}
+  <span>{{tag}}</span>
+{{/each}}
+<div class="row">
+  <div class="aspect-ratio aspect-ratio-21-9 col-xs-12">
+    <div class="visual-content">
+      {{yield}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <h2 class="visual-name col-sm-12">{{visual.name}}</h2>
+  <div class="col-sm-6">
+    <h3>Description</h3>
+    <p>{{visual.description}}</p>
+  </div>
+  <div class="col-sm-6">
+    <h3>Variations</h3>
+    {{#each visual.variations as |visual|}}
+      <div class="col-xs-6">
+        {{block-thumb visual=visual}}
+      </div>
+    {{/each}}
+  </div>
+</div>

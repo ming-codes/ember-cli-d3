@@ -91,11 +91,20 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         .style('stroke', ({ metricPath }) => color(metricPath))
         .each(function (series) {
           var path = d3.transition(d3.select(this)
-              .select('path').datum(data)
-            .style('fill', 'none')
-            .style('stroke-width', 5));
+            .select('path').datum(data)
+              .style('fill', 'none')
+              .style('stroke-width', 5));
 
-          if (path.delay && path.duration) {
+          var line = d3.svg.line()
+              .x(record => xScale(record[key]))
+              .y(record => yScale(Ember.get(record, series.metricPath)));
+
+          if (!(path.delay && path.duration)) {
+            path.attr('d', line);
+            self.set('exportedXScale', xScale);
+            self.set('exportedYScale', yScale);
+          }
+          else {
             d3.transition(path)
               .style('opacity', 0)
               .each('end', function () {
@@ -103,10 +112,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
                 self.set('exportedYScale', yScale);
 
                 d3.select(this)
-                    .attr('d', d3.svg.line()
-                      .x(record => xScale(record[key]))
-                      .y(record => yScale(Ember.get(record, series.metricPath)))
-                    )
+                    .attr('d', line)
                   .transition()
                     .style('opacity', 1)
                     .styleTween('stroke-dasharray', function dashTween() {
