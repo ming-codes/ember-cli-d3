@@ -1,18 +1,5 @@
 <div class="row">
-  <div class="col-sm-4 aspect-ratio aspect-ratio-16-9">
-    {{#link-to 'gallery.bars.grouped' classNames="thumbnail"}}
-      {{#data-visual as |svg width height|}}
-        {{cart-grouped-bars select=svg.chart model=dimensionalData width=width height=height
-            margin="10" stroke=(color-scale "category10")}}
-      {{/data-visual}}
-    {{/link-to}}
-  </div>
-  <div class="col-sm-4 aspect-ratio aspect-ratio-16-9">
-    {{#link-to 'gallery.bars.stacked' classNames="thumbnail"}}
-      {{#data-visual as |svg width height|}}
-        {{cart-stacked-bars select=svg.chart model=dimensionalData width=width height=height
-            margin="10" stroke=(color-scale "category10")}}
-      {{/data-visual}}
-    {{/link-to}}
-  </div>
+  {{#each model as |visual|}}
+    {{block-thumb visual=visual}}
+  {{/each}}
 </div>
