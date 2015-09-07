@@ -1,0 +1,10 @@
+<div class="col-sm-4 aspect-ratio aspect-ratio-16-9">
+  {{#link-to visual.route classNames="thumbnail"}}
+    {{#data-visual as |svg width height|}}
+      {{component visual.component
+        select=svg.chart model=model width=width height=height
+        margin="10" stroke=(color-scale "category10")
+      }}
+    {{/data-visual}}
+  {{/link-to}}
+</div>
