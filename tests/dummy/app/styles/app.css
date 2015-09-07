@@ -13,11 +13,15 @@
   display: block;
   position: relative;
 }
-.aspect-ratio-16-9:after {
-  padding-top: 56.25%;
-  /* 16:9 ratio */
+.aspect-ratio:after {
   display: block;
   content: '';
+}
+.aspect-ratio-16-9:after {
+  padding-top: 56.25%;
+}
+.aspect-ratio-21-9:after {
+  padding-top: 42.8571429%;
 }
 
 .visual-content {

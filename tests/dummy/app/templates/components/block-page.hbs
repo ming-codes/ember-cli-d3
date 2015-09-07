@@ -2,7 +2,7 @@
   <span>{{tag}}</span>
 {{/each}}
 <div class="row">
-  <div class="aspect-ratio aspect-ratio-16-9 col-xs-12">
+  <div class="aspect-ratio aspect-ratio-21-9 col-xs-12">
     <div class="visual-content">
       {{yield}}
     </div>
@@ -16,7 +16,7 @@
   <div class="col-sm-6">
     <h2>Variations</h2>
     {{#each visual.variations as |visual|}}
-      <div class="col-sm-6">
+      <div class="col-xs-6">
         {{block-thumb visual=visual}}
       </div>
     {{/each}}
