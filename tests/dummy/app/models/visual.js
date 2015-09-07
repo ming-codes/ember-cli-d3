@@ -1,9 +1,10 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 
 const VisualModel = DS.Model.extend({
   name: DS.attr('string'),
   alias: DS.attr('array'),
-  route: DS.attr('string'),
+  route: Ember.computed.alias('id'),
   description: DS.attr('string'),
   variations: DS.hasMany('visual'),
   component: DS.attr('string'),
@@ -13,29 +14,27 @@ const VisualModel = DS.Model.extend({
 VisualModel.reopenClass({
   FIXTURES: [
     {
-      id: 0,
+      id: 'gallery.bars.grouped',
       name: 'Grouped Bars',
       alias: [],
-      route: 'gallery.bars.grouped',
       component: 'cart-grouped-bars',
       modelType: 'dimensional',
       description: 'This is a grouped bar chart',
-      variations: [ 1 ]
+      variations: [ 'gallery.bars.stacked' ]
     },
     {
-      id: 1,
+      id: 'gallery.bars.stacked',
       name: 'Stacked Bars',
       alias: [],
-      route: 'gallery.bars.stacked',
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
       description: 'This is a stacked bar chart',
-      variations: [ 0 ]
+      variations: [ 'gallery.bars.grouped' ]
     },
     //{
     //  id: 2,
     //  name: 'Waterfall',
-    //  route: 'gallery.bars/waterfall'
+    //  id: 'gallery.bars/waterfall'
     //}
   ]
 });
