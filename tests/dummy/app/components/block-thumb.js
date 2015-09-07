@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     var type = this.get('visual.modelType');
 
     switch (type) {
-      case 'dimensional': return this.get('dimensionalDataSource');
+      case 'dimensional': case 'temporal': return this.get('dimensionalDataSource');
     }
   }),
 
@@ -26,6 +26,9 @@ export default Ember.Component.extend({
     switch (type) {
       case 'dimensional': return DimensionalDataModel.create({
         data, series: [ 'dogs', 'cats' ], key: 'state'
+      });
+      case 'temporal': return DimensionalDataModel.create({
+        data, series: [ 'dogs', 'cats' ], key: 'timestamp'
       });
     }
   })

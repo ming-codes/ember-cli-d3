@@ -36,7 +36,7 @@ VisualModel.reopenClass({
       name: 'Lines',
       alias: [],
       component: 'cart-lines',
-      modelType: 'dimensional',
+      modelType: 'temporal',
       description: 'This is a line chart',
       variations: []
     },

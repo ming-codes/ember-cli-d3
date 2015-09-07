@@ -1,5 +1,4 @@
 {{#block-page visual=model}}
-  {{debugger}}
   {{#data-visual as |svg width height|}}
     {{#cart-lines select=(transition svg.chart) model=dimensionalData width=width height=height
           margin="10 10 20 60" stroke=(color-scale "category10")
