@@ -45,5 +45,5 @@ export function timer() {
   d3.timer.flush = timerFlush;
   d3.timer.__extended__ = 1;
 
-  Ember.Test.registerWaiter(() => wait);
+  Ember.Test.registerWaiter(() => !sem);
 }
