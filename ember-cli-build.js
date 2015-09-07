@@ -14,6 +14,9 @@ module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
     d3: {
       plugins: [ 'sankey', 'hexbin' ]
+    },
+    sassOptions: {
+      extension: 'scss'
     }
   });
 
