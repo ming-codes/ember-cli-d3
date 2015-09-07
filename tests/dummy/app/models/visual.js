@@ -2,6 +2,7 @@ import DS from 'ember-data';
 
 const VisualModel = DS.Model.extend({
   name: DS.attr('string'),
+  alias: DS.attr('array'),
   route: DS.attr('string'),
   description: DS.attr('string'),
   variations: DS.hasMany('visual')
@@ -12,6 +13,7 @@ VisualModel.reopenClass({
     {
       id: 0,
       name: 'Grouped Bars',
+      alias: [],
       route: 'gallery.bars.grouped',
       description: 'This is a grouped bar chart',
       variations: [ 1 ]
@@ -19,6 +21,7 @@ VisualModel.reopenClass({
     {
       id: 1,
       name: 'Stacked Bars',
+      alias: [],
       route: 'gallery.bars.stacked',
       description: 'This is a stacked bar chart',
       variations: [ 0 ]
