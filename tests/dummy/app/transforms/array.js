@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 
 export default DS.Transform.extend({
@@ -5,7 +6,7 @@ export default DS.Transform.extend({
     return (Ember.typeOf(serialized) === 'array') ? serialized : [];
   },
 
-  serialize: function(deserialized) {
+  serialize(deserialized) {
     switch (Ember.typeOf(deserialized)) {
       case 'array': return deserialized;
       case 'string': return deserialized.split(',').map(item => item.trim());
