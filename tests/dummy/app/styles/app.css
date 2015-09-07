@@ -35,6 +35,10 @@
   border: 1px solid black;
 }
 
+.gallery .thumbnail .data-visual {
+  border: none;
+}
+
 .gallery .thumbnail {
   position: absolute;
   left: 15px;
@@ -42,6 +46,7 @@
   top: 0;
   bottom: 0;
   margin-bottom: 5px;
+  padding-bottom: 0;
 }
 
 /* These can go now */
