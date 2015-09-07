@@ -88,7 +88,7 @@ test('d3#join', assert => {
   });
   var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
   var update = chart(d3.select(svg));
-  var children = svg.children;
+  var children = svg.childNodes;
 
   assert.equal(typeof update.enter, 'function', '`join` returns update selection with enter');
   assert.equal(typeof update.exit, 'function', '`join` returns update selection with exit');
