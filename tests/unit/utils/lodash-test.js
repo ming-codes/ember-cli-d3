@@ -3,7 +3,7 @@ import { identity, flow, scan, wrap } from 'ember-cli-d3/utils/lodash';
 
 module('Unit | Utility | lodash');
 
-test('lodash#identity', function(assert) {
+test('lodash#identity', assert => {
   var idFns = [ 0, 1, 2, 3 ].map(identity);
   var checker = Math.random();
 
@@ -13,7 +13,7 @@ test('lodash#identity', function(assert) {
   assert.equal(idFns[3](null, null, null, checker), checker, 'Identity at index 3');
 });
 
-test('lodash#flow', function(assert) {
+test('lodash#flow', assert => {
   var checker = Math.random();
 
   flow(
@@ -26,7 +26,7 @@ test('lodash#flow', function(assert) {
 });
 
 // Replace this with your real tests.
-test('lodash#scan', function(assert) {
+test('lodash#scan', assert => {
   var actual, expected;
 
   actual = scan([ 1, 4, 2, 3, 10 ], ((prev, cur) => prev + cur), 0);
@@ -40,7 +40,7 @@ test('lodash#scan', function(assert) {
   assert.deepEqual(actual, expected);
 });
 
-test('lodash#wrap', function(assert) {
+test('lodash#wrap', assert => {
   var args = [ Math.random(), Math.random() ].map(String);
   var wrappee = function (arg) {
     assert.equal(arg, args[0], 'Check wrappee received');
