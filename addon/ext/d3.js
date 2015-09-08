@@ -10,40 +10,33 @@ export function type() {
 }
 
 export function timer() {
-  if (d3.timer.__extended__) { return; }
+  Ember.runInDebug(() => {
+    var tProto = d3.transition.prototype;
+    var sProto = d3.selection.prototype;
+    var count = 0;
+    var wrappees = [
+      [ sProto, 'transition' ],
+      [ tProto, 'transition' ],
+      [ tProto, 'select' ],
+      [ tProto, 'selectAll' ],
+      [ tProto, 'filter' ]
+    ];
 
-  var sem = 0;
+    function increment() { count++; }
+    function decrement() { count--; }
 
-  var timerFlush = d3.timer.flush;
-  var wait = true;
+    wrappees.forEach(([ proto, method ]) => {
+      proto[method] = wrap(proto[method], function (fn, ...args) {
+        var selection = fn.apply(this, args);
 
-  d3.timer = wrap(d3.timer, function() {
-    var args = slice.call(arguments);
-    var fn = args.shift();
+        selection.each('start.ember-waiter', increment);
+        selection.each('interrupt.ember-waiter', decrement);
+        selection.each('end.ember-waiter', decrement);
 
-    if (wait) {
-      sem++;
-    }
-
-    wait = false;
-
-    args[0] = wrap(args[0], function (fn, ...args) {
-      var ret = fn.apply(this, args);
-
-      wait = true;
-
-      if (ret) {
-        sem--;
-      }
-
-      return ret;
+        return selection;
+      });
     });
 
-    fn.apply(this, args);
+    Ember.Test.registerWaiter(() => count === 0);
   });
-
-  d3.timer.flush = timerFlush;
-  d3.timer.__extended__ = 1;
-
-  Ember.Test.registerWaiter(() => !sem);
 }
