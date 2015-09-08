@@ -2,7 +2,7 @@
 import Ember from 'ember';
 import d3 from 'd3';
 
-import { wrap, slice } from 'ember-cli-d3/utils/lodash';
+import { wrap } from 'ember-cli-d3/utils/lodash';
 
 export function type() {
   d3.selection.prototype.isSelection = true;
