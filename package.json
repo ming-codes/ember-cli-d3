@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-d3",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "An ember-cli addon to provide a framework to integrate d3 visualizations into Ember applications.",
   "files": [
     "addon/",
