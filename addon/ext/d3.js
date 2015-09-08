@@ -9,6 +9,15 @@ export function type() {
   d3.transition.prototype.isTransition = true;
 }
 
+// TODO
+// Force layout are not usually implemented as
+// transition. This will fail in those cases.
+//
+// Normal usage of force layout always have
+// paired up `start` and `end` event
+//
+// If you call `.tick` without `.resume`, it
+// will only fire end
 export function timer() {
   Ember.runInDebug(() => {
     var tProto = d3.transition.prototype;
