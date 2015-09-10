@@ -1,14 +1,14 @@
 {{#block-page visual=model}}
   {{#data-visual as |svg width height|}}
     {{#cart-lines select=(transition svg.chart) model=dimensionalData width=width height=height
-          margin="10 10 20 60" stroke=(color-scale "category10")
+          margin="10 10 25 65" stroke=(color-scale "category10")
         as |selection x-scale y-scale width height|}}
 
       {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
-        orient="bottom" tickSize=(negative height)
+        orient="bottom" tickSize=(negative height) ticks=8 tickPadding=6
       }}
       {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
-        orient="left" tickSize=(negative width)
+        orient="left" tickSize=(negative width) tickPadding=6
       }}
 
     {{/cart-lines}}
