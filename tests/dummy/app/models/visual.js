@@ -19,7 +19,7 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-grouped-bars',
       modelType: 'dimensional',
-      variations: [ 'gallery.bars.stacked' ],
+      variations: [ 'gallery.bars.stacked', 'gallery.bars.waterfall' ],
       description: `
         Bar chart uses either vertical or horizontal bars to
         compare quantatative data accross multiple categories.
@@ -37,7 +37,7 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
-      variations: [ 'gallery.bars' ],
+      variations: [ 'gallery.bars', 'gallery.bars.waterfall' ],
       description: `
         Bar chart uses either vertical or horizontal bars to
         compare quantatative data accross multiple categories.
@@ -46,6 +46,16 @@ VisualModel.reopenClass({
         to compare data with. Compare to a grouped bar chart,
         stacked bar chart has a cleaner look at the number of
         bars increase.
+      `
+    },
+    {
+      id: 'gallery.bars.waterfall',
+      name: 'Waterfall',
+      alias: [],
+      component: 'cart-waterfall-bars',
+      modelType: 'dimensional',
+      variations: [ 'gallery.bars', 'gallery.bars.stacked' ],
+      description: `
       `
     },
     {

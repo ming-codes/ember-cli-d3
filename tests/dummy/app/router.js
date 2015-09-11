@@ -11,7 +11,7 @@ Router.map(function() {
   this.route('gallery', function () {
     this.route('bars', function () {
       this.route('stacked');
-      //this.route('waterfall');
+      this.route('waterfall');
     });
     this.route('lines', function () {
       this.route('area');
