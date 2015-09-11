@@ -15,12 +15,21 @@ VisualModel.reopenClass({
   FIXTURES: [
     {
       id: 'gallery.bars',
-      name: 'Grouped Bars',
+      name: 'Grouped Bar Chart',
       alias: [],
       component: 'cart-grouped-bars',
       modelType: 'dimensional',
-      description: 'This is a grouped bar chart',
-      variations: [ 'gallery.bars.stacked' ]
+      variations: [ 'gallery.bars.stacked' ],
+      description: `
+        Bar chart uses either vertical or horizontal bars to
+        compare quantatative data accross multiple categories.
+
+        A grouped bar chart gives you one extra dimension
+        to compare data with. Compare to a stacked bar chart,
+        grouped bar chart has bars precisely aligned with
+        the axis, giving you a precise visual comparison
+        among bars.
+      `
     },
     {
       id: 'gallery.bars.stacked',
@@ -28,8 +37,16 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
-      description: 'This is a stacked bar chart',
-      variations: [ 'gallery.bars' ]
+      variations: [ 'gallery.bars' ],
+      description: `
+        Bar chart uses either vertical or horizontal bars to
+        compare quantatative data accross multiple categories.
+
+        A stacked bar chart gives you one extra dimension
+        to compare data with. Compare to a grouped bar chart,
+        stacked bar chart has a cleaner look at the number of
+        bars increase.
+      `
     },
     {
       id: 'gallery.lines',
@@ -37,8 +54,12 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-lines',
       modelType: 'temporal',
-      description: 'This is a line chart',
-      variations: []
+      variations: [],
+      description: `
+        Line chart shows quantatative data over a numerical
+        interval. The slope the lines gives you visual indication
+        on the rate of change from one tick to the next
+      `
     },
   ]
 });
