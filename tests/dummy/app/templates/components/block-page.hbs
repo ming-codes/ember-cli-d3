@@ -11,11 +11,11 @@
 <div class="row">
   <h2 class="visual-name col-sm-12">{{visual.name}}</h2>
   <div class="col-sm-6">
-    <h3>Description</h3>
-    <p>{{visual.description}}</p>
+    <h3 class="col-xs-12 row">Description</h3>
+    <p class="col-xs-12 row">{{visual.description}}</p>
   </div>
-  <div class="col-sm-6">
-    <h3>Variations</h3>
+  <div class="col-sm-6 row">
+    <h3 class="col-xs-12">Variations</h3>
     {{#each visual.variations as |visual|}}
       <div class="col-xs-6">
         {{block-thumb visual=visual}}
