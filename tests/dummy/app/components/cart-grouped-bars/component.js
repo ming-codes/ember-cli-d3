@@ -30,7 +30,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
       return d3.scale.ordinal()
         .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangeBands([ 0, width ]);
+        .rangeBands([ 0, width ], 0.5);
     }
   }).readOnly(),
   yScale: computed('contentHeight', 'model.extent', {
