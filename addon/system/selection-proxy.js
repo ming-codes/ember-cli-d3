@@ -7,7 +7,7 @@ import { computed } from '../utils/version';
 
 var SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
-    return SelectionProxy.proxyElement(this, 'append', 'g', key);
+    return SelectionProxy.proxyElement(this, 'g', key);
   },
 
   transition(options) {
@@ -25,12 +25,12 @@ var SelectionProxy = Ember.Object.extend({
 });
 
 SelectionProxy.reopenClass({
-  proxyElement(proxy, method, tagName, className) {
+  proxyElement(proxy, tagName, className) {
     var selection = proxy.get('selection');
     var proxied = selection.select(`${tagName}.${className}`);
 
     if (proxied.empty()) {
-      proxied = selection[method](tagName).classed(className, true);
+      proxied = selection.append(tagName).classed(className, true);
     }
 
     return SelectionProxy.create({ selection: proxied });
@@ -57,7 +57,7 @@ var SVGSelectionProxy = SelectionProxy.extend({
 
   defs: computed({
     get() {
-      return SelectionProxy.proxyElement(this, 'insert', 'defs', 'data-visual-defs');
+      return SelectionProxy.proxyElement(this, 'defs', 'data-visual-defs');
     }
   }),
 
