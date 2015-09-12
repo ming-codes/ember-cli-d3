@@ -26,6 +26,21 @@
         }}
 
       {{/cart-stacked-bars}}
+    {{else if isWaterfall}}
+      {{#cart-waterfall-bars select=(transition svg.chart) model=dimensionalData width=width height=height
+            margin="10 10 25 65" stroke=(color-scale "category10")
+          as |selection x-scale y-scale width height|}}
+
+        {{cart-marker select=svg.defs shape="tick" applyTo=selection applyAt="marker-start"}}
+
+        {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+          orient="bottom" tickSize=(negative height) tickPadding=6
+        }}
+        {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+          orient="left" tickSize=(negative width) tickPadding=6
+        }}
+
+      {{/cart-waterfall-bars}}
     {{/if}}
   {{/data-visual}}
 {{/block-page}}

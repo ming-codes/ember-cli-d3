@@ -61,25 +61,25 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     }
   }).readOnly(),
 
-  call(sel) {
+  call(selection) {
     var context = this;
     var top = this.get('margin.top');
     var left = this.get('margin.left');
     var height = this.get('contentHeight');
     var elementId = context.elementId;
 
-    sel.each(function () {
+    selection.each(function () {
       context.series(d3.select(this).attr('id', elementId).attr('transform', `translate(${left} ${top + height})`));
     });
   },
 
   series: join('model.series', '.series', {
-    enter(sel) {
+    enter(selection) {
       var context = this;
       var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      sel.append('g')
+      selection.append('g')
           .style('stroke', ({ metricPath }) => color(metricPath))
           .attr('class', 'series')
           .attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
@@ -88,12 +88,12 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         });
     },
 
-    update(sel) {
+    update(selection) {
       var context = this;
       var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      d3.transition(sel).attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
+      d3.transition(selection).attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
         .style('stroke', ({ metricPath }) => color(metricPath))
         .each(function (data) {
           context.bars(d3.select(this), data);
@@ -103,32 +103,35 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   }),
 
   bars: join('model.data[model.key]', '.bar', {
-    enter(sel) {
+    enter(selection) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
       var zero = yScale(0);
 
-      sel
-          .append('g')
-        .attr('class', 'bar')
-        .attr('transform', translateX(data => xScale(Ember.get(data, key))))
-          .append('line')
-        .attr('class', 'shape')
+      selection
+        .append('g')
+          .attr('class', 'bar')
+          .attr('transform', translateX(data => xScale(Ember.get(data, key))))
+        .append('line')
+          .attr('class', 'shape')
           .attr('x1', 0)
           .attr('x2', 0)
           .attr('y1', zero)
           .attr('y2', zero);
     },
-    update(sel, series) {
+    update(selection, series) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var zero = yScale(0);
       var key = this.get('model.key');
 
-      d3.transition(sel)
+      d3.transition(selection)
           .attr('transform', translateX(data => xScale(Ember.get(data, key))))
         .select('.shape')
+          .style('marker-start', null)
+          .style('marker-mid', null)
+          .style('marker-end', null)
           .attr('x1', 0)
           .attr('x2', 0)
           .attr('y1', zero)
