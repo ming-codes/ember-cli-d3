@@ -14,7 +14,7 @@ const GraphicSupport = Ember.Mixin.create({
 
   call() {},
 
-  didRender() {
+  didReceiveAttrs() {
     var selection = this.get('select');
 
     if (selection) {
@@ -38,7 +38,7 @@ if (!hasGlimmer) {
       for (key in this) {
         if ((index = key.indexOf('Binding')) > 0 && key[0] !== '_') {
           this.addObserver(key.substring(0, index), this, () => {
-            Ember.run.scheduleOnce('afterRender', this, this.didRender);
+            Ember.run.scheduleOnce('afterRender', this, this.didReceiveAttrs);
           });
         }
       }
@@ -48,7 +48,7 @@ if (!hasGlimmer) {
     didInsertElement() {
       this._super(...arguments);
 
-      Ember.run.scheduleOnce('afterRender', this, this.didRender);
+      Ember.run.scheduleOnce('afterRender', this, this.didReceiveAttrs);
     }
 
   });
