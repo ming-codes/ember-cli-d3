@@ -11,8 +11,6 @@ cache:
     - node_modules
 
 env:
-  - EMBER_TRY_SCENARIO=ember-1.8
-  - EMBER_TRY_SCENARIO=ember-1.9
   - EMBER_TRY_SCENARIO=ember-1.10
   - EMBER_TRY_SCENARIO=ember-1.11
   - EMBER_TRY_SCENARIO=ember-1.12
@@ -24,8 +22,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: EMBER_TRY_SCENARIO=ember-1.8
-    - env: EMBER_TRY_SCENARIO=ember-1.9
     - env: EMBER_TRY_SCENARIO=ember-canary
 
 before_install:
