@@ -22,26 +22,28 @@
     Date.now = now;
   };
 
-  sProto.style = wrap(sProto.style, urlRefShim);
-  tProto.style = wrap(tProto.style, urlRefShim);
+  if (!d3.select('head base').empty()) {
+    sProto.style = wrap(sProto.style, urlRefShim);
+    tProto.style = wrap(tProto.style, urlRefShim);
 
-  function urlRefShim(fn, name, value, priority) {
-    if (~urlStyles.indexOf(name)) {
-      value = d3.functor(value);
-      value = wrap(value, function (fn, data, inner, outer) {
-        var result = fn.call(this, data, inner, outer);
-        var match = typeof result === 'string' && result[0] === 'u' && result.match(/^url\((#\w+)\)$/) || {};
-        var name = match[1];
+    function urlRefShim(fn, name, value, priority) {
+      if (~urlStyles.indexOf(name)) {
+        value = d3.functor(value);
+        value = wrap(value, function (fn, data, inner, outer) {
+          var result = fn.call(this, data, inner, outer);
+          var match = typeof result === 'string' && result[0] === 'u' && result.match(/^url\((#\w+)\)$/) || {};
+          var name = match[1];
 
-        if (name) {
-          result = 'url(' + location.pathname + location.search + name + ')';
-        }
+          if (name) {
+            result = 'url(' + location.pathname + location.search + name + ')';
+          }
 
-        return result;
-      });
+          return result;
+        });
+      }
+
+      return fn.call(this, name, value, priority);
     }
-
-    return fn.call(this, name, value, priority);
   }
 
   // TODO
