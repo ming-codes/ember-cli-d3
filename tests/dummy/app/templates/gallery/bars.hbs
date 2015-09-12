@@ -31,6 +31,8 @@
             margin="10 10 25 65" stroke=(color-scale "category10")
           as |selection x-scale y-scale width height|}}
 
+        {{cart-marker select=svg.defs shape="tick" applyTo=selection applyAt="marker-start"}}
+
         {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
           orient="bottom" tickSize=(negative height) tickPadding=6
         }}

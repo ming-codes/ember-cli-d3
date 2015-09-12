@@ -94,6 +94,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     selection.each(function () {
       context.series(d3.select(this).attr('id', elementId).attr('transform', `translate(${left} ${top + height})`));
     });
+
+    this.set('seriesSelection', selection.selectAll('.series'));
   },
 
   series: join('model.series', '.series', {
