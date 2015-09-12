@@ -54,6 +54,7 @@ module.exports = {
       production: path.join('vendor', 'd3', 'd3.min.js')
     });
     app.import(path.join('vendor', 'ember-d3-shim', 'ember-d3-shim.js'));
+    app.import(path.join('vendor', 'ember-d3-ext', 'ember-d3-ext.js'));
     // DO NOT FORGET to include them in package.json too
 
     (options.plugins || []).forEach(function (plugin) {

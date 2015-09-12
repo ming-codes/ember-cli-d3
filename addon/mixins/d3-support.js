@@ -1,10 +1,6 @@
 import Ember from 'ember';
 
 import { hasGlimmer } from 'ember-cli-d3/utils/version';
-import { timer, type } from '../ext/d3';
-
-timer();
-type();
 
 const GraphicSupport = Ember.Mixin.create({
   tagName: '',
