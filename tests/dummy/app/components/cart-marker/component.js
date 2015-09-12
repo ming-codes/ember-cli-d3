@@ -57,8 +57,8 @@ export default Ember.Component.extend(GraphicSupport, {
 
     selection = selection.selectAll('.shape');
 
-    this.get('applyAt').forEach(attrName => {
-      selection.attr(attrName, 'url(/gallery/bars/waterfall#tick)');
+    this.get('applyAt').forEach(styleName => {
+      selection.style(styleName, 'url(/gallery/bars/waterfall#tick)');
     });
   },
 
