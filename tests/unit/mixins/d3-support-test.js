@@ -3,6 +3,7 @@ import GraphicSupportMixin from 'ember-cli-d3/mixins/d3-support';
 import { module, test } from 'qunit';
 import { hasGlimmer } from 'ember-cli-d3/utils/version';
 import { make } from 'dummy/tests/helpers/graph';
+import d3 from 'd3';
 
 module('Unit | Mixin | d3 support');
 
