@@ -1,6 +1,6 @@
 
-var funnel = require('ember-cli/node_modules/broccoli-funnel');
-var merge = require('ember-cli/node_modules/broccoli-merge-trees');
+var funnel = require('broccoli-funnel');
+var merge = require('broccoli-merge-trees');
 
 var path = require('path');
 
