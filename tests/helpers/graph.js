@@ -1,5 +1,6 @@
 
 import Ember from 'ember';
+import d3 from 'd3';
 
 function elementToString(el) {
   var base = el.tagName;
@@ -12,6 +13,12 @@ function elementToString(el) {
 
   return `<${base}>`;
 }
+
+export var make = {
+  svg(tagName = 'svg') {
+    return document.createElementNS(d3.ns.prefix.svg, tagName);
+  }
+};
 
 export default function graph(context, assert) {
   var container = document.getElementById('ember-testing');

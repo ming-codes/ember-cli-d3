@@ -101,15 +101,20 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
           if (!(path.delay && path.duration)) {
             path.attr('d', line);
-            self.set('exportedXScale', xScale);
-            self.set('exportedYScale', yScale);
+
+            Ember.run.join(() => {
+              self.set('exportedXScale', xScale);
+              self.set('exportedYScale', yScale);
+            });
           }
           else {
             d3.transition(path)
               .style('opacity', 0)
               .each('end', function () {
-                self.set('exportedXScale', xScale);
-                self.set('exportedYScale', yScale);
+                Ember.run.join(() => {
+                  self.set('exportedXScale', xScale);
+                  self.set('exportedYScale', yScale);
+                });
 
                 d3.select(this)
                     .attr('d', line)
