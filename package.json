@@ -31,6 +31,7 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.2",
+    "broccoli-caching-writer": "^2.0.1",
     "ember-cli": "1.13.8",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-auto-register-helpers": "~1.0.2",
