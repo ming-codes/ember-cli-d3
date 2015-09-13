@@ -39,18 +39,3 @@ test('lodash#scan', assert => {
 
   assert.deepEqual(actual, expected);
 });
-
-test('lodash#wrap', assert => {
-  var args = [ Math.random(), Math.random() ].map(String);
-  var wrappee = function (arg) {
-    assert.equal(arg, args[0], 'Check wrappee received');
-    return args[0];
-  };
-  var wrapper = wrap(wrappee, function (fn, ...args2) {
-    assert.deepEqual(args2, args, 'Check wrapped arguments');
-    return fn.apply(this, args2);
-  });
-  var result = wrapper(args[0], args[1]);
-
-  assert.equal(result, args[0], 'Check return value');
-});

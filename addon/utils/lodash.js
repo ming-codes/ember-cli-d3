@@ -40,9 +40,3 @@ export function scan(col, fn, init) {
 
   return ret;
 }
-
-export function wrap(target, wrapper) {
-  return function wrapped() {
-    return wrapper.apply(this, [ target ].concat(slice.call(arguments)));
-  };
-}
