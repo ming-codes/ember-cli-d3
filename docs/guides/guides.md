@@ -1,9 +1,9 @@
 
-## Introduction
+## # Introduction
 
 `ember-cli-d3` is an Ember addon to aid with integrating D3 data visuals into Ember application. Like D3 itself, it is not the goal of this project be become a widget library. Therefore, there are no data visuals packaged along with the addon. Pre-built data visuals are available as part of the gallery to act as a starting point for you. They are, however, will not be officially maintained.
 
-## Getting Started
+## # Getting Started
 
 The first thing you'll need is to install the addon.
 
@@ -26,15 +26,15 @@ The first thing you'll need is to install the addon.
   </tr>
 </table>
 
-## Concepts and Principles
+## # Concepts and Principles
 
 `ember-cli-d3` follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.
 
-## Core Classes
+## # Core Classes
 
 There are few classes that are considered to be core and will be used by most data visuals.
 
-### `data-visual` Component
+### ## `data-visual` Component
 
 You'll need a `data-visual` component to act as a container for your visual. For the most part, this component is just an SVG element that also yields properies: `svg`, `width`, and `height`.
 
@@ -42,29 +42,29 @@ You'll need a `data-visual` component to act as a container for your visual. For
 
 `svg` is a "magic" object. Accessing properties on this object will create a `<g>` element under the `<svg>` with class name automatically set. Property access can be nested. `svg.chart.axis` will create `<svg><g class="chart"><g class="axis"></g></g></svg>`.
 
-### `d3-support` Mixin
+### ## `d3-support` Mixin
 
 All components that are going to render SVG elements must implement this mixin. There is only 1 method on it that must be implemented: `call`. The `call` method will be invoked with `select` element as argument, passed in as a D3 selection.
 
-### `join` Util
+### ## `join` Util
 
 The `join` util function in the `d3` utility module implements the fundamental D3 data-join pattern. It is used as a short hand to define the `call` method. It accepts 3 arguments: `dataExpr`, `cssExpr`, and an `options` hash. It returns a function that accepts elements wrapped inside a D3 selection.
 
-#### `dataExpr`
+#### ### `dataExpr`
 
 `dataExpr` is a path expression that tells `join` where to grab data on the component to do the join with. You may optionally specify a second key path to show where to grab the key path on the component to extract identifiers for each datum. For example, the `dataExpr` of `model.data[model.key]` with a will join the array found at `model.data` with key found at `model.key`.
 
-#### `cssExpr`
+#### ### `cssExpr`
 
 `cssExpr` is a subset of CSS selector expression that only supports tag name and class name. `cssExpr` is combined with `dataExpr` to perform data-join. First, elements are selected using `cssExpr` then joined with `dataExpr`. `cssExpr` also provides clues to how to provide reasonable defaults for your `options`. A `cssExpr` of `rect.bar` will select all `rect.bar`, join data with `dataExpr`, append `rect` element and set class `bar` on `enter` select and remove the elements on `exit` select.
 
-#### `options`
+#### ### `options`
 
 The last `options` argument lets you define how `enter`, `update`, and `exit` should behave. Usually you only need to implement `update` since `cssExpr` already provided good defaults. You can override the default behavior by providing your own implementation here.
 
-### `graph` Test Helper
+### ## `graph` Test Helper
 
-## Naming Convention
+## # Naming Convention
 
 * ...Layer
 * ...Layout
