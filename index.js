@@ -21,6 +21,11 @@ module.exports = {
       files: [ 'ember-d3-shim.js' ]
     });
 
+    var ext = funnel(path.join(__dirname, 'vendor', 'ember-d3-ext'), {
+      destDir: path.join('ember-d3-ext'),
+      files: [ 'ember-d3-ext.js' ]
+    });
+
     var d3 = funnel(path.dirname(require.resolve('d3')), {
       destDir: path.join('d3'),
       files: [ 'd3.js', 'd3.min.js' ]
@@ -34,7 +39,7 @@ module.exports = {
       });
     });
 
-    return merge([].concat(shim, d3, plugins));
+    return merge([].concat(d3, shim, ext, plugins));
   },
   treeForTestSupport: function () {
     return funnel(path.join(__dirname, 'tests'), {
