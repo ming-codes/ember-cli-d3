@@ -2,6 +2,34 @@
 /* global require, module */
 
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+var writer = require('broccoli-caching-writer');
+var md = require('commonmark');
+var fs = require('fs');
+var path = require('path');
+
+var Parser = md.Parser;
+var HtmlRenderer = md.HtmlRenderer;
+
+var DocWriter = function DocWriter(inputNodes, options) {
+  options = options || {};
+  writer.call(this, inputNodes, {
+    annotation: options.annotation
+  });
+
+  this.parser = new Parser();
+  this.renderer = new HtmlRenderer();
+};
+
+DocWriter.prototype = Object.create(writer.prototype);
+DocWriter.prototype.constructor = DocWriter;
+
+DocWriter.prototype.build = function() {
+  // Read 'foo.txt' from the third input node
+  var inputBuffer = fs.readFileSync(path.join(this.inputPaths[0], 'guides/guides.md'), 'utf8');
+  var outputBuffer = this.parser.parse(inputBuffer);
+  // Write to 'bar.txt' in this node's output
+  fs.writeFileSync(path.join(this.outputPath, 'guides.html'), this.renderer.render(outputBuffer));
+};
 
 /*
   This Brocfile specifes the options for the dummy test app of this
@@ -23,5 +51,5 @@ module.exports = function(defaults) {
   app.import('bower_components/bootstrap/dist/css/bootstrap.css');
   app.import('bower_components/bootstrap/dist/js/bootstrap.js');
 
-  return app.toTree();
+  return app.toTree(new DocWriter([ 'docs' ]));
 };
