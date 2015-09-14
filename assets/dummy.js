@@ -105,15 +105,16 @@ define('dummy/components/cart-axis/component', ['exports', 'ember', 'd3', 'dummy
 
     transform: null,
 
+    ticks: 4,
     tickSize: 6,
     tickFormat: null,
     tickPadding: null,
 
     scale: null,
 
-    axis: version.computed('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding', {
+    axis: version.computed('scale', 'orient', 'tickCount', 'tickSize', 'tickFormat', 'tickPadding', {
       get: function get() {
-        var props = this.getProperties('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding');
+        var props = this.getProperties('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding', 'ticks');
 
         return props.scale && utils__d3.assign(d3['default'].svg.axis(), props);
       }
@@ -142,7 +143,7 @@ define('dummy/components/cart-axis/template', ['exports'], function (exports) {
   exports['default'] = Ember.HTMLBars.template((function() {
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -207,7 +208,7 @@ define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3'
 
         return d3['default'].scale.ordinal().domain(!key ? data : data.map(function (data) {
           return Ember['default'].get(data, key);
-        })).rangeBands([0, width]);
+        })).rangeBands([0, width], 0.5);
       }
     }).readOnly(),
     yScale: version.computed('contentHeight', 'model.extent', {
@@ -237,25 +238,25 @@ define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3'
       }
     }).readOnly(),
 
-    call: function call(sel) {
+    call: function call(selection) {
       var context = this;
       var top = this.get('margin.top');
       var left = this.get('margin.left');
       var height = this.get('contentHeight');
       var elementId = context.elementId;
 
-      sel.each(function () {
+      selection.each(function () {
         context.series(d3['default'].select(this).attr('id', elementId).attr('transform', 'translate(' + left + ' ' + (top + height) + ')'));
       });
     },
 
     series: utils__d3.join('model.series', '.series', {
-      enter: function enter(sel) {
+      enter: function enter(selection) {
         var context = this;
         var color = this.get('stroke');
         var zScale = this.get('zScale');
 
-        sel.append('g').style('stroke', function (_ref2) {
+        selection.append('g').style('stroke', function (_ref2) {
           var metricPath = _ref2.metricPath;
           return color(metricPath);
         }).attr('class', 'series').attr('transform', function (_ref3) {
@@ -266,12 +267,12 @@ define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3'
         });
       },
 
-      update: function update(sel) {
+      update: function update(selection) {
         var context = this;
         var color = this.get('stroke');
         var zScale = this.get('zScale');
 
-        d3['default'].transition(sel).attr('transform', function (_ref4) {
+        d3['default'].transition(selection).attr('transform', function (_ref4) {
           var metricPath = _ref4.metricPath;
           return 'translate(' + zScale(metricPath) + ' 0)';
         }).style('stroke', function (_ref5) {
@@ -285,25 +286,25 @@ define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3'
     }),
 
     bars: utils__d3.join('model.data[model.key]', '.bar', {
-      enter: function enter(sel) {
+      enter: function enter(selection) {
         var xScale = this.get('xScale');
         var yScale = this.get('yScale');
         var key = this.get('model.key');
         var zero = yScale(0);
 
-        sel.append('g').attr('class', 'bar').attr('transform', utils__d3.translateX(function (data) {
+        selection.append('g').attr('class', 'bar').attr('transform', utils__d3.translateX(function (data) {
           return xScale(Ember['default'].get(data, key));
         })).append('line').attr('class', 'shape').attr('x1', 0).attr('x2', 0).attr('y1', zero).attr('y2', zero);
       },
-      update: function update(sel, series) {
+      update: function update(selection, series) {
         var xScale = this.get('xScale');
         var yScale = this.get('yScale');
         var zero = yScale(0);
         var key = this.get('model.key');
 
-        d3['default'].transition(sel).attr('transform', utils__d3.translateX(function (data) {
+        d3['default'].transition(selection).attr('transform', utils__d3.translateX(function (data) {
           return xScale(Ember['default'].get(data, key));
-        })).select('.shape').attr('x1', 0).attr('x2', 0).attr('y1', zero).attr('y2', function (data) {
+        })).select('.shape').style('marker-start', null).style('marker-mid', null).style('marker-end', null).attr('x1', 0).attr('x2', 0).attr('y1', zero).attr('y2', function (data) {
           return yScale(data[series.metricPath]);
         });
       }
@@ -318,7 +319,7 @@ define('dummy/components/cart-grouped-bars/template', ['exports'], function (exp
   exports['default'] = Ember.HTMLBars.template((function() {
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -453,12 +454,17 @@ define('dummy/components/cart-lines/component', ['exports', 'ember', 'd3', 'dumm
 
           if (!(path.delay && path.duration)) {
             path.attr('d', line);
-            self.set('exportedXScale', xScale);
-            self.set('exportedYScale', yScale);
-          } else {
-            d3['default'].transition(path).style('opacity', 0).each('end', function () {
+
+            Ember['default'].run.join(function () {
               self.set('exportedXScale', xScale);
               self.set('exportedYScale', yScale);
+            });
+          } else {
+            d3['default'].transition(path).style('opacity', 0).each('end', function () {
+              Ember['default'].run.join(function () {
+                self.set('exportedXScale', xScale);
+                self.set('exportedYScale', yScale);
+              });
 
               d3['default'].select(this).attr('d', line).transition().style('opacity', 1).styleTween('stroke-dasharray', function dashTween() {
                 var total = this.getTotalLength();
@@ -483,7 +489,7 @@ define('dummy/components/cart-lines/template', ['exports'], function (exports) {
   exports['default'] = Ember.HTMLBars.template((function() {
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -516,6 +522,109 @@ define('dummy/components/cart-lines/template', ['exports'], function (exports) {
       },
       statements: [
         ["inline","yield",[["get","seriesSel",["loc",[null,[1,8],[1,17]]]],["get","exportedXScale",["loc",[null,[1,18],[1,32]]]],["get","exportedYScale",["loc",[null,[1,33],[1,47]]]],["get","contentWidth",["loc",[null,[1,48],[1,60]]]],["get","contentHeight",["loc",[null,[1,61],[1,74]]]]],[],["loc",[null,[1,0],[1,76]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('dummy/components/cart-marker/component', ['exports', 'ember', 'd3', 'dummy/components/cart-marker/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/utils/d3'], function (exports, Ember, d3, layout, GraphicSupport, utils__d3) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], {
+    layout: layout['default'],
+
+    shape: null,
+    applyTo: null,
+    applyAt: Ember['default'].computed({
+      set: function set(name, value) {
+        if (Ember['default'].typeOf(value) === 'string') {
+          return value.split(/\s*,\s*/);
+        }
+
+        return value;
+      }
+    }),
+
+    tick: function tick(selection) {
+      selection.attr('id', 'tick').attr('viewBox', '0 0 10 10').attr('refX', 0).attr('refY', 5).attr('markerWidth', 2).attr('markerHeight', 4).attr('orient', 'auto').append('line').classed(this.get('shape') + '-marker', true).attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 10).style('stroke', 'black').style('stroke-width', 1);
+    },
+
+    marker: utils__d3.join([0], 'marker', {
+      enter: function enter(selection) {
+        var _this = this;
+
+        var shape = this.get('shape');
+
+        selection.append('marker').call(function (marker) {
+          _this[shape](marker);
+        });
+      }
+    }),
+
+    apply: function apply(selection) {
+      if (!selection) {
+        return;
+      }
+
+      selection = selection.selectAll('.shape');
+
+      this.get('applyAt').forEach(function (styleName) {
+        selection.style(styleName, 'url(#tick)');
+      });
+    },
+
+    call: function call(selection) {
+      this.marker(selection);
+
+      this.apply(this.get('applyTo'));
+    }
+
+  });
+
+});
+define('dummy/components/cart-marker/template', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/components/cart-marker/template.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","yield",["loc",[null,[1,0],[1,9]]]]
       ],
       locals: [],
       templates: []
@@ -636,24 +745,24 @@ define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3'
       }
     }).readOnly(),
 
-    call: function call(sel) {
+    call: function call(selection) {
       var context = this;
       var top = this.get('margin.top');
       var left = this.get('margin.left');
       var height = this.get('contentHeight');
       var elementId = context.elementId;
 
-      sel.each(function () {
+      selection.each(function () {
         context.series(d3['default'].select(this).attr('id', elementId).attr('transform', 'translate(' + left + ' ' + (top + height) + ')'));
       });
     },
 
     series: utils__d3.join('model.series', '.series', {
-      enter: function enter(sel) {
+      enter: function enter(selection) {
         var context = this;
         var color = this.get('stroke');
 
-        sel.append('g').style('stroke', function (_ref5) {
+        selection.append('g').style('stroke', function (_ref5) {
           var metricPath = _ref5.metricPath;
           return color(metricPath);
         }).attr('class', 'series').attr('transform', function () {
@@ -663,11 +772,11 @@ define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3'
         });
       },
 
-      update: function update(sel) {
+      update: function update(selection) {
         var context = this;
         var color = this.get('stroke');
 
-        d3['default'].transition(sel).attr('transform', function () {
+        d3['default'].transition(selection).attr('transform', function () {
           return 'translate(0 0)';
         }).style('stroke', function (_ref6) {
           var metricPath = _ref6.metricPath;
@@ -679,17 +788,17 @@ define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3'
     }),
 
     bars: utils__d3.join('model.data[model.key]', '.bar', {
-      enter: function enter(sel) {
+      enter: function enter(selection) {
         var xScale = this.get('xScale');
         var yScale = this.get('yScale');
         var key = this.get('model.key');
         var zero = yScale(0);
 
-        sel.append('g').attr('class', 'bar').attr('transform', utils__d3.translateX(function (record) {
+        selection.append('g').attr('class', 'bar').attr('transform', utils__d3.translateX(function (record) {
           return xScale(Ember['default'].get(record, key));
         })).append('line').attr('class', 'shape').attr('x1', 0).attr('x2', 0).attr('y1', zero).attr('y2', zero);
       },
-      update: function update(sel, _ref7) {
+      update: function update(selection, _ref7) {
         var metricPath = _ref7.metricPath;
 
         var xScale = this.get('xScale');
@@ -698,9 +807,9 @@ define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3'
 
         var layout = this.get('layoutValues');
 
-        d3['default'].transition(sel).attr('transform', utils__d3.translateX(function (record) {
+        d3['default'].transition(selection).attr('transform', utils__d3.translateX(function (record) {
           return xScale(Ember['default'].get(record, key));
-        })).select('.shape').attr('x1', 0).attr('x2', 0).attr('y1', function (record) {
+        })).select('.shape').style('marker-start', null).style('marker-mid', null).style('marker-end', null).attr('x1', 0).attr('x2', 0).attr('y1', function (record) {
           return yScale(layout[record[key]][metricPath].start);
         }).attr('y2', function (record) {
           return yScale(layout[record[key]][metricPath].end);
@@ -717,7 +826,7 @@ define('dummy/components/cart-stacked-bars/template', ['exports'], function (exp
   exports['default'] = Ember.HTMLBars.template((function() {
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -750,6 +859,214 @@ define('dummy/components/cart-stacked-bars/template', ['exports'], function (exp
       },
       statements: [
         ["inline","yield",[["get","seriesSel",["loc",[null,[1,8],[1,17]]]],["get","xScale",["loc",[null,[1,18],[1,24]]]],["get","yScale",["loc",[null,[1,25],[1,31]]]],["get","contentWidth",["loc",[null,[1,32],[1,44]]]],["get","contentHeight",["loc",[null,[1,45],[1,58]]]]],[],["loc",[null,[1,0],[1,60]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('dummy/components/cart-waterfall-bars/component', ['exports', 'ember', 'd3', 'dummy/components/cart-waterfall-bars/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, template, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
+    layout: template['default'],
+
+    defaultMargin: css.box(60),
+
+    layoutValues: version.computed('model.data', 'model.series', 'model.key', {
+      get: function get() {
+        var data = this.get('model.data');
+        var series = this.get('model.series');
+        var key = this.get('model.key');
+
+        var base = 0;
+
+        return data.reduce(function (accum, datum) {
+          accum[datum[key]] = series.reduce(function (accum, _ref) {
+            var metricPath = _ref.metricPath;
+
+            var change = datum[metricPath];
+            var start = base;
+            var end = base + change;
+
+            base += change;
+
+            accum[metricPath] = { start: start, end: end, change: change };
+
+            return accum;
+          }, {});
+
+          return accum;
+        }, {});
+      }
+    }).readOnly(),
+    xScale: version.computed('contentWidth', 'model.data', 'model.key', {
+      get: function get() {
+        var width = this.get('contentWidth');
+        var data = this.get('model.data');
+        var key = this.get('model.key');
+
+        return d3['default'].scale.ordinal().domain(!key ? data : data.map(function (data) {
+          return Ember['default'].get(data, key);
+        })).rangeBands([0, width], 0.5);
+      }
+    }).readOnly(),
+    yScale: version.computed('contentHeight', 'model.data', 'model.series', {
+      get: function get() {
+        var height = this.get('contentHeight');
+        var data = this.get('model.data');
+        var series = this.get('model.series');
+        var base = 0;
+        var extent = [base, base];
+
+        data.forEach(function (datum) {
+          series.forEach(function (_ref2) {
+            var metricPath = _ref2.metricPath;
+
+            base += datum[metricPath];
+
+            extent[0] = Math.min(extent[0], base);
+            extent[1] = Math.max(extent[1], base);
+          });
+        });
+
+        return d3['default'].scale.linear().domain(extent).range([0, -height]);
+      }
+    }).readOnly(),
+    zScale: version.computed('xScale', 'model.series', {
+      get: function get() {
+        var series = this.get('model.series');
+        var band = this.get('xScale').rangeBand();
+
+        return d3['default'].scale.ordinal().domain(series.map(function (_ref3) {
+          var metricPath = _ref3.metricPath;
+          return metricPath;
+        })).rangePoints([0, band], 1);
+      }
+    }).readOnly(),
+
+    call: function call(selection) {
+      var context = this;
+      var top = this.get('margin.top');
+      var left = this.get('margin.left');
+      var height = this.get('contentHeight');
+      var elementId = context.elementId;
+
+      selection.each(function () {
+        context.series(d3['default'].select(this).attr('id', elementId).attr('transform', 'translate(' + left + ' ' + (top + height) + ')'));
+      });
+
+      this.set('seriesSelection', selection.selectAll('.series'));
+    },
+
+    series: utils__d3.join('model.series', '.series', {
+      enter: function enter(sel) {
+        var context = this;
+        var color = this.get('stroke');
+        var zScale = this.get('zScale');
+
+        sel.append('g').style('stroke', function (_ref4) {
+          var metricPath = _ref4.metricPath;
+          return color(metricPath);
+        }).attr('class', 'series').attr('transform', function (_ref5) {
+          var metricPath = _ref5.metricPath;
+          return 'translate(' + zScale(metricPath) + ' 0)';
+        }).each(function (data) {
+          context.bars(d3['default'].select(this), data);
+        });
+      },
+
+      update: function update(sel) {
+        var context = this;
+        var color = this.get('stroke');
+        var zScale = this.get('zScale');
+
+        d3['default'].transition(sel).attr('transform', function (_ref6) {
+          var metricPath = _ref6.metricPath;
+          return 'translate(' + zScale(metricPath) + ' 0)';
+        }).style('stroke', function (_ref7) {
+          var metricPath = _ref7.metricPath;
+          return color(metricPath);
+        }).each(function (data) {
+          context.bars(d3['default'].select(this), data);
+        });
+      }
+    }),
+
+    bars: utils__d3.join('model.data[model.key]', '.bar', {
+      enter: function enter(sel) {
+        var xScale = this.get('xScale');
+        var yScale = this.get('yScale');
+        var key = this.get('model.key');
+        var zero = yScale(0);
+
+        sel.append('g').attr('class', 'bar').attr('transform', utils__d3.translateX(function (record) {
+          return xScale(Ember['default'].get(record, key));
+        })).append('line').attr('class', 'shape').attr('x1', 0).attr('x2', 0).attr('y1', zero).attr('y2', zero);
+      },
+      update: function update(sel, _ref8) {
+        var metricPath = _ref8.metricPath;
+
+        var xScale = this.get('xScale');
+        var yScale = this.get('yScale');
+        var key = this.get('model.key');
+
+        var layout = this.get('layoutValues');
+
+        d3['default'].transition(sel).attr('transform', utils__d3.translateX(function (record) {
+          return xScale(Ember['default'].get(record, key));
+        })).select('.shape').attr('x1', 0).attr('x2', 0).attr('y1', function (record) {
+          return yScale(layout[record[key]][metricPath].start);
+        }).attr('y2', function (record) {
+          return yScale(layout[record[key]][metricPath].end);
+        });
+      }
+    })
+  });
+
+});
+define('dummy/components/cart-waterfall-bars/template', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/components/cart-waterfall-bars/template.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["inline","yield",[["get","seriesSelection",["loc",[null,[1,8],[1,23]]]],["get","xScale",["loc",[null,[1,24],[1,30]]]],["get","yScale",["loc",[null,[1,31],[1,37]]]],["get","contentWidth",["loc",[null,[1,38],[1,50]]]],["get","contentHeight",["loc",[null,[1,51],[1,64]]]]],[],["loc",[null,[1,0],[1,66]]]]
       ],
       locals: [],
       templates: []
@@ -844,16 +1161,6 @@ define('dummy/ember-cli-d3/tests/modules/ember-cli-d3/components/data-visual.jsh
   QUnit.module('JSHint - modules/ember-cli-d3/components');
   QUnit.test('modules/ember-cli-d3/components/data-visual.js should pass jshint', function (assert) {
     assert.ok(true, 'modules/ember-cli-d3/components/data-visual.js should pass jshint.');
-  });
-
-});
-define('dummy/ember-cli-d3/tests/modules/ember-cli-d3/ext/d3.jshint', function () {
-
-  'use strict';
-
-  QUnit.module('JSHint - modules/ember-cli-d3/ext');
-  QUnit.test('modules/ember-cli-d3/ext/d3.js should pass jshint', function (assert) {
-    assert.ok(true, 'modules/ember-cli-d3/ext/d3.js should pass jshint.');
   });
 
 });
@@ -1091,28 +1398,36 @@ define('dummy/models/visual', ['exports', 'ember', 'ember-data'], function (expo
   VisualModel.reopenClass({
     FIXTURES: [{
       id: 'gallery.bars',
-      name: 'Grouped Bars',
+      name: 'Grouped Bar Chart',
       alias: [],
       component: 'cart-grouped-bars',
       modelType: 'dimensional',
-      description: 'This is a grouped bar chart',
-      variations: ['gallery.bars.stacked']
+      variations: ['gallery.bars.stacked', 'gallery.bars.waterfall'],
+      description: '\n        Bar chart uses either vertical or horizontal bars to\n        compare quantatative data accross multiple categories.\n\n        A grouped bar chart gives you one extra dimension\n        to compare data with. Compare to a stacked bar chart,\n        grouped bar chart has bars precisely aligned with\n        the axis, giving you a precise visual comparison\n        among bars.\n      '
     }, {
       id: 'gallery.bars.stacked',
       name: 'Stacked Bars',
       alias: [],
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
-      description: 'This is a stacked bar chart',
-      variations: ['gallery.bars']
+      variations: ['gallery.bars', 'gallery.bars.waterfall'],
+      description: '\n        Bar chart uses either vertical or horizontal bars to\n        compare quantatative data accross multiple categories.\n\n        A stacked bar chart gives you one extra dimension\n        to compare data with. Compare to a grouped bar chart,\n        stacked bar chart has a cleaner look at the number of\n        bars increase.\n      '
+    }, {
+      id: 'gallery.bars.waterfall',
+      name: 'Waterfall',
+      alias: [],
+      component: 'cart-waterfall-bars',
+      modelType: 'dimensional',
+      variations: ['gallery.bars', 'gallery.bars.stacked'],
+      description: '\n      '
     }, {
       id: 'gallery.lines',
       name: 'Lines',
       alias: [],
       component: 'cart-lines',
       modelType: 'temporal',
-      description: 'This is a line chart',
-      variations: []
+      variations: [],
+      description: '\n        Line chart shows quantatative data over a numerical\n        interval. The slope the lines gives you visual indication\n        on the rate of change from one tick to the next\n      '
     }]
   });
 
@@ -1129,11 +1444,11 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
 
   Router.map(function () {
     this.route('home', { path: '/' });
-    this.route('docs');
+    this.route('guides');
     this.route('gallery', function () {
       this.route('bars', function () {
         this.route('stacked');
-        //this.route('waterfall');
+        this.route('waterfall');
       });
       this.route('lines', function () {
         this.route('area');
@@ -1144,13 +1459,6 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
   });
 
   exports['default'] = Router;
-
-});
-define('dummy/routes/docs', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
-
-	'use strict';
-
-	exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {});
 
 });
 define('dummy/routes/gallery', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
@@ -1194,6 +1502,21 @@ define('dummy/routes/gallery/bars/stacked', ['exports', 'ember', 'dummy/mixins/r
   });
 
 });
+define('dummy/routes/gallery/bars/waterfall', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
+    model: function model() {
+      return this.store.findRecord('visual', 'gallery.bars.waterfall');
+    },
+
+    setupController: function setupController(controller, model) {
+      this.controllerFor('gallery/bars').setProperties({ model: model });
+    }
+  });
+
+});
 define('dummy/routes/gallery/lines/index', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
 
   'use strict';
@@ -1205,6 +1528,17 @@ define('dummy/routes/gallery/lines/index', ['exports', 'ember', 'dummy/mixins/ro
 
     setupController: function setupController(controller, model) {
       this.controllerFor('gallery/lines').setProperties({ model: model });
+    }
+  });
+
+});
+define('dummy/routes/guides', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
+    model: function model() {
+      return Ember['default'].$.get('guides.html');
     }
   });
 
@@ -1256,7 +1590,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
     var child0 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -1290,7 +1624,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
     var child1 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -1299,7 +1633,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
             },
             "end": {
               "line": 15,
-              "column": 35
+              "column": 39
             }
           },
           "moduleName": "dummy/templates/application.hbs"
@@ -1309,7 +1643,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
         hasRendered: false,
         buildFragment: function buildFragment(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("Docs");
+          var el1 = dom.createTextNode("Guides");
           dom.appendChild(el0, el1);
           return el0;
         },
@@ -1324,7 +1658,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
     var child2 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -1357,7 +1691,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
     }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -1381,7 +1715,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2,"class","container-fluid");
+        dom.setAttribute(el2,"class","container");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
@@ -1482,461 +1816,12 @@ define('dummy/templates/application', ['exports'], function (exports) {
       },
       statements: [
         ["block","link-to",["home"],["classNames","navbar-brand"],0,null,["loc",[null,[10,6],[10,75]]]],
-        ["block","link-to",["docs"],[],1,null,["loc",[null,[15,12],[15,47]]]],
+        ["block","link-to",["guides"],[],1,null,["loc",[null,[15,12],[15,51]]]],
         ["block","link-to",["gallery"],[],2,null,["loc",[null,[16,12],[16,53]]]],
         ["content","outlet",["loc",[null,[22,23],[22,33]]]]
       ],
       locals: [],
       templates: [child0, child1, child2]
-    };
-  }()));
-
-});
-define('dummy/templates/cart/bars', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    var child0 = (function() {
-      var child0 = (function() {
-        var child0 = (function() {
-          return {
-            meta: {
-              "revision": "Ember@2.0.1+efe7782e",
-              "loc": {
-                "source": null,
-                "start": {
-                  "line": 6,
-                  "column": 4
-                },
-                "end": {
-                  "line": 18,
-                  "column": 4
-                }
-              },
-              "moduleName": "dummy/templates/cart/bars.hbs"
-            },
-            arity: 5,
-            cachedFragment: null,
-            hasRendered: false,
-            buildFragment: function buildFragment(dom) {
-              var el0 = dom.createDocumentFragment();
-              var el1 = dom.createTextNode("\n      ");
-              dom.appendChild(el0, el1);
-              var el1 = dom.createComment("");
-              dom.appendChild(el0, el1);
-              var el1 = dom.createTextNode("\n      ");
-              dom.appendChild(el0, el1);
-              var el1 = dom.createComment("");
-              dom.appendChild(el0, el1);
-              var el1 = dom.createTextNode("\n\n");
-              dom.appendChild(el0, el1);
-              return el0;
-            },
-            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-              var morphs = new Array(2);
-              morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
-              morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
-              return morphs;
-            },
-            statements: [
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[10,37],[10,53]]]]],[],["loc",[null,[10,25],[10,54]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[10,61],[10,68]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[11,43],[11,49]]]]],[],["loc",[null,[11,33],[11,50]]]]],["loc",[null,[10,6],[12,8]]]],
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[13,37],[13,53]]]]],[],["loc",[null,[13,25],[13,54]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[13,61],[13,68]]]]],[],[]],"orient","right","tickSize",["subexpr","negative",[["get","width",["loc",[null,[14,42],[14,47]]]]],[],["loc",[null,[14,32],[14,48]]]],"transform",["subexpr","translate",[["get","width",["loc",[null,[15,29],[15,34]]]]],[],["loc",[null,[15,18],[15,35]]]]],["loc",[null,[13,6],[16,8]]]]
-            ],
-            locals: ["selection","x-scale","y-scale","width","height"],
-            templates: []
-          };
-        }());
-        return {
-          meta: {
-            "revision": "Ember@2.0.1+efe7782e",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 5,
-                "column": 2
-              },
-              "end": {
-                "line": 19,
-                "column": 2
-              }
-            },
-            "moduleName": "dummy/templates/cart/bars.hbs"
-          },
-          arity: 0,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createComment("");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var morphs = new Array(1);
-            morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-            dom.insertBoundary(fragment, 0);
-            dom.insertBoundary(fragment, null);
-            return morphs;
-          },
-          statements: [
-            ["block","cart-grouped-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[6,44],[6,53]]]]],[],["loc",[null,[6,32],[6,54]]]],"model",["subexpr","@mut",[["get","dim",["loc",[null,[6,61],[6,64]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[6,71],[6,76]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[6,84],[6,90]]]]],[],[]],"margin","10 60 20 10","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[7,38],[7,64]]]]],0,null,["loc",[null,[6,4],[18,26]]]]
-          ],
-          locals: [],
-          templates: [child0]
-        };
-      }());
-      var child1 = (function() {
-        var child0 = (function() {
-          var child0 = (function() {
-            return {
-              meta: {
-                "revision": "Ember@2.0.1+efe7782e",
-                "loc": {
-                  "source": null,
-                  "start": {
-                    "line": 20,
-                    "column": 4
-                  },
-                  "end": {
-                    "line": 32,
-                    "column": 4
-                  }
-                },
-                "moduleName": "dummy/templates/cart/bars.hbs"
-              },
-              arity: 5,
-              cachedFragment: null,
-              hasRendered: false,
-              buildFragment: function buildFragment(dom) {
-                var el0 = dom.createDocumentFragment();
-                var el1 = dom.createTextNode("\n      ");
-                dom.appendChild(el0, el1);
-                var el1 = dom.createComment("");
-                dom.appendChild(el0, el1);
-                var el1 = dom.createTextNode("\n      ");
-                dom.appendChild(el0, el1);
-                var el1 = dom.createComment("");
-                dom.appendChild(el0, el1);
-                var el1 = dom.createTextNode("\n\n");
-                dom.appendChild(el0, el1);
-                return el0;
-              },
-              buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-                var morphs = new Array(2);
-                morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
-                morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
-                return morphs;
-              },
-              statements: [
-                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[24,37],[24,53]]]]],[],["loc",[null,[24,25],[24,54]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[24,61],[24,68]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[25,43],[25,49]]]]],[],["loc",[null,[25,33],[25,50]]]]],["loc",[null,[24,6],[26,8]]]],
-                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[27,37],[27,53]]]]],[],["loc",[null,[27,25],[27,54]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[27,61],[27,68]]]]],[],[]],"orient","right","tickSize",["subexpr","negative",[["get","width",["loc",[null,[28,42],[28,47]]]]],[],["loc",[null,[28,32],[28,48]]]],"transform",["subexpr","translate",[["get","width",["loc",[null,[29,29],[29,34]]]]],[],["loc",[null,[29,18],[29,35]]]]],["loc",[null,[27,6],[30,8]]]]
-              ],
-              locals: ["selection","x-scale","y-scale","width","height"],
-              templates: []
-            };
-          }());
-          return {
-            meta: {
-              "revision": "Ember@2.0.1+efe7782e",
-              "loc": {
-                "source": null,
-                "start": {
-                  "line": 19,
-                  "column": 2
-                },
-                "end": {
-                  "line": 33,
-                  "column": 2
-                }
-              },
-              "moduleName": "dummy/templates/cart/bars.hbs"
-            },
-            arity: 0,
-            cachedFragment: null,
-            hasRendered: false,
-            buildFragment: function buildFragment(dom) {
-              var el0 = dom.createDocumentFragment();
-              var el1 = dom.createComment("");
-              dom.appendChild(el0, el1);
-              var el1 = dom.createTextNode("  ");
-              dom.appendChild(el0, el1);
-              return el0;
-            },
-            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-              var morphs = new Array(1);
-              morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-              dom.insertBoundary(fragment, 0);
-              return morphs;
-            },
-            statements: [
-              ["block","cart-stacked-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[20,44],[20,53]]]]],[],["loc",[null,[20,32],[20,54]]]],"model",["subexpr","@mut",[["get","dim",["loc",[null,[20,61],[20,64]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[20,71],[20,76]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[20,84],[20,90]]]]],[],[]],"margin","10 60 20 10","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[21,38],[21,64]]]]],0,null,["loc",[null,[20,4],[32,26]]]]
-            ],
-            locals: [],
-            templates: [child0]
-          };
-        }());
-        return {
-          meta: {
-            "revision": "Ember@2.0.1+efe7782e",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 19,
-                "column": 2
-              },
-              "end": {
-                "line": 33,
-                "column": 2
-              }
-            },
-            "moduleName": "dummy/templates/cart/bars.hbs"
-          },
-          arity: 0,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createComment("");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var morphs = new Array(1);
-            morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-            dom.insertBoundary(fragment, 0);
-            dom.insertBoundary(fragment, null);
-            return morphs;
-          },
-          statements: [
-            ["block","if",[["get","isStacked",["loc",[null,[19,12],[19,21]]]]],[],0,null,["loc",[null,[19,2],[33,2]]]]
-          ],
-          locals: [],
-          templates: [child0]
-        };
-      }());
-      return {
-        meta: {
-          "revision": "Ember@2.0.1+efe7782e",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 4,
-              "column": 0
-            },
-            "end": {
-              "line": 34,
-              "column": 0
-            }
-          },
-          "moduleName": "dummy/templates/cart/bars.hbs"
-        },
-        arity: 3,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createComment("");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-          dom.insertBoundary(fragment, 0);
-          dom.insertBoundary(fragment, null);
-          return morphs;
-        },
-        statements: [
-          ["block","if",[["get","isGrouped",["loc",[null,[5,8],[5,17]]]]],[],0,1,["loc",[null,[5,2],[33,9]]]]
-        ],
-        locals: ["svg","width","height"],
-        templates: [child0, child1]
-      };
-    }());
-    return {
-      meta: {
-        "revision": "Ember@2.0.1+efe7782e",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 35,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/templates/cart/bars.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("button");
-        dom.setAttribute(el1,"class","data-control");
-        var el2 = dom.createTextNode("Reorder");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [1]);
-        var morphs = new Array(2);
-        morphs[0] = dom.createElementMorph(element0);
-        morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
-        dom.insertBoundary(fragment, null);
-        return morphs;
-      },
-      statements: [
-        ["element","action",["reorder"],[],["loc",[null,[2,29],[2,49]]]],
-        ["block","data-visual",[],[],0,null,["loc",[null,[4,0],[34,16]]]]
-      ],
-      locals: [],
-      templates: [child0]
-    };
-  }()));
-
-});
-define('dummy/templates/cart/lines', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    var child0 = (function() {
-      var child0 = (function() {
-        return {
-          meta: {
-            "revision": "Ember@2.0.1+efe7782e",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 3,
-                "column": 2
-              },
-              "end": {
-                "line": 10,
-                "column": 2
-              }
-            },
-            "moduleName": "dummy/templates/cart/lines.hbs"
-          },
-          arity: 5,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createTextNode("\n    ");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createComment("");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n    ");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createComment("");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n\n");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var morphs = new Array(2);
-            morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
-            morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
-            return morphs;
-          },
-          statements: [
-            ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[7,35],[7,51]]]]],[],["loc",[null,[7,23],[7,52]]]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[7,88],[7,94]]]]],[],["loc",[null,[7,78],[7,95]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[7,102],[7,109]]]]],[],[]]],["loc",[null,[7,4],[7,111]]]],
-            ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[8,35],[8,51]]]]],[],["loc",[null,[8,23],[8,52]]]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[8,86],[8,91]]]]],[],["loc",[null,[8,76],[8,92]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[8,99],[8,106]]]]],[],[]]],["loc",[null,[8,4],[8,108]]]]
-          ],
-          locals: ["selection","x-scale","y-scale","width","height"],
-          templates: []
-        };
-      }());
-      return {
-        meta: {
-          "revision": "Ember@2.0.1+efe7782e",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 2,
-              "column": 0
-            },
-            "end": {
-              "line": 11,
-              "column": 0
-            }
-          },
-          "moduleName": "dummy/templates/cart/lines.hbs"
-        },
-        arity: 3,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createComment("");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-          dom.insertBoundary(fragment, 0);
-          dom.insertBoundary(fragment, null);
-          return morphs;
-        },
-        statements: [
-          ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,35],[3,44]]]]],["duration",200],["loc",[null,[3,23],[3,58]]]],"model",["subexpr","@mut",[["get","dim",["loc",[null,[3,65],[3,68]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,75],[3,80]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,88],[3,94]]]]],[],[]],"margin","10 10 20 60","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,36],[4,62]]]]],0,null,["loc",[null,[3,2],[10,17]]]]
-        ],
-        locals: ["svg","width","height"],
-        templates: [child0]
-      };
-    }());
-    return {
-      meta: {
-        "revision": "Ember@2.0.1+efe7782e",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 12,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/templates/cart/lines.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
-        dom.insertBoundary(fragment, null);
-        return morphs;
-      },
-      statements: [
-        ["block","data-visual",[],[],0,null,["loc",[null,[2,0],[11,16]]]]
-      ],
-      locals: [],
-      templates: [child0]
     };
   }()));
 
@@ -1949,7 +1834,7 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
     var child0 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -1993,7 +1878,7 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
     var child1 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -2039,9 +1924,50 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
         templates: []
       };
     }());
+    var child2 = (function() {
+      return {
+        meta: {
+          "revision": "Ember@2.0.2+a7f49eab",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 23,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 4
+            }
+          },
+          "moduleName": "dummy/templates/components/block-page.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("      ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1,"class","col-xs-12");
+          var el2 = dom.createTextNode("\n        None\n      ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2049,7 +1975,7 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
             "column": 0
           },
           "end": {
-            "line": 26,
+            "line": 30,
             "column": 0
           }
         },
@@ -2103,12 +2029,14 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("h3");
+        dom.setAttribute(el3,"class","col-xs-12 row");
         var el4 = dom.createTextNode("Description");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("p");
+        dom.setAttribute(el3,"class","col-xs-12 row");
         var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -2118,10 +2046,11 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2,"class","col-sm-6");
+        dom.setAttribute(el2,"class","col-sm-6 row");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("h3");
+        dom.setAttribute(el3,"class","col-xs-12");
         var el4 = dom.createTextNode("Variations");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -2154,11 +2083,11 @@ define('dummy/templates/components/block-page', ['exports'], function (exports) 
         ["block","each",[["get","visual.tags",["loc",[null,[1,8],[1,19]]]]],[],0,null,["loc",[null,[1,0],[3,9]]]],
         ["content","yield",["loc",[null,[7,6],[7,15]]]],
         ["content","visual.name",["loc",[null,[12,36],[12,51]]]],
-        ["content","visual.description",["loc",[null,[15,7],[15,29]]]],
-        ["block","each",[["get","visual.variations",["loc",[null,[19,12],[19,29]]]]],[],1,null,["loc",[null,[19,4],[23,13]]]]
+        ["content","visual.description",["loc",[null,[15,29],[15,51]]]],
+        ["block","each",[["get","visual.variations",["loc",[null,[19,12],[19,29]]]]],[],1,2,["loc",[null,[19,4],[27,13]]]]
       ],
       locals: [],
-      templates: [child0, child1]
+      templates: [child0, child1, child2]
     };
   }()));
 
@@ -2172,7 +2101,7 @@ define('dummy/templates/components/block-thumb', ['exports'], function (exports)
       var child0 = (function() {
         return {
           meta: {
-            "revision": "Ember@2.0.1+efe7782e",
+            "revision": "Ember@2.0.2+a7f49eab",
             "loc": {
               "source": null,
               "start": {
@@ -2213,7 +2142,7 @@ define('dummy/templates/components/block-thumb', ['exports'], function (exports)
       }());
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -2252,7 +2181,7 @@ define('dummy/templates/components/block-thumb', ['exports'], function (exports)
     }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2296,46 +2225,6 @@ define('dummy/templates/components/block-thumb', ['exports'], function (exports)
   }()));
 
 });
-define('dummy/templates/docs', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.1+efe7782e",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 3,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/templates/docs.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("\nThe docs\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes() { return []; },
-      statements: [
-
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
 define('dummy/templates/gallery/bars', ['exports'], function (exports) {
 
   'use strict';
@@ -2347,7 +2236,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
           var child0 = (function() {
             return {
               meta: {
-                "revision": "Ember@2.0.1+efe7782e",
+                "revision": "Ember@2.0.2+a7f49eab",
                 "loc": {
                   "source": null,
                   "start": {
@@ -2385,8 +2274,8 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                 return morphs;
               },
               statements: [
-                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[8,39],[8,55]]]]],[],["loc",[null,[8,27],[8,56]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[8,63],[8,70]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[9,45],[9,51]]]]],[],["loc",[null,[9,35],[9,52]]]]],["loc",[null,[8,8],[10,10]]]],
-                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[11,39],[11,55]]]]],[],["loc",[null,[11,27],[11,56]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[11,63],[11,70]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[12,43],[12,48]]]]],[],["loc",[null,[12,33],[12,49]]]]],["loc",[null,[11,8],[13,10]]]]
+                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[8,39],[8,55]]]]],[],["loc",[null,[8,27],[8,56]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[8,63],[8,70]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[9,45],[9,51]]]]],[],["loc",[null,[9,35],[9,52]]]],"tickPadding",6],["loc",[null,[8,8],[10,10]]]],
+                ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[11,39],[11,55]]]]],[],["loc",[null,[11,27],[11,56]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[11,63],[11,70]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[12,43],[12,48]]]]],[],["loc",[null,[12,33],[12,49]]]],"tickPadding",6],["loc",[null,[11,8],[13,10]]]]
               ],
               locals: ["selection","x-scale","y-scale","width","height"],
               templates: []
@@ -2394,7 +2283,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
           }());
           return {
             meta: {
-              "revision": "Ember@2.0.1+efe7782e",
+              "revision": "Ember@2.0.2+a7f49eab",
               "loc": {
                 "source": null,
                 "start": {
@@ -2425,7 +2314,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
               return morphs;
             },
             statements: [
-              ["block","cart-grouped-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[4,46],[4,55]]]]],[],["loc",[null,[4,34],[4,56]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[4,63],[4,78]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[4,85],[4,90]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[4,98],[4,104]]]]],[],[]],"margin","10 10 20 60","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[5,40],[5,66]]]]],0,null,["loc",[null,[4,6],[15,28]]]]
+              ["block","cart-grouped-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[4,46],[4,55]]]]],[],["loc",[null,[4,34],[4,56]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[4,63],[4,78]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[4,85],[4,90]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[4,98],[4,104]]]]],[],[]],"margin","10 10 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[5,40],[5,66]]]]],0,null,["loc",[null,[4,6],[15,28]]]]
             ],
             locals: [],
             templates: [child0]
@@ -2436,7 +2325,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
             var child0 = (function() {
               return {
                 meta: {
-                  "revision": "Ember@2.0.1+efe7782e",
+                  "revision": "Ember@2.0.2+a7f49eab",
                   "loc": {
                     "source": null,
                     "start": {
@@ -2474,8 +2363,8 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                   return morphs;
                 },
                 statements: [
-                  ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[21,39],[21,55]]]]],[],["loc",[null,[21,27],[21,56]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[21,63],[21,70]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[22,45],[22,51]]]]],[],["loc",[null,[22,35],[22,52]]]]],["loc",[null,[21,8],[23,10]]]],
-                  ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[24,39],[24,55]]]]],[],["loc",[null,[24,27],[24,56]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[24,63],[24,70]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[25,43],[25,48]]]]],[],["loc",[null,[25,33],[25,49]]]]],["loc",[null,[24,8],[26,10]]]]
+                  ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[21,39],[21,55]]]]],[],["loc",[null,[21,27],[21,56]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[21,63],[21,70]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[22,45],[22,51]]]]],[],["loc",[null,[22,35],[22,52]]]],"tickPadding",6],["loc",[null,[21,8],[23,10]]]],
+                  ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[24,39],[24,55]]]]],[],["loc",[null,[24,27],[24,56]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[24,63],[24,70]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[25,43],[25,48]]]]],[],["loc",[null,[25,33],[25,49]]]],"tickPadding",6],["loc",[null,[24,8],[26,10]]]]
                 ],
                 locals: ["selection","x-scale","y-scale","width","height"],
                 templates: []
@@ -2483,7 +2372,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
             }());
             return {
               meta: {
-                "revision": "Ember@2.0.1+efe7782e",
+                "revision": "Ember@2.0.2+a7f49eab",
                 "loc": {
                   "source": null,
                   "start": {
@@ -2504,7 +2393,140 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                 var el0 = dom.createDocumentFragment();
                 var el1 = dom.createComment("");
                 dom.appendChild(el0, el1);
-                var el1 = dom.createTextNode("    ");
+                return el0;
+              },
+              buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+                var morphs = new Array(1);
+                morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+                dom.insertBoundary(fragment, 0);
+                dom.insertBoundary(fragment, null);
+                return morphs;
+              },
+              statements: [
+                ["block","cart-stacked-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[17,46],[17,55]]]]],[],["loc",[null,[17,34],[17,56]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[17,63],[17,78]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[17,85],[17,90]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[17,98],[17,104]]]]],[],[]],"margin","10 10 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[18,40],[18,66]]]]],0,null,["loc",[null,[17,6],[28,28]]]]
+              ],
+              locals: [],
+              templates: [child0]
+            };
+          }());
+          var child1 = (function() {
+            var child0 = (function() {
+              var child0 = (function() {
+                return {
+                  meta: {
+                    "revision": "Ember@2.0.2+a7f49eab",
+                    "loc": {
+                      "source": null,
+                      "start": {
+                        "line": 30,
+                        "column": 6
+                      },
+                      "end": {
+                        "line": 43,
+                        "column": 6
+                      }
+                    },
+                    "moduleName": "dummy/templates/gallery/bars.hbs"
+                  },
+                  arity: 5,
+                  cachedFragment: null,
+                  hasRendered: false,
+                  buildFragment: function buildFragment(dom) {
+                    var el0 = dom.createDocumentFragment();
+                    var el1 = dom.createTextNode("\n        ");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createComment("");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createTextNode("\n\n        ");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createComment("");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createTextNode("\n        ");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createComment("");
+                    dom.appendChild(el0, el1);
+                    var el1 = dom.createTextNode("\n\n");
+                    dom.appendChild(el0, el1);
+                    return el0;
+                  },
+                  buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+                    var morphs = new Array(3);
+                    morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
+                    morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
+                    morphs[2] = dom.createMorphAt(fragment,5,5,contextualElement);
+                    return morphs;
+                  },
+                  statements: [
+                    ["inline","cart-marker",[],["select",["subexpr","@mut",[["get","svg.defs",["loc",[null,[34,29],[34,37]]]]],[],[]],"shape","tick","applyTo",["subexpr","@mut",[["get","selection",["loc",[null,[34,59],[34,68]]]]],[],[]],"applyAt","marker-start"],["loc",[null,[34,8],[34,93]]]],
+                    ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[36,39],[36,55]]]]],[],["loc",[null,[36,27],[36,56]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[36,63],[36,70]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[37,45],[37,51]]]]],[],["loc",[null,[37,35],[37,52]]]],"tickPadding",6],["loc",[null,[36,8],[38,10]]]],
+                    ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[39,39],[39,55]]]]],[],["loc",[null,[39,27],[39,56]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[39,63],[39,70]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[40,43],[40,48]]]]],[],["loc",[null,[40,33],[40,49]]]],"tickPadding",6],["loc",[null,[39,8],[41,10]]]]
+                  ],
+                  locals: ["selection","x-scale","y-scale","width","height"],
+                  templates: []
+                };
+              }());
+              return {
+                meta: {
+                  "revision": "Ember@2.0.2+a7f49eab",
+                  "loc": {
+                    "source": null,
+                    "start": {
+                      "line": 29,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 44,
+                      "column": 4
+                    }
+                  },
+                  "moduleName": "dummy/templates/gallery/bars.hbs"
+                },
+                arity: 0,
+                cachedFragment: null,
+                hasRendered: false,
+                buildFragment: function buildFragment(dom) {
+                  var el0 = dom.createDocumentFragment();
+                  var el1 = dom.createComment("");
+                  dom.appendChild(el0, el1);
+                  var el1 = dom.createTextNode("    ");
+                  dom.appendChild(el0, el1);
+                  return el0;
+                },
+                buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+                  var morphs = new Array(1);
+                  morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+                  dom.insertBoundary(fragment, 0);
+                  return morphs;
+                },
+                statements: [
+                  ["block","cart-waterfall-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[30,48],[30,57]]]]],[],["loc",[null,[30,36],[30,58]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[30,65],[30,80]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[30,87],[30,92]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[30,100],[30,106]]]]],[],[]],"margin","10 10 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[31,40],[31,66]]]]],0,null,["loc",[null,[30,6],[43,30]]]]
+                ],
+                locals: [],
+                templates: [child0]
+              };
+            }());
+            return {
+              meta: {
+                "revision": "Ember@2.0.2+a7f49eab",
+                "loc": {
+                  "source": null,
+                  "start": {
+                    "line": 29,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 44,
+                    "column": 4
+                  }
+                },
+                "moduleName": "dummy/templates/gallery/bars.hbs"
+              },
+              arity: 0,
+              cachedFragment: null,
+              hasRendered: false,
+              buildFragment: function buildFragment(dom) {
+                var el0 = dom.createDocumentFragment();
+                var el1 = dom.createComment("");
                 dom.appendChild(el0, el1);
                 return el0;
               },
@@ -2512,10 +2534,11 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                 var morphs = new Array(1);
                 morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
                 dom.insertBoundary(fragment, 0);
+                dom.insertBoundary(fragment, null);
                 return morphs;
               },
               statements: [
-                ["block","cart-stacked-bars",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[17,46],[17,55]]]]],[],["loc",[null,[17,34],[17,56]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[17,63],[17,78]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[17,85],[17,90]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[17,98],[17,104]]]]],[],[]],"margin","10 10 20 60","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[18,40],[18,66]]]]],0,null,["loc",[null,[17,6],[28,28]]]]
+                ["block","if",[["get","isWaterfall",["loc",[null,[29,14],[29,25]]]]],[],0,null,["loc",[null,[29,4],[44,4]]]]
               ],
               locals: [],
               templates: [child0]
@@ -2523,7 +2546,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
           }());
           return {
             meta: {
-              "revision": "Ember@2.0.1+efe7782e",
+              "revision": "Ember@2.0.2+a7f49eab",
               "loc": {
                 "source": null,
                 "start": {
@@ -2531,7 +2554,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                   "column": 4
                 },
                 "end": {
-                  "line": 29,
+                  "line": 44,
                   "column": 4
                 }
               },
@@ -2554,15 +2577,15 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
               return morphs;
             },
             statements: [
-              ["block","if",[["get","isStacked",["loc",[null,[16,14],[16,23]]]]],[],0,null,["loc",[null,[16,4],[29,4]]]]
+              ["block","if",[["get","isStacked",["loc",[null,[16,14],[16,23]]]]],[],0,1,["loc",[null,[16,4],[44,4]]]]
             ],
             locals: [],
-            templates: [child0]
+            templates: [child0, child1]
           };
         }());
         return {
           meta: {
-            "revision": "Ember@2.0.1+efe7782e",
+            "revision": "Ember@2.0.2+a7f49eab",
             "loc": {
               "source": null,
               "start": {
@@ -2570,7 +2593,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
                 "column": 2
               },
               "end": {
-                "line": 30,
+                "line": 45,
                 "column": 2
               }
             },
@@ -2593,7 +2616,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["block","if",[["get","isGrouped",["loc",[null,[3,10],[3,19]]]]],[],0,1,["loc",[null,[3,4],[29,11]]]]
+            ["block","if",[["get","isGrouped",["loc",[null,[3,10],[3,19]]]]],[],0,1,["loc",[null,[3,4],[44,11]]]]
           ],
           locals: ["svg","width","height"],
           templates: [child0, child1]
@@ -2601,7 +2624,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
       }());
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -2609,7 +2632,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 31,
+              "line": 46,
               "column": 0
             }
           },
@@ -2632,7 +2655,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["block","data-visual",[],[],0,null,["loc",[null,[2,2],[30,18]]]]
+          ["block","data-visual",[],[],0,null,["loc",[null,[2,2],[45,18]]]]
         ],
         locals: [],
         templates: [child0]
@@ -2640,7 +2663,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
     }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2648,7 +2671,7 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 32,
+            "line": 47,
             "column": 0
           }
         },
@@ -2671,10 +2694,57 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
         return morphs;
       },
       statements: [
-        ["block","block-page",[],["visual",["subexpr","@mut",[["get","model",["loc",[null,[1,21],[1,26]]]]],[],[]]],0,null,["loc",[null,[1,0],[31,15]]]]
+        ["block","block-page",[],["visual",["subexpr","@mut",[["get","model",["loc",[null,[1,21],[1,26]]]]],[],[]]],0,null,["loc",[null,[1,0],[46,15]]]]
       ],
       locals: [],
       templates: [child0]
+    };
+  }()));
+
+});
+define('dummy/templates/gallery/bars/waterfall', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/gallery/bars/waterfall.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","outlet",["loc",[null,[1,0],[1,10]]]]
+      ],
+      locals: [],
+      templates: []
     };
   }()));
 
@@ -2687,7 +2757,7 @@ define('dummy/templates/gallery/index', ['exports'], function (exports) {
     var child0 = (function() {
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -2735,7 +2805,7 @@ define('dummy/templates/gallery/index', ['exports'], function (exports) {
     }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2789,7 +2859,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
         var child0 = (function() {
           return {
             meta: {
-              "revision": "Ember@2.0.1+efe7782e",
+              "revision": "Ember@2.0.2+a7f49eab",
               "loc": {
                 "source": null,
                 "start": {
@@ -2827,8 +2897,8 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
               return morphs;
             },
             statements: [
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[7,37],[7,53]]]]],[],["loc",[null,[7,25],[7,54]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[7,61],[7,68]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[8,43],[8,49]]]]],[],["loc",[null,[8,33],[8,50]]]]],["loc",[null,[7,6],[9,8]]]],
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[10,37],[10,53]]]]],[],["loc",[null,[10,25],[10,54]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[10,61],[10,68]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[11,41],[11,46]]]]],[],["loc",[null,[11,31],[11,47]]]]],["loc",[null,[10,6],[12,8]]]]
+              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[7,37],[7,53]]]]],[],["loc",[null,[7,25],[7,54]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[7,61],[7,68]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[8,43],[8,49]]]]],[],["loc",[null,[8,33],[8,50]]]],"ticks",8,"tickPadding",6],["loc",[null,[7,6],[9,8]]]],
+              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[10,37],[10,53]]]]],[],["loc",[null,[10,25],[10,54]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[10,61],[10,68]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[11,41],[11,46]]]]],[],["loc",[null,[11,31],[11,47]]]],"tickPadding",6],["loc",[null,[10,6],[12,8]]]]
             ],
             locals: ["selection","x-scale","y-scale","width","height"],
             templates: []
@@ -2836,7 +2906,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
         }());
         return {
           meta: {
-            "revision": "Ember@2.0.1+efe7782e",
+            "revision": "Ember@2.0.2+a7f49eab",
             "loc": {
               "source": null,
               "start": {
@@ -2867,7 +2937,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 10 20 60","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]]],0,null,["loc",[null,[3,4],[14,19]]]]
+            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 10 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]]],0,null,["loc",[null,[3,4],[14,19]]]]
           ],
           locals: ["svg","width","height"],
           templates: [child0]
@@ -2875,7 +2945,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
       }());
       return {
         meta: {
-          "revision": "Ember@2.0.1+efe7782e",
+          "revision": "Ember@2.0.2+a7f49eab",
           "loc": {
             "source": null,
             "start": {
@@ -2914,7 +2984,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
     }());
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2953,14 +3023,14 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
   }()));
 
 });
-define('dummy/templates/home', ['exports'], function (exports) {
+define('dummy/templates/guides', ['exports'], function (exports) {
 
   'use strict';
 
   exports['default'] = Ember.HTMLBars.template((function() {
     return {
       meta: {
-        "revision": "Ember@2.0.1+efe7782e",
+        "revision": "Ember@2.0.2+a7f49eab",
         "loc": {
           "source": null,
           "start": {
@@ -2968,7 +3038,136 @@ define('dummy/templates/home', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 4,
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/guides.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createUnsafeMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","model",["loc",[null,[1,0],[1,11]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('dummy/templates/home', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    var child0 = (function() {
+      return {
+        meta: {
+          "revision": "Ember@2.0.2+a7f49eab",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 5,
+              "column": 2
+            },
+            "end": {
+              "line": 7,
+              "column": 2
+            }
+          },
+          "moduleName": "dummy/templates/home.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("button");
+          dom.setAttribute(el1,"class","btn btn-default");
+          var el2 = dom.createTextNode("Guides");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
+    var child1 = (function() {
+      return {
+        meta: {
+          "revision": "Ember@2.0.2+a7f49eab",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 8,
+              "column": 2
+            },
+            "end": {
+              "line": 10,
+              "column": 2
+            }
+          },
+          "moduleName": "dummy/templates/home.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("button");
+          dom.setAttribute(el1,"class","btn btn-default");
+          var el2 = dom.createTextNode("Gallery");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 12,
             "column": 0
           }
         },
@@ -2991,16 +3190,126 @@ define('dummy/templates/home', ['exports'], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","links");
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
-      buildRenderNodes: function buildRenderNodes() { return []; },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [4]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(element0,1,1);
+        morphs[1] = dom.createMorphAt(element0,2,2);
+        return morphs;
+      },
       statements: [
-
+        ["block","link-to",["guides"],[],0,null,["loc",[null,[5,2],[7,14]]]],
+        ["block","link-to",["gallery"],[],1,null,["loc",[null,[8,2],[10,14]]]]
       ],
       locals: [],
-      templates: []
+      templates: [child0, child1]
     };
   }()));
+
+});
+define('dummy/tests/acceptance/gallery-test', ['ember', 'd3', 'qunit', 'dummy/models/visual', 'dummy/tests/helpers/start-app', 'ember-cli-d3/utils/version'], function (Ember, d3, qunit, VisualModel, startApp, version) {
+
+  'use strict';
+
+  qunit.module('Acceptance | gallery', {
+    beforeEach: function beforeEach() {
+      this.application = startApp['default']();
+    },
+
+    afterEach: function afterEach() {
+      Ember['default'].run(this.application, 'destroy');
+    }
+  });
+
+  if (version['default'].hasGlimmer) {
+    qunit.test('visiting /gallery', function (assert) {
+      visit('/gallery');
+
+      andThen(function () {
+        assert.equal(currentURL(), '/gallery');
+      });
+
+      VisualModel['default'].FIXTURES.forEach(function (_ref) {
+        var id = _ref.id;
+
+        var pathname = '/' + id.replace(/\./g, '/');
+
+        visit(pathname);
+
+        andThen(function () {
+          assert.equal(currentURL(), pathname, 'Successfully rendered ' + id + ' without errors');
+          assert.ok(d3['default'].selectAll('#ember-testing .shape').length, 'Shapes are rendered');
+        });
+      });
+    });
+  }
+
+});
+define('dummy/tests/acceptance/gallery-test.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - acceptance');
+  QUnit.test('acceptance/gallery-test.js should pass jshint', function(assert) { 
+    assert.ok(true, 'acceptance/gallery-test.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/acceptance/gallery/bars-test', ['ember', 'qunit', 'dummy/tests/helpers/start-app', 'ember-cli-d3/utils/version'], function (Ember, qunit, startApp, version) {
+
+  'use strict';
+
+  qunit.module('Acceptance | gallery/bars', {
+    beforeEach: function beforeEach() {
+      this.application = startApp['default']();
+    },
+
+    afterEach: function afterEach() {
+      Ember['default'].run(this.application, 'destroy');
+    }
+  });
+
+  if (version['default'].hasGlimmer) {
+    qunit.test('visiting /gallery/bars', function (assert) {
+      visit('/gallery/bars');
+
+      andThen(function () {
+        var bars = Ember['default'].$('#ember-testing .visual-content .bar .shape').toArray().map(function (bar) {
+          return bar.__transition__;
+        });
+
+        assert.equal(currentURL(), '/gallery/bars');
+        assert.equal(bars.length, 8, '8 bars rendered');
+
+        bars.forEach(function (checkThis) {
+          assert.ok(!checkThis, 'Found bar still transitioning');
+        });
+      });
+    });
+  }
+
+});
+define('dummy/tests/acceptance/gallery/bars-test.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/gallery');
+  QUnit.test('acceptance/gallery/bars-test.js should pass jshint', function(assert) { 
+    assert.ok(true, 'acceptance/gallery/bars-test.js should pass jshint.'); 
+  });
 
 });
 define('dummy/tests/adapters/application.jshint', function () {
@@ -3073,6 +3382,16 @@ define('dummy/tests/components/cart-lines/component.jshint', function () {
   });
 
 });
+define('dummy/tests/components/cart-marker/component.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - components/cart-marker');
+  QUnit.test('components/cart-marker/component.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-marker/component.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/components/cart-stacked-bars/component.jshint', function () {
 
   'use strict';
@@ -3080,6 +3399,16 @@ define('dummy/tests/components/cart-stacked-bars/component.jshint', function () 
   QUnit.module('JSHint - components/cart-stacked-bars');
   QUnit.test('components/cart-stacked-bars/component.js should pass jshint', function(assert) { 
     assert.ok(true, 'components/cart-stacked-bars/component.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/components/cart-waterfall-bars/component.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - components/cart-waterfall-bars');
+  QUnit.test('components/cart-waterfall-bars/component.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-waterfall-bars/component.js should pass jshint.'); 
   });
 
 });
@@ -3145,11 +3474,9 @@ define('dummy/tests/helpers/data-generator.jshint', function () {
   });
 
 });
-define('dummy/tests/helpers/graph', ['exports', 'ember'], function (exports, Ember) {
+define('dummy/tests/helpers/graph', ['exports', 'ember', 'd3'], function (exports, Ember, d3) {
 
   'use strict';
-
-
 
   exports['default'] = graph;
 
@@ -3164,7 +3491,14 @@ define('dummy/tests/helpers/graph', ['exports', 'ember'], function (exports, Emb
 
     return '<' + base + '>';
   }
-  function graph(context, _assert) {
+
+  var make = {
+    svg: function svg() {
+      var tagName = arguments.length <= 0 || arguments[0] === undefined ? 'svg' : arguments[0];
+
+      return document.createElementNS(d3['default'].ns.prefix.svg, tagName);
+    }
+  };function graph(context, _assert) {
     var container = document.getElementById('ember-testing');
     var promise;
 
@@ -3266,6 +3600,8 @@ define('dummy/tests/helpers/graph', ['exports', 'ember'], function (exports, Emb
     };
   }
 
+  exports.make = make;
+
 });
 define('dummy/tests/helpers/graph.jshint', function () {
 
@@ -3354,7 +3690,7 @@ define('dummy/tests/integration/components/cart-grouped-bars-test', ['d3', 'dumm
         var child0 = (function () {
           return {
             meta: {
-              'revision': 'Ember@2.0.1+6fe8c01e',
+              'revision': 'Ember@2.0.2+a7f49eab',
               'loc': {
                 'source': null,
                 'start': {
@@ -3398,7 +3734,7 @@ define('dummy/tests/integration/components/cart-grouped-bars-test', ['d3', 'dumm
 
         return {
           meta: {
-            'revision': 'Ember@2.0.1+6fe8c01e',
+            'revision': 'Ember@2.0.2+a7f49eab',
             'loc': {
               'source': null,
               'start': {
@@ -3435,7 +3771,7 @@ define('dummy/tests/integration/components/cart-grouped-bars-test', ['d3', 'dumm
 
       return {
         meta: {
-          'revision': 'Ember@2.0.1+6fe8c01e',
+          'revision': 'Ember@2.0.2+a7f49eab',
           'loc': {
             'source': null,
             'start': {
@@ -3522,16 +3858,6 @@ define('dummy/tests/router.jshint', function () {
   });
 
 });
-define('dummy/tests/routes/docs.jshint', function () {
-
-  'use strict';
-
-  QUnit.module('JSHint - routes');
-  QUnit.test('routes/docs.js should pass jshint', function(assert) { 
-    assert.ok(true, 'routes/docs.js should pass jshint.'); 
-  });
-
-});
 define('dummy/tests/routes/gallery.jshint', function () {
 
   'use strict';
@@ -3562,6 +3888,16 @@ define('dummy/tests/routes/gallery/bars/stacked.jshint', function () {
   });
 
 });
+define('dummy/tests/routes/gallery/bars/waterfall.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes/gallery/bars');
+  QUnit.test('routes/gallery/bars/waterfall.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery/bars/waterfall.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/routes/gallery/lines/index.jshint', function () {
 
   'use strict';
@@ -3569,6 +3905,16 @@ define('dummy/tests/routes/gallery/lines/index.jshint', function () {
   QUnit.module('JSHint - routes/gallery/lines');
   QUnit.test('routes/gallery/lines/index.js should pass jshint', function(assert) { 
     assert.ok(true, 'routes/gallery/lines/index.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/routes/guides.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes');
+  QUnit.test('routes/guides.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/guides.js should pass jshint.'); 
   });
 
 });
@@ -3632,7 +3978,6 @@ define('dummy/tests/unit/helpers/color-scale-test', ['dummy/helpers/color-scale'
 
   qunit.module('Unit | Helper | color scale');
 
-  // Replace this with your real tests.
   qunit.test('Scales preset on d3.scale.* can be accessed as alias', function (assert) {
     var checks = [[color_scale.colorScale(['category10']).range(), d3['default'].scale.category10().range()], [color_scale.colorScale(['category20']).range(), d3['default'].scale.category20().range()], [color_scale.colorScale(['category20b']).range(), d3['default'].scale.category20b().range()], [color_scale.colorScale(['category20c']).range(), d3['default'].scale.category20c().range()]];
 
@@ -3751,18 +4096,39 @@ define('dummy/tests/unit/helpers/translate-test.jshint', function () {
   });
 
 });
-define('dummy/tests/unit/mixins/d3-support-test', ['ember', 'ember-cli-d3/mixins/d3-support', 'qunit'], function (Ember, D3SupportMixin, qunit) {
+define('dummy/tests/unit/mixins/d3-support-test', ['ember', 'ember-cli-d3/mixins/d3-support', 'qunit', 'ember-cli-d3/utils/version', 'dummy/tests/helpers/graph', 'd3'], function (Ember, GraphicSupportMixin, qunit, version, graph, d3) {
 
   'use strict';
 
   qunit.module('Unit | Mixin | d3 support');
 
-  // Replace this with your real tests.
-  qunit.test('it works', function (assert) {
-    var D3SupportObject = Ember['default'].Object.extend(D3SupportMixin['default']);
-    var subject = D3SupportObject.create();
-    assert.ok(subject);
-  });
+  if (!version.hasGlimmer) {
+    qunit.test('Drive calls with binding if no glimmer', function (assert) {
+      var count = 0;
+      var GraphicSupportObject = Ember['default'].Object.extend(GraphicSupportMixin['default'], {
+        select: d3['default'].select(graph.make.svg()),
+        target: 'abc',
+        boundBinding: 'target',
+        call: function call() {
+          count++;
+        }
+      });
+      var subject = GraphicSupportObject.create();
+
+      assert.equal(subject.get('target'), 'abc');
+      assert.equal(subject.get('bound'), 'abc');
+
+      Ember['default'].run.begin();
+      subject.set('target', 'efg');
+      subject.set('target', '123');
+      Ember['default'].run.end();
+
+      assert.equal(subject.get('target'), '123');
+      assert.equal(subject.get('bound'), '123');
+
+      assert.equal(count, 1);
+    });
+  }
 
 });
 define('dummy/tests/unit/mixins/d3-support-test.jshint', function () {
@@ -3772,6 +4138,35 @@ define('dummy/tests/unit/mixins/d3-support-test.jshint', function () {
   QUnit.module('JSHint - unit/mixins');
   QUnit.test('unit/mixins/d3-support-test.js should pass jshint', function(assert) { 
     assert.ok(true, 'unit/mixins/d3-support-test.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/unit/mixins/margin-convention-test', ['ember', 'ember-cli-d3/mixins/d3-support', 'qunit'], function (Ember, MarginConventionMixin, qunit) {
+
+  'use strict';
+
+  qunit.module('Unit | Mixin | margin convention');
+
+  qunit.test('Calculate content size based on set size and margin', function (assert) {
+    var MarginConventionObject = Ember['default'].Object.extend(MarginConventionMixin['default'], {});
+    var subject = MarginConventionObject.create({
+      margin: '10 20 30 40',
+      width: 400,
+      height: 300
+    });
+
+    assert.equal(subject.get('contentWidth', 240));
+    assert.equal(subject.get('contentHeight', 260));
+  });
+
+});
+define('dummy/tests/unit/mixins/margin-convention-test.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - unit/mixins');
+  QUnit.test('unit/mixins/margin-convention-test.js should pass jshint', function(assert) { 
+    assert.ok(true, 'unit/mixins/margin-convention-test.js should pass jshint.'); 
   });
 
 });
@@ -3806,6 +4201,131 @@ define('dummy/tests/unit/utils/css-test.jshint', function () {
   QUnit.module('JSHint - unit/utils');
   QUnit.test('unit/utils/css-test.js should pass jshint', function(assert) { 
     assert.ok(true, 'unit/utils/css-test.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/unit/utils/d3-test', ['qunit', 'ember-cli-d3/utils/d3', 'd3'], function (qunit, d3, _d3) {
+
+  'use strict';
+
+  qunit.module('Unit | Utility | d3');
+
+  qunit.test('d3#guid', function (assert) {
+    var guids = _d3['default'].range(10).map(d3.guid).map(function (guid) {
+      return guid.substring(13);
+    }).map(Number);
+
+    var checker = _d3['default'].range(guids[0], guids[guids.length - 1] + 1, 1);
+
+    assert.deepEqual(guids, checker, 'Guids are uniq and in sequence');
+  });
+
+  qunit.test('d3#accessor', function (assert) {
+    var checker = Math.random();
+    var nested = {
+      shallow: checker,
+      path1: {
+        path2: {
+          path3: {
+            prop: checker
+          }
+        }
+      }
+    };
+
+    assert.equal(d3.accessor('shallow')(nested), checker, 'Accessor can access shallow property');
+    assert.equal(d3.accessor('path1.path2.path3.prop')(nested), checker, 'Accessor can access deep property');
+  });
+
+  qunit.test('d3#assign', function (assert) {
+    var assignable = _d3['default'].svg.axis();
+    var properties = {
+      orient: 'right',
+      innerTickSize: 10,
+      outerTickSize: 20
+    };
+
+    d3.assign(assignable, properties);
+
+    assert.equal(assignable.orient(), properties.orient, '`orient` assigned');
+    assert.equal(assignable.innerTickSize(), properties.innerTickSize, '`innerTickSize` assigned');
+    assert.equal(assignable.outerTickSize(), properties.outerTickSize, '`outerTickSize` assigned');
+  });
+
+  qunit.test('d3#translateX', function (assert) {
+    assert.equal(d3.translateX(_d3['default'].functor(10))(), 'translate(10 0)', '`translateX` accepts functions');
+    assert.equal(d3.translateX(10)(), 'translate(10 0)', '`translateX` accepts number also');
+  });
+
+  qunit.test('d3#rotate', function (assert) {
+    assert.equal(d3.rotate(_d3['default'].functor(10))(), 'rotate(10)', '`rotate` accepts functions');
+    assert.equal(d3.rotate(10)(), 'rotate(10)', '`rotate` accepts number also');
+  });
+
+  qunit.test('d3#join.parseDataExpr', function (assert) {
+    var _join$parseDataExpr = d3.join.parseDataExpr('path.to.data[path.to.key]');
+
+    var dataPath = _join$parseDataExpr.dataPath;
+    var keyPath = _join$parseDataExpr.keyPath;
+
+    var _join$parseDataExpr2 = d3.join.parseDataExpr([1, 2, 3]);
+
+    var inlineData = _join$parseDataExpr2.inlineData;
+
+    assert.equal(dataPath, 'path.to.data', 'Parsed data path');
+    assert.equal(keyPath, 'path.to.key', 'Parsed key path');
+    assert.deepEqual(inlineData, [1, 2, 3], 'Allow inline data');
+  });
+
+  qunit.test('d3#join.parseCssExpr', function (assert) {
+    var _join$parseCssExpr = d3.join.parseCssExpr('rect.bar');
+
+    var rectTag = _join$parseCssExpr.tagName;
+    var barCls = _join$parseCssExpr.cssName;
+
+    var _join$parseCssExpr2 = d3.join.parseCssExpr('.group');
+
+    var gTag = _join$parseCssExpr2.tagName;
+    var groupCls = _join$parseCssExpr2.cssName;
+
+    assert.equal(rectTag, 'rect', 'Parsed tagName');
+    assert.equal(barCls, 'bar', 'Parsed class name');
+
+    assert.equal(gTag, 'g', 'default tag is <g>');
+    assert.equal(groupCls, 'group', 'Parsed class name');
+  });
+
+  qunit.test('d3#join', function (assert) {
+    var data = [0, 1];
+    var chart = d3.join(data, '.group', {
+      update: function update(selection) {
+        selection.attr('transform', d3.translateX(function (index) {
+          return index * 10;
+        }));
+      }
+    });
+    var svg = document.createElementNS(_d3['default'].ns.prefix.svg, 'svg');
+    var update = chart(_d3['default'].select(svg));
+    var children = svg.childNodes;
+
+    assert.equal(typeof update.enter, 'function', '`join` returns update selection with enter');
+    assert.equal(typeof update.exit, 'function', '`join` returns update selection with exit');
+
+    assert.equal(data.length, children.length, '`join` update selection with same number of children');
+
+    assert.equal(typeof chart.enter, 'function', '`join` exposes enter on itself');
+    assert.equal(typeof chart.update, 'function', '`join` exposes update on itself');
+    assert.equal(typeof chart.exit, 'function', '`join` exposes exit on itself');
+  });
+
+});
+define('dummy/tests/unit/utils/d3-test.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - unit/utils');
+  QUnit.test('unit/utils/d3-test.js should pass jshint', function(assert) { 
+    assert.ok(true, 'unit/utils/d3-test.js should pass jshint.'); 
   });
 
 });
@@ -3854,25 +4374,6 @@ define('dummy/tests/unit/utils/lodash-test', ['qunit', 'ember-cli-d3/utils/lodas
     expected = [undefined, 5, 7, 10, 20];
 
     assert.deepEqual(actual, expected);
-  });
-
-  qunit.test('lodash#wrap', function (assert) {
-    var args = [Math.random(), Math.random()].map(String);
-    var wrappee = function wrappee(arg) {
-      assert.equal(arg, args[0], 'Check wrappee received');
-      return args[0];
-    };
-    var wrapper = lodash.wrap(wrappee, function (fn) {
-      for (var _len = arguments.length, args2 = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args2[_key - 1] = arguments[_key];
-      }
-
-      assert.deepEqual(args2, args, 'Check wrapped arguments');
-      return fn.apply(this, args2);
-    });
-    var result = wrapper(args[0], args[1]);
-
-    assert.equal(result, args[0], 'Check return value');
   });
 
 });
@@ -4007,7 +4508,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.4.0+9d58e2fd"});
+  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.5.0+6e587980"});
 }
 
 /* jshint ignore:end */

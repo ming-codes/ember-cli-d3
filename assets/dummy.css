@@ -1,5 +1,7 @@
-h1 {
-  font-size: 66px; }
+.home {
+  text-align: center; }
+  .home h1 {
+    font-size: 60px; }
 
 .gallery .row {
   list-style: none; }
@@ -31,14 +33,13 @@ h1 {
   margin-bottom: 5px;
   padding-bottom: 0; }
 
-h1 {
-  font-size: 66px; }
+.home {
+  text-align: center; }
+  .home h1 {
+    font-size: 60px; }
 
 .aspect-ratio {
-  /*width: 50%;*/
-  /* whatever width you want */
-  display: block;
-  position: relative; }
+  display: block; }
 
 .aspect-ratio:after {
   display: block;
@@ -66,3 +67,7 @@ h1 {
 
 .tick line {
   stroke: black; }
+
+.guides td, .guides th {
+  border: 1px solid;
+  padding: 4px; }
