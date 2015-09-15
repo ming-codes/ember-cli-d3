@@ -52,7 +52,13 @@ The `join` util function in the `d3` utility module implements the fundamental D
 
 #### ### `dataExpr`
 
-`dataExpr` is a path expression that tells `join` where to grab data on the component to do the join with. You may optionally specify a second key path to show where to grab the key path on the component to extract identifiers for each datum. For example, the `dataExpr` of `model.data[model.key]` with a will join the array found at `model.data` with key found at `model.key`.
+`dataExpr` accepts 3 types of arguments:
+
+* `string` will be interpreted as a path expression that tells `join` where to grab data on the component to do the join with. You may optionally specify a second key path to show where to grab the key path on the component to extract identifiers for each datum. For example, the `dataExpr` of `model.data[model.key]` with a will join the array found at `model.data` with key found at `model.key`.
+* `array` will inline the data into the join.
+* `function` will act as an accessor to pull data from parent selection.
+
+Passing in `array` or `function` will not allow you to specify a key. If you have a need for key, please put the `array` or `function` on the enclosing object, then use a `string` path expression to specify key.
 
 #### ### `cssExpr`
 
