@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import d3 from 'd3';
-import layout from './template';
+import hbs from 'htmlbars-inline-precompile';
 
 import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
@@ -11,7 +11,7 @@ import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
-  layout,
+  layout: hbs`{{yield seriesSelection xScale yScale contentWidth contentHeight}}`,
 
   defaultMargin: box(60),
 
