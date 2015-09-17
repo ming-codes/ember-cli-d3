@@ -7,14 +7,11 @@ export function randomInt() {
   return Math.floor(Date.now() * Math.random());
 }
 
-export function dimensional(series, count = 4, options = {}) {
+export function dimensional(series, count = 8, options = {}) {
   var generator = d3.random.normal(options.mean || 2000, options.stddev || 2000);
-  var scale = d3.scale.linear()
-    .domain([ 0, count ])
-    .range([ randomInt(), randomInt() ].sort());
 
   return d3.range(count).map(id => {
-    var base = { id, state: states[id], timestamp: new Date(scale(id)) };
+    var base = { id, state: states[id], timestamp: new Date(id * 3.15569e10 * 2) };
 
     series.forEach(series => {
       base[series] = generator();
