@@ -3,6 +3,9 @@ import d3 from 'd3';
 import { hasGlimmer } from 'ember-cli-d3/utils/version';
 
 const GraphicSupport = Ember.Mixin.create({
+  concatenatedProperties: [ 'requiredProperties' ],
+  requiredProperties: [ 'select' ],
+
   tagName: '',
 
   select: null,
@@ -13,7 +16,7 @@ const GraphicSupport = Ember.Mixin.create({
   didReceiveAttrs() {
     var selection = this.get('select');
 
-    if (selection && !this.isDestroying) {
+    if (selection && !this.isDestroying && this.get('requiredProperties').map(prop => Boolean(!!this.get(prop))).reduce(((prev, cur) => prev && cur), true)) {
       if (Ember.typeOf(selection) === 'instance') {
         selection = selection.get('selection');
       }
