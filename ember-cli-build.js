@@ -49,6 +49,7 @@ module.exports = function(defaults) {
   });
 
   app.import('bower_components/bootstrap/dist/css/bootstrap.css');
+  app.import('bower_components/github-markdown-css/github-markdown.css');
   app.import('bower_components/bootstrap/dist/js/bootstrap.js');
 
   return app.toTree(new DocWriter([ 'docs' ]));
