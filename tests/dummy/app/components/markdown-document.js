@@ -13,13 +13,12 @@ export default Ember.Component.extend({
   didRender() {
     var headers = slice.call(this.$('h1, h2, h3, h4, h5'))
 
-    var toc = headers.map(header => {
-    });
+    var toc = headers.map(header => header.textContent);
 
     headers.forEach(header => {
       header.id = header.textContent.toLowerCase().replace(/ /g, '-');
     });
 
-    this.set('toc', '');
+    this.set('toc', toc);
   }
 });
