@@ -1,9 +1,11 @@
 
 # Introduction
 
-`ember-cli-d3` is an Ember addon to aid with integrating D3 data visuals into Ember application. Like D3 itself, it is not the goal of this project be become a widget library. Therefore, there are no data visuals packaged along with the addon. Pre-built data visuals are available as part of the gallery to act as a starting point for you. They are, however, will not be officially maintained.
+*ember-cli-d3* is an Ember addon to aid with integrating D3 data visuals into Ember application. Like D3 itself, it is not the goal of this project be become a widget library. Therefore, there are no data visuals packaged along with the addon. Pre-built data visuals are available as part of the gallery to act as a starting point for you. They are, however, will not be officially maintained.
 
 # Getting Started
+
+## Install
 
 The first thing you'll need is to install the addon.
 
@@ -13,22 +15,35 @@ The first thing you'll need is to install the addon.
     <th>cli command</th>
   </tr>
   <tr>
-    <td>`> 0.2.3`</td>
-    <td>`ember install ember-cli-d3`</td>
+    <td><code>> 0.2.3</code></td>
+    <td><code>ember install ember-cli-d3</code></td>
   </tr>
   <tr>
-    <td>`> 0.1.5 < 0.2.3`</td>
-    <td>`ember install:addon ember-cli-d3`</td>
+    <td><code>> 0.1.5 < 0.2.3</code></td>
+    <td><code>ember install:addon ember-cli-d3</code></td>
   </tr>
   <tr>
-    <td>`< 0.1.4`</td>
-    <td>`npm install --save-dev ember-cli-d3`<br>`ember generate ember-cli-d3`</td>
+    <td><code>< 0.1.4</code></td>
+    <td><code>npm install --save-dev ember-cli-d3</code><br><code>ember generate ember-cli-d3</code></td>
   </tr>
 </table>
 
+## Configuration
+
+Starting from `0.3.0`, *ember-cli-d3* integrates with *d3-plugins-dist* to let you include plugins as ES6 modules by configuring an options.
+
+```javascript
+  var app = new EmberApp(defaults, {
+    // Add options here
+    d3: {
+      plugins: [ 'sankey', 'hexbin' ]
+    }
+  });
+```
+
 # Concepts and Principles
 
-`ember-cli-d3` follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.
+*ember-cli-d3* follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.
 
 # Core Classes
 
@@ -70,7 +85,11 @@ The last `options` argument lets you define how `enter`, `update`, and `exit` sh
 
 ## `graph` Test Helper
 
+TODO
+
 # Naming Convention
+
+TODO
 
 * ...Layer
 * ...Layout
