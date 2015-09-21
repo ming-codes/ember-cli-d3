@@ -29,8 +29,8 @@ export default Ember.Component.extend(GraphicSupport, {
       var scale = this.get('xScale');
 
       selection
-          .style('stroke', 'black')
-          .style('stroke-width', 5)
+          .style('stroke', 'red')
+          .style('stroke-width', 2)
           .attr('y1', 0)
           .attr('y2', this.get('height'))
           .attr('x1', xPos)

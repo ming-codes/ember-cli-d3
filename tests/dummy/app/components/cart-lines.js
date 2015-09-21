@@ -13,7 +13,7 @@ import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
-  layout: hbs`{{yield seriesSel exportedXScale exportedYScale contentWidth contentHeight trackedModel}}`,
+  layout: hbs`{{yield seriesSel exportedXScale exportedYScale contentWidth contentHeight}}`,
 
   stroke: d3.scale.category10(),
 
@@ -21,10 +21,11 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   orient: null, // TODO
 
   model: null,
-  trackedModel: null,
 
   width: 300,
   height: 150,
+
+  onhover: null,
 
   exportedXScale: null,
   computedXScale: computed('contentWidth', 'model.data', 'model.key', {
@@ -82,15 +83,17 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   tracker: join([0], 'rect.backdrop', {
     update(selection) {
       var self = this;
+      var onhover = this.get('onhover');
       var data = this.get('model.data');
+      var series = self.get('model.series');
       var key = this.get('model.key');
 
       var width = this.get('contentWidth');
       var height = this.get('contentHeight');
       var margin = this.get('margin');
 
-      var original = this.get('computedXScale');
-      var domain = original.range();
+      var xScale = this.get('computedXScale');
+      var domain = xScale.range();
       var ticks = data.map(accessor(key));
       var band = (domain[1] - domain[0]) / ticks.length
 
@@ -104,28 +107,19 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           .attr('width', width)
           .attr('height', height);
 
+      function closestData([ x, y ]) {
+        return data[scale(x)];
+      }
+
       // This is quite expensive; only do this if we're watching
-      selection.on('mousemove.tracker', function () {
-        var index = scale(d3.mouse(this)[0]);
-        var series = self.get('model.series');
-        var key = self.get('model.key');
-
-        self.set('trackedModel', {
-          data: [ data[index] ],
-          series,
-          key
+      if (onhover) {
+        selection.on('mousemove.tracker', function () {
+          onhover({ data: [ closestData(d3.mouse(this)) ], series, key });
         });
-      });
-      selection.on('mouseout.tracker', function () {
-        var series = self.get('model.series');
-        var key = self.get('model.key');
-
-        self.set('trackedModel', {
-          data: [],
-          series,
-          key
+        selection.on('mouseout.tracker', function () {
+          onhover({ data: [], series, key });
         });
-      });
+      }
     }
   }),
 

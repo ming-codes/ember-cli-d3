@@ -19,9 +19,17 @@ export default Ember.Controller.extend({
   series: [ 'dogs', 'cats' ],
   key: 'timestamp',
 
+  tracked: null,
+
   dimensionalData: computed('data', 'series', 'key', {
     get() {
       return DimensionalDataModel.create(this.getProperties('data', 'series', 'key'));
     }
   }),
+
+  actions: {
+    track(model) {
+      this.set('tracked', model);
+    }
+  }
 });

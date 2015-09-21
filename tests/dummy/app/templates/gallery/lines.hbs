@@ -1,10 +1,10 @@
 {{#block-page visual=model}}
   {{#data-visual as |svg width height|}}
     {{#cart-lines select=(transition svg.chart) model=dimensionalData width=width height=height
-          margin="10 30 25 65" stroke=(color-scale "category10")
-        as |selection xScale yScale width height selected|}}
+          margin="10 30 25 65" stroke=(color-scale "category10") onhover=(action "track")
+        as |selection xScale yScale width height|}}
 
-      {{cart-tracker select=svg.chart.tracker model=selected
+      {{cart-tracker select=svg.chart.tracker model=tracked
         xScale=xScale yScale=yScale width=width height=height
       }}
 
