@@ -7,38 +7,13 @@
 [![Dependency Status](https://david-dm.org/ming-codes/ember-cli-d3.svg)](https://david-dm.org/ming-codes/ember-cli-d3)
 [![devDependency Status](https://david-dm.org/ming-codes/ember-cli-d3/dev-status.svg)](https://david-dm.org/ming-codes/ember-cli-d3#info=devDependencies)
 
-`ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework
-to integrate [d3](http://d3js.org) visualizations into Ember applications.
+`ember-cli-d3` is an [ember-cli](http://www.ember-cli.com/) addon to provide a framework to integrate [d3](http://d3js.org) visualizations into Ember applications.
 
 Just like D3 itself, it is not the goal of this project to become a widget library. Instead, this project will provide a framework to integrate D3 visuals into Ember application. This includes integrating `d3.timer` with Ember's run loop, `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
 
-Please note that this project is in beta stage and I'm seeking feedback on how it
-can be improved.
+Please note that this project is in beta stage and I'm seeking feedback on how it can be improved.
 
-## Gallery
-
-The dummy app (and [github pages](http://ming-codes.github.io/ember-cli-d3/)) of this addon serves as an gallery of visuals that can be produced by this addon.
-
-## Composability
-
-`ember-cli-d3` follows the composability pattern of d3 (`.call`) while utilizing the advantage of Ember's yielding components. The result is that it allows you to easily compose different components together while at the same time tap into the massive d3 plugin community to create ambitious visualization.
-
-## Test Helpers
-
-`ember-cli-d3` offers first class support on testing graphs. This includes integration with `d3.timer` to make Ember aware of any d3 transitions. See `tests/integration` for example on how to use the test helpers.
-
-## Plugins
-
-Starting from `0.3.0`, `ember-cli-d3` integrates with `d3-plugins-dist` to let you include plugins as ES6 modules by configuring an options.
-
-```javascript
-  var app = new EmberApp(defaults, {
-    // Add options here
-    d3: {
-      plugins: [ 'sankey', 'hexbin' ]
-    }
-  });
-```
+[Documentation](http://ming-codes.github.io/ember-cli-d3/#/guides) and [Demo](http://ming-codes.github.io/ember-cli-d3/#/gallery) can be found on the [github pages](http://ming-codes.github.io/ember-cli-d3/#/).
 
 ## Resources
 
