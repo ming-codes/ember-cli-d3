@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import d3 from 'd3';
 import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -44,7 +45,7 @@ export default Ember.Component.extend(GraphicSupport, {
 
   call(selection) {
     selection
-        .attr('transform', `translate(${this.get('offsetX')} ${this.get('offsetY')})`)
+        .attr('transform', `translate(${this.get('offsetX')} ${this.get('offsetY')})`);
 
     this.line(selection);
   }

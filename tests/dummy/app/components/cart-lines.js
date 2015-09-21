@@ -95,7 +95,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var xScale = this.get('computedXScale');
       var domain = xScale.range();
       var ticks = data.map(accessor(key));
-      var band = (domain[1] - domain[0]) / ticks.length
+      var band = (domain[1] - domain[0]) / ticks.length;
 
       var scale = d3.scale.quantize()
         .domain([ domain[0] - band / 2, domain[1] + band / 2 ])
