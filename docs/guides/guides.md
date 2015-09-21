@@ -36,11 +36,16 @@ Starting from `0.3.0`, *ember-cli-d3* integrates with *d3-plugins-dist* to let y
   var app = new EmberApp(defaults, {
     // Add options here
     d3: {
+      // ember-cli-d3 version >= 0.3.0 and < 0.7.0
       plugins: [ 'sankey', 'hexbin' ]
+      // ember-cli-d3 version >= 0.7.0
+      plugins: {
+        'mbostock': [ 'sankey' ],
+        'emeeks': [ 'adjacency-matrix' ]
+      }
     }
   });
 ```
-
 # Concepts and Principles
 
 *ember-cli-d3* follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.

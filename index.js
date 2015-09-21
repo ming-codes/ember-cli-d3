@@ -4,6 +4,9 @@ var merge = require('broccoli-merge-trees');
 
 var path = require('path');
 
+var $reduce = require('lodash/collection/reduce');
+var $each = require('lodash/collection/each');
+
 /* jshint node: true */
 'use strict';
 
@@ -32,12 +35,14 @@ module.exports = {
     });
 
     var pluginPath = path.join(path.dirname(require.resolve('d3-plugins-dist')), 'dist');
-    var plugins = require('d3-plugins-dist').map(function (plugin) {
-      return funnel(pluginPath, {
-        destDir: path.join('d3-plugins-dist', 'dist'),
-        files: [ path.join(plugin, 'named-amd', 'main.js' ) ]
-      });
-    });
+    var plugins = $reduce(require('d3-plugins-dist'), function (accum, plugins, author) {
+      return accum.concat($reduce(plugins, function (accum, type, plugin) {
+        return accum.concat(funnel(pluginPath, {
+          destDir: path.join('d3-plugins-dist', 'dist'),
+          files: [ path.join(author, plugin, 'named-amd', 'main.js' ) ]
+        }));
+      }, []));
+    }, []);
 
     return merge([].concat(d3, shim, ext, plugins));
   },
@@ -62,8 +67,10 @@ module.exports = {
     app.import(path.join('vendor', 'ember-d3-ext', 'ember-d3-ext.js'));
     // DO NOT FORGET to include them in package.json too
 
-    (options.plugins || []).forEach(function (plugin) {
-      app.import(path.join('vendor', 'd3-plugins-dist', 'dist', plugin, 'named-amd', 'main.js'));
+    $each(options.plugins || {}, function (plugins, author) {
+      $each(plugins, function (plugin) {
+        app.import(path.join('vendor', 'd3-plugins-dist', 'dist', author, plugin, 'named-amd', 'main.js'));
+      });
     });
   },
 };

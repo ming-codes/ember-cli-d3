@@ -41,7 +41,10 @@ DocWriter.prototype.build = function() {
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
     d3: {
-      plugins: [ 'sankey', 'hexbin' ]
+      plugins: {
+        'mbostock': [ 'sankey' ],
+        'emeeks': [ 'adjacency-matrix' ]
+      }
     },
     sassOptions: {
       extension: 'scss'
