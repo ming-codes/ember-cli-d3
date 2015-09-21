@@ -92,6 +92,14 @@ The last `options` argument lets you define how `enter`, `update`, and `exit` sh
 
 TODO
 
+# Patterns
+
+TODO
+
+## Interactivity
+
+TODO
+
 # Naming Convention
 
 TODO
