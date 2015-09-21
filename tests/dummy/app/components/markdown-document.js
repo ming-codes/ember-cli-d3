@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   content: null,
 
   didRender() {
-    var headers = slice.call(this.$('h1, h2, h3, h4, h5'))
+    var headers = slice.call(this.$('h1, h2, h3, h4, h5'));
 
     var toc = headers.map(header => header.textContent);
 
