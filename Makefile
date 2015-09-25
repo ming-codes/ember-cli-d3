@@ -13,3 +13,7 @@ github-pages:
 	git add tests
 	git add guides.html
 	git commit
+
+clean:
+	-rm -rf tmp
+	-rm -rf dist
