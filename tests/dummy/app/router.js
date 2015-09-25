@@ -10,13 +10,13 @@ Router.map(function() {
   this.route('guides');
   this.route('gallery', function () {
     this.route('bars', function () {
+      this.route('grouped');
       this.route('stacked');
       this.route('waterfall');
     });
-    this.route('lines', function () {
-      this.route('area');
-      this.route('stacked');
-    });
+    this.route('lines');
+    this.route('area');
+    this.route('stacked');
     //this.route('histogram');
   });
 });
