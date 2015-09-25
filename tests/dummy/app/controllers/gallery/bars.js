@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
 
   dataSource: Ember.inject.service('dimensional-data-source'),
 
-  isGrouped: Ember.computed.equal('app.currentRouteName', 'gallery.bars.index'),
+  isGrouped: Ember.computed.equal('app.currentRouteName', 'gallery.bars.grouped'),
   isStacked: Ember.computed.equal('app.currentRouteName', 'gallery.bars.stacked'),
   isWaterfall: Ember.computed.equal('app.currentRouteName', 'gallery.bars.waterfall'),
 

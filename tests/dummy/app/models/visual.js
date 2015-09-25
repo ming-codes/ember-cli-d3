@@ -14,7 +14,7 @@ const VisualModel = DS.Model.extend({
 VisualModel.reopenClass({
   FIXTURES: [
     {
-      id: 'gallery.bars',
+      id: 'gallery.bars.grouped',
       name: 'Grouped Bar Chart',
       alias: [],
       component: 'cart-grouped-bars',
@@ -37,7 +37,7 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
-      variations: [ 'gallery.bars', 'gallery.bars.waterfall' ],
+      variations: [ 'gallery.bars.grouped', 'gallery.bars.waterfall' ],
       description: `
         Bar chart uses either vertical or horizontal bars to
         compare quantatative data accross multiple categories.
@@ -54,7 +54,7 @@ VisualModel.reopenClass({
       alias: [],
       component: 'cart-waterfall-bars',
       modelType: 'dimensional',
-      variations: [ 'gallery.bars', 'gallery.bars.stacked' ],
+      variations: [ 'gallery.bars.grouped', 'gallery.bars.stacked' ],
       description: `
       `
     },
