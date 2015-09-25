@@ -1,6 +1,6 @@
-.home {
+.home section {
   text-align: center; }
-  .home h1 {
+  .home section h1 {
     font-size: 60px; }
 
 .gallery .row {
@@ -33,9 +33,9 @@
   margin-bottom: 5px;
   padding-bottom: 0; }
 
-.home {
+.home section {
   text-align: center; }
-  .home h1 {
+  .home section h1 {
     font-size: 60px; }
 
 .aspect-ratio {
@@ -71,3 +71,6 @@
 .guides td, .guides th {
   border: 1px solid;
   padding: 4px; }
+
+.guides code {
+  color: gray; }

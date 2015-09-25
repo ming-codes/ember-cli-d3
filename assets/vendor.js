@@ -73550,7 +73550,6 @@ define("ember/load-initializers",
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-
 ;(function() {
   /* globals define, d3 */
 
@@ -73588,6 +73587,8 @@ define("ember/load-initializers",
   if (!d3.select('head base').empty()) {
     sProto.style = wrap(sProto.style, urlRefShim);
     tProto.style = wrap(tProto.style, urlRefShim);
+    sProto.attr = wrap(sProto.attr, urlRefShim);
+    tProto.attr = wrap(tProto.attr, urlRefShim);
 
     function urlRefShim(fn, name, value, priority) {
       if (~urlStyles.indexOf(name)) {
@@ -73656,7 +73657,7 @@ define("ember/load-initializers",
   });
 })();
 
-;define("d3-plugins/sankey",
+;define("d3-plugins/mbostock/sankey",
   ["d3","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -73958,118 +73959,159 @@ define("ember/load-initializers",
       return sankey;
     };
   });
-;define("d3-plugins/hexbin",
+;define("d3-plugins/emeeks/adjacency-matrix",
   ["d3","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
+
     var d3 = __dependency1__["default"] || __dependency1__;
 
     __exports__["default"] = function() {
-      var width = 1,
-          height = 1,
-          r,
-          x = d3_hexbinX,
-          y = d3_hexbinY,
-          dx,
-          dy;
+      var directed = true,
+        size = [1,1],
+        nodes = [],
+        edges = [],
+        edgeWeight = function (d) {return 1},
+        nodeID = function (d) {return d.id};
 
-      function hexbin(points) {
-        var binsById = {};
+      function matrix() {
+        var width = size[0],
+        height = size[1],
+        nodeWidth = width / nodes.length,
+        nodeHeight = height / nodes.length,
+        constructedMatrix = [],
+        matrix = [],
+        edgeHash = {},
+        xScale = d3.scale.linear().domain([0,nodes.length]).range([0,width]),
+        yScale = d3.scale.linear().domain([0,nodes.length]).range([0,height]);
 
-        points.forEach(function(point, i) {
-          var py = y.call(hexbin, point, i) / dy, pj = Math.round(py),
-              px = x.call(hexbin, point, i) / dx - (pj & 1 ? .5 : 0), pi = Math.round(px),
-              py1 = py - pj;
+        nodes.forEach(function(node, i) {
+          node.sortedIndex = i;
+        })
 
-          if (Math.abs(py1) * 3 > 1) {
-            var px1 = px - pi,
-                pi2 = pi + (px < pi ? -1 : 1) / 2,
-                pj2 = pj + (py < pj ? -1 : 1),
-                px2 = px - pi2,
-                py2 = py - pj2;
-            if (px1 * px1 + py1 * py1 > px2 * px2 + py2 * py2) pi = pi2 + (pj & 1 ? 1 : -1) / 2, pj = pj2;
+        edges.forEach(function(edge) {
+          var constructedEdge = {source: edge.source, target: edge.target, weight: edgeWeight(edge)};
+          if (typeof edge.source == "number") {
+            constructedEdge.source = nodes[edge.source];
           }
+          if (typeof edge.target == "number") {
+            constructedEdge.target = nodes[edge.target];
+          }
+          var id = nodeID(constructedEdge.source) + "-" + nodeID(constructedEdge.target);
 
-          var id = pi + "-" + pj, bin = binsById[id];
-          if (bin) bin.push(point); else {
-            bin = binsById[id] = [point];
-            bin.i = pi;
-            bin.j = pj;
-            bin.x = (pi + (pj & 1 ? 1 / 2 : 0)) * dx;
-            bin.y = pj * dy;
+          if (directed === false && constructedEdge.source.sortedIndex < constructedEdge.target.sortedIndex) {
+            id = nodeID(constructedEdge.target) + "-" + nodeID(constructedEdge.source);
+          }
+          if (!edgeHash[id]) {
+            edgeHash[id] = constructedEdge;
+          }
+          else {
+            edgeHash[id].weight = edgeHash[id].weight + constructedEdge.weight;
           }
         });
 
-        return d3.values(binsById);
-      }
+        console.log("nodes", nodes, nodes.length)
 
-      function hexagon(radius) {
-        var x0 = 0, y0 = 0;
-        return d3_hexbinAngles.map(function(angle) {
-          var x1 = Math.sin(angle) * radius,
-              y1 = -Math.cos(angle) * radius,
-              dx = x1 - x0,
-              dy = y1 - y0;
-          x0 = x1, y0 = y1;
-          return [dx, dy];
+        nodes.forEach(function (sourceNode, a) {
+          nodes.forEach(function (targetNode, b) {
+            var grid = {id: nodeID(sourceNode) + "-" + nodeID(targetNode), source: sourceNode, target: targetNode, x: xScale(b), y: yScale(a), weight: 0, height: nodeHeight, width: nodeWidth};
+            var edgeWeight = 0;
+            if (edgeHash[grid.id]) {
+              edgeWeight = edgeHash[grid.id].weight;
+              grid.weight = edgeWeight;
+            };
+            if (directed === true || b < a) {
+              matrix.push(grid);
+              if (directed === false) {
+                var mirrorGrid = {id: nodeID(sourceNode) + "-" + nodeID(targetNode), source: sourceNode, target: targetNode, x: xScale(a), y: yScale(b), weight: 0, height: nodeHeight, width: nodeWidth};
+                mirrorGrid.weight = edgeWeight;
+                matrix.push(mirrorGrid);
+              }
+            }
+          });
         });
+
+        console.log("matrix", matrix, matrix.length)
+
+        return matrix;
       }
 
-      hexbin.x = function(_) {
-        if (!arguments.length) return x;
-        x = _;
-        return hexbin;
-      };
+      matrix.directed = function(x) {
+        if (!arguments.length) return directed;
+        directed = x;
+        return matrix;
+      }
 
-      hexbin.y = function(_) {
-        if (!arguments.length) return y;
-        y = _;
-        return hexbin;
-      };
+      matrix.size = function(x) {
+        if (!arguments.length) return size;
+        size = x;
+        return matrix;
+      }
 
-      hexbin.hexagon = function(radius) {
-        if (arguments.length < 1) radius = r;
-        return "m" + hexagon(radius).join("l") + "z";
-      };
+      matrix.nodes = function(x) {
+        if (!arguments.length) return nodes;
+        nodes = x;
+        return matrix;
+      }
 
-      hexbin.centers = function() {
-        var centers = [];
-        for (var y = 0, odd = false, j = 0; y < height + r; y += dy, odd = !odd, ++j) {
-          for (var x = odd ? dx / 2 : 0, i = 0; x < width + dx / 2; x += dx, ++i) {
-            var center = [x, y];
-            center.i = i;
-            center.j = j;
-            centers.push(center);
-          }
+      matrix.links = function(x) {
+        if (!arguments.length) return edges;
+        edges = x;
+        return matrix;
+      }
+
+      matrix.edgeWeight = function(x) {
+        if (!arguments.length) return edgeWeight;
+        if (typeof x === "function") {
+          edgeWeight = x;
         }
-        return centers;
-      };
+        else {
+          edgeWeight = function () {return x};
+        }
+        return matrix;
+      }
 
-      hexbin.mesh = function() {
-        var fragment = hexagon(r).slice(0, 4).join("l");
-        return hexbin.centers().map(function(p) { return "M" + p + "m" + fragment; }).join("");
-      };
+      matrix.nodeID = function(x) {
+        if (!arguments.length) return nodeID;
+        if (typeof x === "function") {
+          nodeID = x;
+        }
+        return matrix;
+      }
 
-      hexbin.size = function(_) {
-        if (!arguments.length) return [width, height];
-        width = +_[0], height = +_[1];
-        return hexbin;
-      };
+      matrix.xAxis = function(calledG) {
+        var nameScale = d3.scale.ordinal()
+        .domain(nodes.map(nodeID))
+        .rangePoints([0,size[0]],1);
 
-      hexbin.radius = function(_) {
-        if (!arguments.length) return r;
-        r = +_;
-        dx = r * 2 * Math.sin(Math.PI / 3);
-        dy = r * 1.5;
-        return hexbin;
-      };
+        var xAxis = d3.svg.axis().scale(nameScale).orient("top").tickSize(4);
 
-      return hexbin.radius(1);
-    };
+        calledG
+        .append("g")
+        .attr("class", "am-xAxis am-axis")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("transform", "translate(-10,-10) rotate(90)");
 
-    var d3_hexbinAngles = d3.range(0, 2 * Math.PI, Math.PI / 3),
-        d3_hexbinX = function(d) { return d[0]; },
-        d3_hexbinY = function(d) { return d[1]; };
+      }
+
+      matrix.yAxis = function(calledG) {
+        var nameScale = d3.scale.ordinal()
+        .domain(nodes.map(nodeID))
+        .rangePoints([0,size[1]],1);
+
+        yAxis = d3.svg.axis().scale(nameScale)
+        .orient("left")
+        .tickSize(4);
+
+        calledG.append("g")
+        .attr("class", "am-yAxis am-axis")
+        .call(yAxis);
+      }
+
+      return matrix;
+    }
   });
 ;define("ic-ajax",
   ["ember","exports"],
@@ -91023,19 +91065,7 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 
-;define('ember-cli-app-version', ['ember-cli-app-version/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
-  'use strict';
-  var keys = Object.keys || __Ember__['default'].keys;
-  var forEach = Array.prototype.forEach && function(array, cb) {
-    array.forEach(cb);
-  } || __Ember__['default'].EnumerableUtils.forEach;
-
-  forEach(keys(__index__), (function(key) {
-    __exports__[key] = __index__[key];
-  }));
-});
-
-define('ember-cli-app-version/components/app-version', ['exports', 'ember', 'ember-cli-app-version/templates/app-version'], function (exports, Ember, layout) {
+;define('ember-cli-app-version/components/app-version', ['exports', 'ember', 'ember-cli-app-version/templates/app-version'], function (exports, Ember, layout) {
 
   'use strict';
 
@@ -91114,7 +91144,7 @@ define('ember-cli-app-version/templates/app-version', ['exports'], function (exp
   }()));
 
 });
-define('ember-cli-content-security-policy', ['ember-cli-content-security-policy/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
+define('ember-cli-app-version', ['ember-cli-app-version/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
   var keys = Object.keys || __Ember__['default'].keys;
   var forEach = Array.prototype.forEach && function(array, cb) {
@@ -91126,7 +91156,7 @@ define('ember-cli-content-security-policy', ['ember-cli-content-security-policy/
   }));
 });
 
-define('ember-cli-d3', ['ember-cli-d3/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
+define('ember-cli-content-security-policy', ['ember-cli-content-security-policy/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
   var keys = Object.keys || __Ember__['default'].keys;
   var forEach = Array.prototype.forEach && function(array, cb) {
@@ -91259,6 +91289,9 @@ define('ember-cli-d3/mixins/d3-support', ['exports', 'ember', 'd3', 'ember-cli-d
   'use strict';
 
   var GraphicSupport = Ember['default'].Mixin.create({
+    concatenatedProperties: ['requiredProperties'],
+    requiredProperties: ['select'],
+
     tagName: '',
 
     select: null,
@@ -91267,9 +91300,15 @@ define('ember-cli-d3/mixins/d3-support', ['exports', 'ember', 'd3', 'ember-cli-d
     call: function call() {},
 
     didReceiveAttrs: function didReceiveAttrs() {
+      var _this = this;
+
       var selection = this.get('select');
 
-      if (selection && !this.isDestroying) {
+      if (selection && !this.isDestroying && this.get('requiredProperties').map(function (prop) {
+        return Boolean(!!_this.get(prop));
+      }).reduce(function (prev, cur) {
+        return prev && cur;
+      }, true)) {
         if (Ember['default'].typeOf(selection) === 'instance') {
           selection = selection.get('selection');
         }
@@ -91307,7 +91346,7 @@ define('ember-cli-d3/mixins/d3-support', ['exports', 'ember', 'd3', 'ember-cli-d
   if (!version.hasGlimmer) {
     GraphicSupport.reopen({
       init: function init() {
-        var _this = this;
+        var _this2 = this;
 
         var key, index;
 
@@ -91316,7 +91355,7 @@ define('ember-cli-d3/mixins/d3-support', ['exports', 'ember', 'd3', 'ember-cli-d
         for (key in this) {
           if ((index = key.indexOf('Binding')) > 0 && key[0] !== '_') {
             this.addObserver(key.substring(0, index), this, function () {
-              Ember['default'].run.scheduleOnce('render', _this, _this.didReceiveAttrs);
+              Ember['default'].run.scheduleOnce('render', _this2, _this2.didReceiveAttrs);
             });
           }
         }
@@ -91819,7 +91858,7 @@ define('ember-cli-d3/utils/version', ['exports', 'ember'], function (exports, Em
   exports.hasHTMLBars = hasHTMLBars;
 
 });
-define('ember-data-fixture-adapter', ['ember-data-fixture-adapter/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
+define('ember-cli-d3', ['ember-cli-d3/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
   var keys = Object.keys || __Ember__['default'].keys;
   var forEach = Array.prototype.forEach && function(array, cb) {
@@ -92169,6 +92208,18 @@ define('ember-data-fixture-adapter/index', ['exports', 'ember-data', 'ember'], f
   });
 
 });
+define('ember-data-fixture-adapter', ['ember-data-fixture-adapter/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
+  'use strict';
+  var keys = Object.keys || __Ember__['default'].keys;
+  var forEach = Array.prototype.forEach && function(array, cb) {
+    array.forEach(cb);
+  } || __Ember__['default'].EnumerableUtils.forEach;
+
+  forEach(keys(__index__), (function(key) {
+    __exports__[key] = __index__[key];
+  }));
+});
+
 ;/* jshint ignore:start */
 
 

@@ -96,12 +96,48 @@ define('dummy/components/block-thumb', ['exports', 'ember', 'dummy/templates/com
   });
 
 });
-define('dummy/components/cart-axis/component', ['exports', 'ember', 'd3', 'dummy/components/cart-axis/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version'], function (exports, Ember, d3, layout, GraphicSupport, MarginConvention, utils__d3, version) {
+define('dummy/components/cart-axis', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, version) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
-    layout: layout['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 9
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'yield', ['loc', [null, [1, 0], [1, 9]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     transform: null,
 
@@ -136,59 +172,48 @@ define('dummy/components/cart-axis/component', ['exports', 'ember', 'd3', 'dummy
   });
 
 });
-define('dummy/components/cart-axis/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-axis/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["content","yield",["loc",[null,[1,0],[1,9]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
-define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3', 'dummy/components/cart-grouped-bars/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, layout, GraphicSupport, MarginConvention, utils__d3, version, css) {
+define('dummy/components/cart-grouped-bars', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, version, css) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
-    layout: layout['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 60
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'yield', [['get', 'seriesSel', ['loc', [null, [1, 8], [1, 17]]]], ['get', 'xScale', ['loc', [null, [1, 18], [1, 24]]]], ['get', 'yScale', ['loc', [null, [1, 25], [1, 31]]]], ['get', 'contentWidth', ['loc', [null, [1, 32], [1, 44]]]], ['get', 'contentHeight', ['loc', [null, [1, 45], [1, 58]]]]], [], ['loc', [null, [1, 0], [1, 60]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     model: null,
 
@@ -312,59 +337,48 @@ define('dummy/components/cart-grouped-bars/component', ['exports', 'ember', 'd3'
   });
 
 });
-define('dummy/components/cart-grouped-bars/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-grouped-bars/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["inline","yield",[["get","seriesSel",["loc",[null,[1,8],[1,17]]]],["get","xScale",["loc",[null,[1,18],[1,24]]]],["get","yScale",["loc",[null,[1,25],[1,31]]]],["get","contentWidth",["loc",[null,[1,32],[1,44]]]],["get","contentHeight",["loc",[null,[1,45],[1,58]]]]],[],["loc",[null,[1,0],[1,60]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
-define('dummy/components/cart-lines/component', ['exports', 'ember', 'd3', 'dummy/components/cart-lines/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, layout, GraphicSupport, MarginConvention, utils__d3, version, css) {
+define('dummy/components/cart-lines', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, version, css) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
-    layout: layout['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 76
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'yield', [['get', 'seriesSel', ['loc', [null, [1, 8], [1, 17]]]], ['get', 'exportedXScale', ['loc', [null, [1, 18], [1, 32]]]], ['get', 'exportedYScale', ['loc', [null, [1, 33], [1, 47]]]], ['get', 'contentWidth', ['loc', [null, [1, 48], [1, 60]]]], ['get', 'contentHeight', ['loc', [null, [1, 61], [1, 74]]]]], [], ['loc', [null, [1, 0], [1, 76]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     stroke: d3['default'].scale.category10(),
 
@@ -482,59 +496,48 @@ define('dummy/components/cart-lines/component', ['exports', 'ember', 'd3', 'dumm
   });
 
 });
-define('dummy/components/cart-lines/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-lines/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["inline","yield",[["get","seriesSel",["loc",[null,[1,8],[1,17]]]],["get","exportedXScale",["loc",[null,[1,18],[1,32]]]],["get","exportedYScale",["loc",[null,[1,33],[1,47]]]],["get","contentWidth",["loc",[null,[1,48],[1,60]]]],["get","contentHeight",["loc",[null,[1,61],[1,74]]]]],[],["loc",[null,[1,0],[1,76]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
-define('dummy/components/cart-marker/component', ['exports', 'ember', 'd3', 'dummy/components/cart-marker/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/utils/d3'], function (exports, Ember, d3, layout, GraphicSupport, utils__d3) {
+define('dummy/components/cart-marker', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/utils/d3'], function (exports, Ember, d3, GraphicSupport, utils__d3) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], {
-    layout: layout['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 9
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'yield', ['loc', [null, [1, 0], [1, 9]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     shape: null,
     applyTo: null,
@@ -585,59 +588,48 @@ define('dummy/components/cart-marker/component', ['exports', 'ember', 'd3', 'dum
   });
 
 });
-define('dummy/components/cart-marker/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-marker/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["content","yield",["loc",[null,[1,0],[1,9]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
-define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3', 'dummy/components/cart-stacked-bars/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, template, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
+define('dummy/components/cart-stacked-bars', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
-    layout: template['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 60
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'yield', [['get', 'seriesSel', ['loc', [null, [1, 8], [1, 17]]]], ['get', 'xScale', ['loc', [null, [1, 18], [1, 24]]]], ['get', 'yScale', ['loc', [null, [1, 25], [1, 31]]]], ['get', 'contentWidth', ['loc', [null, [1, 32], [1, 44]]]], ['get', 'contentHeight', ['loc', [null, [1, 45], [1, 58]]]]], [], ['loc', [null, [1, 0], [1, 60]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     defaultMargin: css.box(60),
     orient: null, // TODO
@@ -819,59 +811,48 @@ define('dummy/components/cart-stacked-bars/component', ['exports', 'ember', 'd3'
   });
 
 });
-define('dummy/components/cart-stacked-bars/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-stacked-bars/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["inline","yield",[["get","seriesSel",["loc",[null,[1,8],[1,17]]]],["get","xScale",["loc",[null,[1,18],[1,24]]]],["get","yScale",["loc",[null,[1,25],[1,31]]]],["get","contentWidth",["loc",[null,[1,32],[1,44]]]],["get","contentHeight",["loc",[null,[1,45],[1,58]]]]],[],["loc",[null,[1,0],[1,60]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
-define('dummy/components/cart-waterfall-bars/component', ['exports', 'ember', 'd3', 'dummy/components/cart-waterfall-bars/template', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, template, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
+define('dummy/components/cart-waterfall-bars', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
-    layout: template['default'],
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 66
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'yield', [['get', 'seriesSelection', ['loc', [null, [1, 8], [1, 23]]]], ['get', 'xScale', ['loc', [null, [1, 24], [1, 30]]]], ['get', 'yScale', ['loc', [null, [1, 31], [1, 37]]]], ['get', 'contentWidth', ['loc', [null, [1, 38], [1, 50]]]], ['get', 'contentHeight', ['loc', [null, [1, 51], [1, 64]]]]], [], ['loc', [null, [1, 0], [1, 66]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
 
     defaultMargin: css.box(60),
 
@@ -1027,53 +1008,6 @@ define('dummy/components/cart-waterfall-bars/component', ['exports', 'ember', 'd
   });
 
 });
-define('dummy/components/cart-waterfall-bars/template', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/components/cart-waterfall-bars/template.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["inline","yield",[["get","seriesSelection",["loc",[null,[1,8],[1,23]]]],["get","xScale",["loc",[null,[1,24],[1,30]]]],["get","yScale",["loc",[null,[1,31],[1,37]]]],["get","contentWidth",["loc",[null,[1,38],[1,50]]]],["get","contentHeight",["loc",[null,[1,51],[1,64]]]]],[],["loc",[null,[1,0],[1,66]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
 define('dummy/components/data-visual', ['exports', 'ember-cli-d3/components/data-visual'], function (exports, data_visual) {
 
 	'use strict';
@@ -1081,6 +1015,33 @@ define('dummy/components/data-visual', ['exports', 'ember-cli-d3/components/data
 
 
 	exports['default'] = data_visual['default'];
+
+});
+define('dummy/components/markdown-document', ['exports', 'ember', 'dummy/templates/components/markdown-document', 'ember-cli-d3/utils/lodash'], function (exports, Ember, layout, lodash) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend({
+    layout: layout['default'],
+
+    classNames: ['markdown-body'],
+
+    content: null,
+
+    didRender: function didRender() {
+      var headers = lodash.slice.call(this.$('h1, h2, h3, h4, h5'));
+
+      var toc = headers.map(function (header) {
+        return header.textContent;
+      });
+
+      headers.forEach(function (header) {
+        header.id = header.textContent.toLowerCase().replace(/ /g, '-');
+      });
+
+      this.set('toc', toc);
+    }
+  });
 
 });
 define('dummy/controllers/array', ['exports', 'ember'], function (exports, Ember) {
@@ -1102,7 +1063,7 @@ define('dummy/controllers/gallery/bars', ['exports', 'ember', 'dummy/utils/model
 
     dataSource: Ember['default'].inject.service('dimensional-data-source'),
 
-    isGrouped: Ember['default'].computed.equal('app.currentRouteName', 'gallery.bars.index'),
+    isGrouped: Ember['default'].computed.equal('app.currentRouteName', 'gallery.bars.grouped'),
     isStacked: Ember['default'].computed.equal('app.currentRouteName', 'gallery.bars.stacked'),
     isWaterfall: Ember['default'].computed.equal('app.currentRouteName', 'gallery.bars.waterfall'),
 
@@ -1397,7 +1358,7 @@ define('dummy/models/visual', ['exports', 'ember', 'ember-data'], function (expo
 
   VisualModel.reopenClass({
     FIXTURES: [{
-      id: 'gallery.bars',
+      id: 'gallery.bars.grouped',
       name: 'Grouped Bar Chart',
       alias: [],
       component: 'cart-grouped-bars',
@@ -1410,7 +1371,7 @@ define('dummy/models/visual', ['exports', 'ember', 'ember-data'], function (expo
       alias: [],
       component: 'cart-stacked-bars',
       modelType: 'dimensional',
-      variations: ['gallery.bars', 'gallery.bars.waterfall'],
+      variations: ['gallery.bars.grouped', 'gallery.bars.waterfall'],
       description: '\n        Bar chart uses either vertical or horizontal bars to\n        compare quantatative data accross multiple categories.\n\n        A stacked bar chart gives you one extra dimension\n        to compare data with. Compare to a grouped bar chart,\n        stacked bar chart has a cleaner look at the number of\n        bars increase.\n      '
     }, {
       id: 'gallery.bars.waterfall',
@@ -1418,7 +1379,7 @@ define('dummy/models/visual', ['exports', 'ember', 'ember-data'], function (expo
       alias: [],
       component: 'cart-waterfall-bars',
       modelType: 'dimensional',
-      variations: ['gallery.bars', 'gallery.bars.stacked'],
+      variations: ['gallery.bars.grouped', 'gallery.bars.stacked'],
       description: '\n      '
     }, {
       id: 'gallery.lines',
@@ -1447,13 +1408,13 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('guides');
     this.route('gallery', function () {
       this.route('bars', function () {
+        this.route('grouped');
         this.route('stacked');
         this.route('waterfall');
       });
-      this.route('lines', function () {
-        this.route('area');
-        this.route('stacked');
-      });
+      this.route('lines');
+      this.route('area');
+      this.route('stacked');
       //this.route('histogram');
     });
   });
@@ -1461,13 +1422,17 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
   exports['default'] = Router;
 
 });
-define('dummy/routes/gallery', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+define('dummy/routes/gallery/bars/grouped', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
 
   'use strict';
 
   exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
     model: function model() {
-      return this.store.findAll('visual');
+      return this.store.findRecord('visual', 'gallery.bars.grouped');
+    },
+
+    setupController: function setupController(controller, model) {
+      this.controllerFor('gallery/bars').setProperties({ model: model });
     }
   });
 
@@ -1477,12 +1442,8 @@ define('dummy/routes/gallery/bars/index', ['exports', 'ember', 'dummy/mixins/rou
   'use strict';
 
   exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
-    model: function model() {
-      return this.store.findRecord('visual', 'gallery.bars');
-    },
-
-    setupController: function setupController(controller, model) {
-      this.controllerFor('gallery/bars').setProperties({ model: model });
+    redirect: function redirect(visuals, transition) {
+      this.transitionTo('gallery.bars.grouped');
     }
   });
 
@@ -1528,6 +1489,17 @@ define('dummy/routes/gallery/lines/index', ['exports', 'ember', 'dummy/mixins/ro
 
     setupController: function setupController(controller, model) {
       this.controllerFor('gallery/lines').setProperties({ model: model });
+    }
+  });
+
+});
+define('dummy/routes/gallery', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
+    model: function model() {
+      return this.store.findAll('visual');
     }
   });
 
@@ -1795,7 +1767,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
+        var el1 = dom.createElement("section");
         dom.setAttribute(el1,"class","container");
         var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
@@ -1818,7 +1790,7 @@ define('dummy/templates/application', ['exports'], function (exports) {
         ["block","link-to",["home"],["classNames","navbar-brand"],0,null,["loc",[null,[10,6],[10,75]]]],
         ["block","link-to",["guides"],[],1,null,["loc",[null,[15,12],[15,51]]]],
         ["block","link-to",["gallery"],[],2,null,["loc",[null,[16,12],[16,53]]]],
-        ["content","outlet",["loc",[null,[22,23],[22,33]]]]
+        ["content","outlet",["loc",[null,[22,27],[22,37]]]]
       ],
       locals: [],
       templates: [child0, child1, child2]
@@ -2221,6 +2193,100 @@ define('dummy/templates/components/block-thumb', ['exports'], function (exports)
       ],
       locals: [],
       templates: [child0]
+    };
+  }()));
+
+});
+define('dummy/templates/components/markdown-document', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components/markdown-document.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createUnsafeMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","content",["loc",[null,[1,0],[1,13]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('dummy/templates/gallery/bars/waterfall', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/gallery/bars/waterfall.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","outlet",["loc",[null,[1,0],[1,10]]]]
+      ],
+      locals: [],
+      templates: []
     };
   }()));
 
@@ -2702,53 +2768,6 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
   }()));
 
 });
-define('dummy/templates/gallery/bars/waterfall', ['exports'], function (exports) {
-
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
-    return {
-      meta: {
-        "revision": "Ember@2.0.2+a7f49eab",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 2,
-            "column": 0
-          }
-        },
-        "moduleName": "dummy/templates/gallery/bars/waterfall.hbs"
-      },
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        return morphs;
-      },
-      statements: [
-        ["content","outlet",["loc",[null,[1,0],[1,10]]]]
-      ],
-      locals: [],
-      templates: []
-    };
-  }()));
-
-});
 define('dummy/templates/gallery/index', ['exports'], function (exports) {
 
   'use strict';
@@ -2937,7 +2956,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 10 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]]],0,null,["loc",[null,[3,4],[14,19]]]]
+            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 30 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]]],0,null,["loc",[null,[3,4],[14,19]]]]
           ],
           locals: ["svg","width","height"],
           templates: [child0]
@@ -3038,7 +3057,7 @@ define('dummy/templates/guides', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 2,
+            "line": 4,
             "column": 0
           }
         },
@@ -3049,7 +3068,16 @@ define('dummy/templates/guides', ['exports'], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
+        var el1 = dom.createTextNode("  ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","row col-md-9");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
@@ -3057,12 +3085,11 @@ define('dummy/templates/guides', ['exports'], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createUnsafeMorphAt(fragment,0,0,contextualElement);
-        dom.insertBoundary(fragment, 0);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
         return morphs;
       },
       statements: [
-        ["content","model",["loc",[null,[1,0],[1,11]]]]
+        ["inline","markdown-document",[],["content",["subexpr","@mut",[["get","model",["loc",[null,[2,30],[2,35]]]]],[],[]]],["loc",[null,[2,2],[2,37]]]]
       ],
       locals: [],
       templates: []
@@ -3220,6 +3247,50 @@ define('dummy/templates/home', ['exports'], function (exports) {
   }()));
 
 });
+define('dummy/tests/acceptance/gallery/bars-test', ['ember', 'qunit', 'dummy/tests/helpers/start-app', 'ember-cli-d3/utils/version'], function (Ember, qunit, startApp, version) {
+
+  'use strict';
+
+  qunit.module('Acceptance | gallery/bars', {
+    beforeEach: function beforeEach() {
+      this.application = startApp['default']();
+    },
+
+    afterEach: function afterEach() {
+      Ember['default'].run(this.application, 'destroy');
+    }
+  });
+
+  if (version['default'].hasGlimmer) {
+    qunit.test('visiting /gallery/bars', function (assert) {
+      visit('/gallery/bars');
+
+      andThen(function () {
+        var bars = Ember['default'].$('#ember-testing .visual-content .bar .shape').toArray().map(function (bar) {
+          return bar.__transition__;
+        });
+
+        assert.equal(currentURL(), '/gallery/bars');
+        assert.equal(bars.length, 8, '8 bars rendered');
+
+        bars.forEach(function (checkThis) {
+          assert.ok(!checkThis, 'Found bar still transitioning');
+        });
+      });
+    });
+  }
+
+});
+define('dummy/tests/acceptance/gallery/bars-test.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/gallery');
+  QUnit.test('acceptance/gallery/bars-test.js should pass jshint', function(assert) { 
+    assert.ok(true, 'acceptance/gallery/bars-test.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/acceptance/gallery-test', ['ember', 'd3', 'qunit', 'dummy/models/visual', 'dummy/tests/helpers/start-app', 'ember-cli-d3/utils/version'], function (Ember, d3, qunit, VisualModel, startApp, version) {
 
   'use strict';
@@ -3268,50 +3339,6 @@ define('dummy/tests/acceptance/gallery-test.jshint', function () {
   });
 
 });
-define('dummy/tests/acceptance/gallery/bars-test', ['ember', 'qunit', 'dummy/tests/helpers/start-app', 'ember-cli-d3/utils/version'], function (Ember, qunit, startApp, version) {
-
-  'use strict';
-
-  qunit.module('Acceptance | gallery/bars', {
-    beforeEach: function beforeEach() {
-      this.application = startApp['default']();
-    },
-
-    afterEach: function afterEach() {
-      Ember['default'].run(this.application, 'destroy');
-    }
-  });
-
-  if (version['default'].hasGlimmer) {
-    qunit.test('visiting /gallery/bars', function (assert) {
-      visit('/gallery/bars');
-
-      andThen(function () {
-        var bars = Ember['default'].$('#ember-testing .visual-content .bar .shape').toArray().map(function (bar) {
-          return bar.__transition__;
-        });
-
-        assert.equal(currentURL(), '/gallery/bars');
-        assert.equal(bars.length, 8, '8 bars rendered');
-
-        bars.forEach(function (checkThis) {
-          assert.ok(!checkThis, 'Found bar still transitioning');
-        });
-      });
-    });
-  }
-
-});
-define('dummy/tests/acceptance/gallery/bars-test.jshint', function () {
-
-  'use strict';
-
-  QUnit.module('JSHint - acceptance/gallery');
-  QUnit.test('acceptance/gallery/bars-test.js should pass jshint', function(assert) { 
-    assert.ok(true, 'acceptance/gallery/bars-test.js should pass jshint.'); 
-  });
-
-});
 define('dummy/tests/adapters/application.jshint', function () {
 
   'use strict';
@@ -3352,63 +3379,73 @@ define('dummy/tests/components/block-thumb.jshint', function () {
   });
 
 });
-define('dummy/tests/components/cart-axis/component.jshint', function () {
+define('dummy/tests/components/cart-axis.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-axis');
-  QUnit.test('components/cart-axis/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-axis/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-axis.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-axis.js should pass jshint.'); 
   });
 
 });
-define('dummy/tests/components/cart-grouped-bars/component.jshint', function () {
+define('dummy/tests/components/cart-grouped-bars.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-grouped-bars');
-  QUnit.test('components/cart-grouped-bars/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-grouped-bars/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-grouped-bars.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-grouped-bars.js should pass jshint.'); 
   });
 
 });
-define('dummy/tests/components/cart-lines/component.jshint', function () {
+define('dummy/tests/components/cart-lines.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-lines');
-  QUnit.test('components/cart-lines/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-lines/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-lines.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-lines.js should pass jshint.'); 
   });
 
 });
-define('dummy/tests/components/cart-marker/component.jshint', function () {
+define('dummy/tests/components/cart-marker.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-marker');
-  QUnit.test('components/cart-marker/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-marker/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-marker.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-marker.js should pass jshint.'); 
   });
 
 });
-define('dummy/tests/components/cart-stacked-bars/component.jshint', function () {
+define('dummy/tests/components/cart-stacked-bars.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-stacked-bars');
-  QUnit.test('components/cart-stacked-bars/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-stacked-bars/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-stacked-bars.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-stacked-bars.js should pass jshint.'); 
   });
 
 });
-define('dummy/tests/components/cart-waterfall-bars/component.jshint', function () {
+define('dummy/tests/components/cart-waterfall-bars.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - components/cart-waterfall-bars');
-  QUnit.test('components/cart-waterfall-bars/component.js should pass jshint', function(assert) { 
-    assert.ok(true, 'components/cart-waterfall-bars/component.js should pass jshint.'); 
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-waterfall-bars.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-waterfall-bars.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/components/markdown-document.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - components');
+  QUnit.test('components/markdown-document.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/markdown-document.js should pass jshint.'); 
   });
 
 });
@@ -3446,14 +3483,13 @@ define('dummy/tests/helpers/data-generator', ['exports', 'd3'], function (export
   }
 
   function dimensional(series) {
-    var count = arguments.length <= 1 || arguments[1] === undefined ? 4 : arguments[1];
+    var count = arguments.length <= 1 || arguments[1] === undefined ? 8 : arguments[1];
     var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
     var generator = d3['default'].random.normal(options.mean || 2000, options.stddev || 2000);
-    var scale = d3['default'].scale.linear().domain([0, count]).range([randomInt(), randomInt()].sort());
 
     return d3['default'].range(count).map(function (id) {
-      var base = { id: id, state: states[id], timestamp: new Date(scale(id)) };
+      var base = { id: id, state: states[id], timestamp: new Date(id * 3.15569e10 * 2) };
 
       series.forEach(function (series) {
         base[series] = generator();
@@ -3858,13 +3894,13 @@ define('dummy/tests/router.jshint', function () {
   });
 
 });
-define('dummy/tests/routes/gallery.jshint', function () {
+define('dummy/tests/routes/gallery/bars/grouped.jshint', function () {
 
   'use strict';
 
-  QUnit.module('JSHint - routes');
-  QUnit.test('routes/gallery.js should pass jshint', function(assert) { 
-    assert.ok(true, 'routes/gallery.js should pass jshint.'); 
+  QUnit.module('JSHint - routes/gallery/bars');
+  QUnit.test('routes/gallery/bars/grouped.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery/bars/grouped.js should pass jshint.'); 
   });
 
 });
@@ -3905,6 +3941,16 @@ define('dummy/tests/routes/gallery/lines/index.jshint', function () {
   QUnit.module('JSHint - routes/gallery/lines');
   QUnit.test('routes/gallery/lines/index.js should pass jshint', function(assert) { 
     assert.ok(true, 'routes/gallery/lines/index.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/routes/gallery.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes');
+  QUnit.test('routes/gallery.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery.js should pass jshint.'); 
   });
 
 });
@@ -4508,7 +4554,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.5.0+6e587980"});
+  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.6.0+4a5fee77"});
 }
 
 /* jshint ignore:end */

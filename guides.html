@@ -1,6 +1,7 @@
-<h2># Introduction</h2>
-<p><code>ember-cli-d3</code> is an Ember addon to aid with integrating D3 data visuals into Ember application. Like D3 itself, it is not the goal of this project be become a widget library. Therefore, there are no data visuals packaged along with the addon. Pre-built data visuals are available as part of the gallery to act as a starting point for you. They are, however, will not be officially maintained.</p>
-<h2># Getting Started</h2>
+<h1>Introduction</h1>
+<p><em>ember-cli-d3</em> is an Ember addon to aid with integrating D3 data visuals into Ember application. Like D3 itself, it is not the goal of this project be become a widget library. Therefore, there are no data visuals packaged along with the addon. Pre-built data visuals are available as part of the gallery to act as a starting point for you. They are, however, will not be officially maintained.</p>
+<h1>Getting Started</h1>
+<h2>Install</h2>
 <p>The first thing you'll need is to install the addon.</p>
 <table>
   <tr>
@@ -8,38 +9,65 @@
     <th>cli command</th>
   </tr>
   <tr>
-    <td>`> 0.2.3`</td>
-    <td>`ember install ember-cli-d3`</td>
+    <td><code>> 0.2.3</code></td>
+    <td><code>ember install ember-cli-d3</code></td>
   </tr>
   <tr>
-    <td>`> 0.1.5 < 0.2.3`</td>
-    <td>`ember install:addon ember-cli-d3`</td>
+    <td><code>> 0.1.5 < 0.2.3</code></td>
+    <td><code>ember install:addon ember-cli-d3</code></td>
   </tr>
   <tr>
-    <td>`< 0.1.4`</td>
-    <td>`npm install --save-dev ember-cli-d3`<br>`ember generate ember-cli-d3`</td>
+    <td><code>< 0.1.4</code></td>
+    <td><code>npm install --save-dev ember-cli-d3</code><br><code>ember generate ember-cli-d3</code></td>
   </tr>
 </table>
-<h2># Concepts and Principles</h2>
-<p><code>ember-cli-d3</code> follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.</p>
-<h2># Core Classes</h2>
+<h2>Configuration</h2>
+<p>Starting from <code>0.3.0</code>, <em>ember-cli-d3</em> integrates with <em>d3-plugins-dist</em> to let you include plugins as ES6 modules by configuring an options.</p>
+<pre><code class="language-javascript">  var app = new EmberApp(defaults, {
+    // Add options here
+    d3: {
+      // ember-cli-d3 version &gt;= 0.3.0 and &lt; 0.7.0
+      plugins: [ 'sankey', 'hexbin' ]
+      // ember-cli-d3 version &gt;= 0.7.0
+      plugins: {
+        'mbostock': [ 'sankey' ],
+        'emeeks': [ 'adjacency-matrix' ]
+      }
+    }
+  });
+</code></pre>
+<h1>Concepts and Principles</h1>
+<p><em>ember-cli-d3</em> follows the composiblity pattern of D3 while at the same time utilizes Ember's HTMLBars templates. The result is a very expressive composibility pattern that's also not too foreign to D3 people. This makes integrating existing D3 plugins and library a breeze.</p>
+<h1>Core Classes</h1>
 <p>There are few classes that are considered to be core and will be used by most data visuals.</p>
-<h3>## <code>data-visual</code> Component</h3>
+<h2><code>data-visual</code> Component</h2>
 <p>You'll need a <code>data-visual</code> component to act as a container for your visual. For the most part, this component is just an SVG element that also yields properies: <code>svg</code>, <code>width</code>, and <code>height</code>.</p>
-<p><code>width</code> and <code>height</code> are the dimensions of the SVG container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.</p>
 <p><code>svg</code> is a &quot;magic&quot; object. Accessing properties on this object will create a <code>&lt;g&gt;</code> element under the <code>&lt;svg&gt;</code> with class name automatically set. Property access can be nested. <code>svg.chart.axis</code> will create <code>&lt;svg&gt;&lt;g class=&quot;chart&quot;&gt;&lt;g class=&quot;axis&quot;&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;</code>.</p>
-<h3>## <code>d3-support</code> Mixin</h3>
+<p><code>width</code> and <code>height</code> are the dimensions of the SVG container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.</p>
+<h2><code>d3-support</code> Mixin</h2>
 <p>All components that are going to render SVG elements must implement this mixin. There is only 1 method on it that must be implemented: <code>call</code>. The <code>call</code> method will be invoked with <code>select</code> element as argument, passed in as a D3 selection.</p>
-<h3>## <code>join</code> Util</h3>
+<h2><code>join</code> Util</h2>
 <p>The <code>join</code> util function in the <code>d3</code> utility module implements the fundamental D3 data-join pattern. It is used as a short hand to define the <code>call</code> method. It accepts 3 arguments: <code>dataExpr</code>, <code>cssExpr</code>, and an <code>options</code> hash. It returns a function that accepts elements wrapped inside a D3 selection.</p>
-<h4>### <code>dataExpr</code></h4>
-<p><code>dataExpr</code> is a path expression that tells <code>join</code> where to grab data on the component to do the join with. You may optionally specify a second key path to show where to grab the key path on the component to extract identifiers for each datum. For example, the <code>dataExpr</code> of <code>model.data[model.key]</code> with a will join the array found at <code>model.data</code> with key found at <code>model.key</code>.</p>
-<h4>### <code>cssExpr</code></h4>
+<h3><code>dataExpr</code> parameter</h3>
+<p><code>dataExpr</code> accepts 3 types of arguments:</p>
+<ul>
+<li><code>string</code> will be interpreted as a path expression that tells <code>join</code> where to grab data on the component to do the join with. You may optionally specify a second key path to show where to grab the key path on the component to extract identifiers for each datum. For example, the <code>dataExpr</code> of <code>model.data[model.key]</code> with a will join the array found at <code>model.data</code> with key found at <code>model.key</code>.</li>
+<li><code>array</code> will inline the data into the join.</li>
+<li><code>function</code> will act as an accessor to pull data from parent selection.</li>
+</ul>
+<p>Passing in <code>array</code> or <code>function</code> will not allow you to specify a key. If you have a need for key, please put the <code>array</code> or <code>function</code> on the enclosing object, then use a <code>string</code> path expression to specify key.</p>
+<h3><code>cssExpr</code> parameter</h3>
 <p><code>cssExpr</code> is a subset of CSS selector expression that only supports tag name and class name. <code>cssExpr</code> is combined with <code>dataExpr</code> to perform data-join. First, elements are selected using <code>cssExpr</code> then joined with <code>dataExpr</code>. <code>cssExpr</code> also provides clues to how to provide reasonable defaults for your <code>options</code>. A <code>cssExpr</code> of <code>rect.bar</code> will select all <code>rect.bar</code>, join data with <code>dataExpr</code>, append <code>rect</code> element and set class <code>bar</code> on <code>enter</code> select and remove the elements on <code>exit</code> select.</p>
-<h4>### <code>options</code></h4>
+<h3><code>options</code> parameter</h3>
 <p>The last <code>options</code> argument lets you define how <code>enter</code>, <code>update</code>, and <code>exit</code> should behave. Usually you only need to implement <code>update</code> since <code>cssExpr</code> already provided good defaults. You can override the default behavior by providing your own implementation here.</p>
-<h3>## <code>graph</code> Test Helper</h3>
-<h2># Naming Convention</h2>
+<h2><code>graph</code> Test Helper</h2>
+<p>TODO</p>
+<h1>Patterns</h1>
+<p>TODO</p>
+<h2>Interactivity</h2>
+<p>TODO</p>
+<h1>Naming Convention</h1>
+<p>TODO</p>
 <ul>
 <li>...Layer</li>
 <li>...Layout</li>
