@@ -1,12 +1,6 @@
 import Ember from 'ember';
 import AttachClassName from 'dummy/mixins/route-class';
+import Gallery from 'dummy/mixins/gallery-route-mixin';
 
-export default Ember.Route.extend(AttachClassName, {
-  model() {
-    return this.store.findRecord('visual', 'gallery.bars.grouped');
-  },
-
-  setupController(controller, model) {
-    this.controllerFor('gallery/bars').setProperties({ model });
-  }
+export default Ember.Route.extend(AttachClassName, Gallery, {
 });
