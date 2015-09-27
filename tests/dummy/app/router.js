@@ -18,6 +18,8 @@ Router.map(function() {
     this.route('area');
     this.route('stacked');
     //this.route('histogram');
+    //this.route('scatter-plot');
+    this.route('sunburst');
   });
 });
 
