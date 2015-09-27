@@ -71,6 +71,16 @@ VisualModel.reopenClass({
         on the rate of change from one tick to the next
       `
     },
+    {
+      id: 'gallery.sunburst',
+      name: 'Sunburst',
+      alias: [],
+      component: 'polar-sunburst',
+      modelType: 'dimensional',
+      variations: [],
+      description: `
+      `
+    },
   ]
 });
 

@@ -1,0 +1,9 @@
+{{#block-page visual=model}}
+  {{#data-visual as |svg width height|}}
+    {{#polar-sunburst select=svg.chart model=dimensionalData width=width height=height
+          margin="10" stroke=(color-scale "category10")
+        as |selection x-scale y-scale width height|}}
+
+    {{/polar-sunburst}}
+  {{/data-visual}}
+{{/block-page}}
