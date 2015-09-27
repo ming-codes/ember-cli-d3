@@ -28,39 +28,35 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   onhover: null,
 
   exportedXScale: null,
-  computedXScale: computed('contentWidth', 'model.data', 'model.key', {
-    get() {
-      var width = this.get('contentWidth');
-      var data = this.get('model.data');
-      var key = this.get('model.key');
-      var domain, scale;
+  computedXScale: computed('contentWidth', 'model.data', 'model.key', function () {
+    var width = this.get('contentWidth');
+    var data = this.get('model.data');
+    var key = this.get('model.key');
+    var domain, scale;
 
-      domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
-      domain = domain.length ? domain : [ 0, 1 ];
+    domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
+    domain = domain.length ? domain : [ 0, 1 ];
 
-      scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
-      scale = scale ? d3.time.scale() : d3.scale.linear();
+    scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
+    scale = scale ? d3.time.scale() : d3.scale.linear();
 
-      return scale.domain(domain).range([ 0, width ]);
-    }
+    return scale.domain(domain).range([ 0, width ]);
   }).readOnly(),
   exportedYScale: null,
-  computedYScale: computed('contentHeight', 'model.extent', {
-    get() {
-      var height = this.get('contentHeight');
-      var extent = this.get('model.extent');
+  computedYScale: computed('contentHeight', 'model.extent', function () {
+    var height = this.get('contentHeight');
+    var extent = this.get('model.extent');
 
-      extent[0] = Math.min(extent[0], 0);
-      extent[1] = Math.max(extent[1], 0);
+    extent[0] = Math.min(extent[0], 0);
+    extent[1] = Math.max(extent[1], 0);
 
-      if (extent[0] === extent[1]) {
-        extent[1]++;
-      }
-
-      return d3.scale.linear()
-        .domain(extent)
-        .range([ 0, -height ]);
+    if (extent[0] === extent[1]) {
+      extent[1]++;
     }
+
+    return d3.scale.linear()
+      .domain(extent)
+      .range([ 0, -height ]);
   }).readOnly(),
 
   call(selection) {
