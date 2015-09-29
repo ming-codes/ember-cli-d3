@@ -1,8 +1,8 @@
 <div class="aspect-ratio aspect-ratio-21-9">
   {{#link-to visual.route classNames="thumbnail"}}
-    {{#data-visual as |svg width height|}}
+    {{#data-visual as |ctx width height|}}
       {{component visual.component
-        select=svg.chart model=model width=width height=height
+        select=ctx.svg.select.chart model=model width=width height=height
         margin="10" stroke=(color-scale "category10")
       }}
     {{/data-visual}}

@@ -5,7 +5,7 @@ import d3 from 'd3';
 import { assign } from '../utils/d3';
 import { computed } from '../utils/version';
 
-var SelectionProxy = Ember.Object.extend({
+const SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
     return SelectionProxy.proxyElement(this, 'g', key);
   },
@@ -37,7 +37,7 @@ SelectionProxy.reopenClass({
   }
 });
 
-var TransitionSelectionProxy = SelectionProxy.extend({
+const TransitionSelectionProxy = SelectionProxy.extend({
   _selection: null,
   _options: null,
 
@@ -52,18 +52,52 @@ var TransitionSelectionProxy = SelectionProxy.extend({
   }
 });
 
-var SVGSelectionProxy = SelectionProxy.extend({
-  selection: d3.select(document.createElementNS(d3.ns.prefix.svg, 'svg')),
+export default Ember.Object.extend({
+  container: null,
 
-  defs: computed({
-    get() {
-      return SelectionProxy.proxyElement(this, 'defs', 'data-visual-defs');
+  select: Ember.computed('element', function () {
+    const fragment = this.get('container');
+
+    if (fragment.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+      Ember.run.scheduleOnce('afterRender', this, this.swapContainer);
     }
-  }),
 
-  toString() {
-    return '<SVGSelectionProxy>';
+    return SelectionProxy.create({
+      selection: d3.select({
+        ownerDocument: document,
+        namespaceURI: d3.ns.prefix.svg,
+        querySelector(selector) {
+          return fragment.querySelector(selector);
+        },
+        querySelectorAll(selector) {
+          return fragment.querySelectorAll(selector);
+        },
+        appendChild(child) {
+          return fragment.appendChild(child);
+        }
+      })
+    });
+  }).readOnly(),
+  defs: Ember.computed('element', function () {
+    debugger;
+  }).readOnly(),
+
+  init() {
+    this._super(...arguments);
+
+    this.set('container', document.createDocumentFragment());
+  },
+
+  swapContainer() {
+    console.log('swap');
+    var fragment = this.get('container');
+    var svg = this.get('element').querySelector('svg');
+
+    svg.appendChild(fragment);
+
+    Ember.run.schedule('sync', () => {
+      this.set('container', svg);
+      this.set('select.selection', d3.select(svg));
+    });
   }
 });
-
-export default  SVGSelectionProxy;

@@ -1,1 +1,4 @@
-{{yield proxy width height}}
+{{#if stage.has.svg}}
+  <svg width="100%" height="100%"></svg>
+{{/if}}
+<noscript>{{yield stage width height}}</noscript>
