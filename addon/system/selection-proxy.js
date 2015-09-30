@@ -20,7 +20,7 @@ const SelectionProxy = Ember.Object.extend({
   },
 
   toString() {
-    return '<SelectionProxy>';
+    return `<${this.constructor}:${Ember.guidFor(this)}>`;
   }
 });
 
@@ -45,41 +45,31 @@ const TransitionSelectionProxy = SelectionProxy.extend({
     get() {
       return assign(this._selection.transition(), this._options);
     }
-  }).volatile(),
+  }).volatile()
 
-  toString() {
-    return '<TransitionSelectionProxy>';
-  }
 });
 
 export default Ember.Object.extend({
   container: null,
 
   select: Ember.computed('element', function () {
-    const fragment = this.get('container');
-
-    if (fragment.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-      Ember.run.scheduleOnce('afterRender', this, this.swapContainer);
-    }
-
     return SelectionProxy.create({
-      selection: d3.select({
-        ownerDocument: document,
-        namespaceURI: d3.ns.prefix.svg,
-        querySelector(selector) {
-          return fragment.querySelector(selector);
-        },
-        querySelectorAll(selector) {
-          return fragment.querySelectorAll(selector);
-        },
-        appendChild(child) {
-          return fragment.appendChild(child);
-        }
-      })
+      selection: d3.select(this.get('element'))
     });
   }).readOnly(),
   defs: Ember.computed('element', function () {
-    debugger;
+    var element = this.get('element');
+    var node = element.firstChild;
+
+    Ember.assert('selection-proxy#defs shouldnt be called second time', node.nodeType === Node.COMMENT_NODE && node.textContent === 'defs');
+
+    var defs = document.createElementNS(d3.ns.prefix.svg, 'defs');
+
+    element.replaceChild(defs, node);
+
+    return SelectionProxy.create({
+      selection: d3.select(defs)
+    });
   }).readOnly(),
 
   init() {

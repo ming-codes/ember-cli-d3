@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/data-visual';
 
-import Context from '../system/context';
+import Stage from '../system/stage';
 
 export default Ember.Component.extend({
   classNames: [ 'data-visual' ],
@@ -13,7 +13,16 @@ export default Ember.Component.extend({
   stage: null,
 
   initializeGraphicsContext() {
-    this.set('stage', Context.create({ element: this.element }));
+    var element = this.element;
+    var fragment = document.createDocumentFragment();
+
+    Stage.stages.forEach(stage => {
+      fragment.appendChild(document.createComment(stage));
+    });
+
+    element.insertBefore(fragment, element.firstChild);
+
+    this.set('stage', Stage.create({ element }));
     this.measure();
   },
 
@@ -25,7 +34,7 @@ export default Ember.Component.extend({
   didInsertElement() {
     Ember.$(window).on(`resize.${this.get('elementId')}`, Ember.run.bind(this, this.measure));
 
-    Ember.run.scheduleOnce('afterRender', this, this.initializeGraphicsContext);
+    Ember.run.scheduleOnce('render', this, this.initializeGraphicsContext);
   },
 
   willDestroyElement() {
