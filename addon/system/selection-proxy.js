@@ -20,7 +20,13 @@ const SelectionProxy = Ember.Object.extend({
   },
 
   toString() {
-    return `<${this.constructor}:${Ember.guidFor(this)}>`;
+    var guid = Ember.guidFor(this);
+    var node = (this.get('_selection') || this.get('selection')).node();
+    var tagName = node.tagName;
+    var id = node.id ? `#${node.id}` : '';
+    var cls = node.classList[0] ? `.${node.classList[0]}` : '';
+
+    return `<ember-cli-d3@selection-proxy:${guid}::${tagName}${id}${cls}>`;
   }
 });
 
