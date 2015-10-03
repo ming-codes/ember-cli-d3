@@ -19,6 +19,10 @@ const SelectionProxy = Ember.Object.extend({
     return ret;
   },
 
+  call(component) {
+    return component.get('call').call(component, this.get('selection'));
+  },
+
   toString() {
     var guid = Ember.guidFor(this);
     var node = (this.get('_selection') || this.get('selection')).node();
