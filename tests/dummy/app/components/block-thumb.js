@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   layout,
 
   dimensionalDataSource: Ember.inject.service('dimensional-data-source'),
+  geospatialDataSource: Ember.inject.service('geospatial-data-source'),
 
   visual: null,
 
@@ -16,6 +17,7 @@ export default Ember.Component.extend({
 
     switch (type) {
       case 'dimensional': case 'temporal': return this.get('dimensionalDataSource');
+      case 'geospatial': return this.get('geospatialDataSource');
     }
   }),
 
@@ -30,6 +32,7 @@ export default Ember.Component.extend({
       case 'temporal': return DimensionalDataModel.create({
         data, series: [ 'dogs', 'cats' ], key: 'timestamp'
       });
+      case 'geospatial': return this.get('dataSource.content');
     }
   })
 });
