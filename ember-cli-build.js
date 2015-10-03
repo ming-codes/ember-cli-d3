@@ -42,7 +42,7 @@ module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
     d3: {
       plugins: {
-        'mbostock': [ 'sankey' ],
+        'mbostock': [ 'sankey', 'topojson' ],
         'emeeks': [ 'adjacency-matrix' ]
       }
     },
