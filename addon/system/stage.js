@@ -34,22 +34,19 @@ const Stage = Ember.Object.extend({
       element,
       context: element.getContext('2d')
     });
-  }).readOnly(),
-  webgl: Ember.computed('element', function () {
-    var div = this.get('element');
-    var element = document.createElement('canvas');
+  }).readOnly()
+  //webgl: Ember.computed('element', function () {
+  //  var div = this.get('element');
+  //  var element = document.createElement('canvas');
 
-    element.setAttribute('width', '100%');
-    element.setAttribute('height', '100%');
+  //  element.setAttribute('width', '100%');
+  //  element.setAttribute('height', '100%');
 
-    Stage.replace(div, 'canvas', element);
+  //  Stage.replace(div, 'canvas', element);
 
-    return canvas.getContext('experimental-webgl')
-        || canvas.getContext('webgl');
-  }).readOnly(),
-
-  toString() {
-  }
+  //  return canvas.getContext('experimental-webgl')
+  //      || canvas.getContext('webgl');
+  //}).readOnly()
 
 });
 

@@ -5,7 +5,7 @@ import d3 from 'd3';
 import { assign } from '../utils/d3';
 import { computed } from '../utils/version';
 
-const SelectionProxy = Ember.Object.extend({
+var SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
     return SelectionProxy.proxyElement(this, 'g', key);
   },
@@ -47,7 +47,7 @@ SelectionProxy.reopenClass({
   }
 });
 
-const TransitionSelectionProxy = SelectionProxy.extend({
+var TransitionSelectionProxy = SelectionProxy.extend({
   _selection: null,
   _options: null,
 

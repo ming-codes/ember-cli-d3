@@ -17,15 +17,15 @@ test('it renders alone', function(assert) {
       data: dimensional([ 'dogs', 'cats' ])
     }))
     .render(hbs`
-      {{#data-visual as |svg width height|}}
-        {{#cart-grouped-bars id="bars" select=(transition svg.chart) model=model width=width height=height
+      {{#data-visual as |ctx width height|}}
+        {{#cart-grouped-bars id="bars" select=(transition ctx.svg.select.chart) model=model width=width height=height
               margin="10 60 20 10" stroke=(color-scale "category10")
             as |selection x-scale y-scale width height|}}
 
-          {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+          {{cart-axis select=(transition ctx.svg.select.chart.x-axis) scale=x-scale
             orient="bottom" tickSize=(negative height)
           }}
-          {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+          {{cart-axis select=(transition ctx.svg.select.chart.y-axis) scale=y-scale
             orient="right" tickSize=(negative width)
             transform=(translate width)
           }}

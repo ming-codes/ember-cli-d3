@@ -11,9 +11,10 @@ test('empty selection should not throw', assert => {
 });
 
 test('apply d3 transition options when set', assert => {
+  var svg = SelectionProxy.create({ element: document.createElement('div') });
   var delay = Math.floor(Math.random() * 1000);
   var duration = Math.floor(Math.random() * 1000);
-  var sel = transition([ SelectionProxy.create() ], { delay, duration }).get('selection');
+  var sel = transition([ svg.get('select.chart') ], { delay, duration }).get('selection');
 
   assert.equal(delay, sel.delay());
   assert.equal(duration, sel.duration());
