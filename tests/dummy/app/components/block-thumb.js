@@ -32,7 +32,7 @@ export default Ember.Component.extend({
       case 'temporal': return DimensionalDataModel.create({
         data, series: [ 'dogs', 'cats' ], key: 'timestamp'
       });
-      case 'geospatial': return this.get('dataSource.content');
+      case 'geospatial': return data;
     }
   })
 });
