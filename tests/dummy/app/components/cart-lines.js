@@ -5,7 +5,10 @@ import hbs from 'htmlbars-inline-precompile';
 import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
-import { join } from 'ember-cli-d3/utils/d3';
+import DimensionalModel from 'dummy/utils/model/dimensional';
+
+import { join, accessor } from 'ember-cli-d3/utils/d3';
+import { identity } from 'ember-cli-d3/utils/lodash';
 import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
@@ -22,60 +25,107 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   width: 300,
   height: 150,
 
+  onhover: null,
+
   exportedXScale: null,
-  computedXScale: computed('contentWidth', 'model.data', 'model.key', {
-    get() {
-      var width = this.get('contentWidth');
-      var data = this.get('model.data');
-      var key = this.get('model.key');
-      var domain, scale;
+  computedXScale: computed('contentWidth', 'model.data', 'model.key', function () {
+    var width = this.get('contentWidth');
+    var data = this.get('model.data');
+    var key = this.get('model.key');
+    var domain, scale;
 
-      domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
-      domain = domain.length ? domain : [ 0, 1 ];
+    domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
+    domain = domain.length ? domain : [ 0, 1 ];
 
-      scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
-      scale = scale ? d3.time.scale() : d3.scale.linear();
+    scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
+    scale = scale ? d3.time.scale() : d3.scale.linear();
 
-      return scale.domain(domain).range([ 0, width ]);
-    }
+    return scale.domain(domain).range([ 0, width ]);
   }).readOnly(),
   exportedYScale: null,
-  computedYScale: computed('contentHeight', 'model.extent', {
-    get() {
-      var height = this.get('contentHeight');
-      var extent = this.get('model.extent');
+  computedYScale: computed('contentHeight', 'model.extent', function () {
+    var height = this.get('contentHeight');
+    var extent = this.get('model.extent');
 
-      extent[0] = Math.min(extent[0], 0);
-      extent[1] = Math.max(extent[1], 0);
+    extent[0] = Math.min(extent[0], 0);
+    extent[1] = Math.max(extent[1], 0);
 
-      if (extent[0] === extent[1]) {
-        extent[1]++;
-      }
-
-      return d3.scale.linear()
-        .domain(extent)
-        .range([ 0, -height ]);
+    if (extent[0] === extent[1]) {
+      extent[1]++;
     }
+
+    return d3.scale.linear()
+      .domain(extent)
+      .range([ 0, -height ]);
   }).readOnly(),
 
-  call(sel) {
+  call(selection) {
     var context = this;
     var top = this.get('margin.top');
     var left = this.get('margin.left');
     var height = this.get('contentHeight');
     var elementId = context.elementId;
 
-    sel.each(function () {
-      context.series(d3.select(this).attr('id', elementId).attr('transform', `translate(${left} ${top + height})`));
+    selection.each(function () {
+      var selection = d3.select(this);
+
+      context.series(selection.attr('id', elementId).attr('transform', `translate(${left} ${top + height})`));
+
+      context.tracker(d3.select(this));
     });
+
   },
+
+  tracker: join([0], 'rect.backdrop', {
+    update(selection) {
+      var self = this;
+      var onhover = this.get('onhover');
+      var data = this.get('model.data');
+      var series = self.get('model.series');
+      var key = this.get('model.key');
+
+      var width = this.get('contentWidth');
+      var height = this.get('contentHeight');
+      var margin = this.get('margin');
+
+      var xScale = this.get('computedXScale');
+      var domain = xScale.range();
+      var ticks = data.map(accessor(key));
+      var band = (domain[1] - domain[0]) / ticks.length;
+
+      var scale = d3.scale.quantize()
+        .domain([ domain[0] - band / 2, domain[1] + band / 2 ])
+        .range(ticks.map(identity(1)));
+
+      selection
+          .style('fill', 'transparent')
+          .attr('transform', `translate(0 ${-height})`)
+          .attr('width', width)
+          .attr('height', height);
+
+      function closestData([ x, y ]) {
+        return data[scale(x)];
+      }
+
+      // This is quite expensive; only do this if we're watching
+      if (onhover) {
+        selection.on('mousemove.tracker', function () {
+          onhover({ data: [ closestData(d3.mouse(this)) ], series, key });
+        });
+        selection.on('mouseout.tracker', function () {
+          onhover({ data: [], series, key });
+        });
+      }
+    }
+  }),
 
   series: join('model.series', '.series', {
     enter(sel) {
       sel
         .append('g')
           .attr('class', 'series')
-        .append('path');
+        .append('path')
+          .attr('class', 'shape');
     },
 
     update(sel) {

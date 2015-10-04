@@ -1,13 +1,17 @@
 {{#block-page visual=model}}
   {{#data-visual as |svg width height|}}
     {{#cart-lines select=(transition svg.chart) model=dimensionalData width=width height=height
-          margin="10 30 25 65" stroke=(color-scale "category10")
-        as |selection x-scale y-scale width height|}}
+          margin="10 30 25 65" stroke=(color-scale "category10") onhover=(action "track")
+        as |selection xScale yScale width height|}}
 
-      {{cart-axis select=(transition svg.chart.x-axis) scale=x-scale
+      {{cart-tracker select=svg.chart.tracker model=tracked
+        xScale=xScale yScale=yScale width=width height=height
+      }}
+
+      {{cart-axis select=(transition svg.chart.x-axis) scale=xScale
         orient="bottom" tickSize=(negative height) ticks=8 tickPadding=6
       }}
-      {{cart-axis select=(transition svg.chart.y-axis) scale=y-scale
+      {{cart-axis select=(transition svg.chart.y-axis) scale=yScale
         orient="left" tickSize=(negative width) tickPadding=6
       }}
 
