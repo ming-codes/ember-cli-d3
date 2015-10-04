@@ -73657,7 +73657,7 @@ define("ember/load-initializers",
   });
 })();
 
-;define("d3-plugins/mbostock/sankey",
+;define("d3/plugins/mbostock/sankey",
   ["d3","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -73959,7 +73959,7 @@ define("ember/load-initializers",
       return sankey;
     };
   });
-;define("d3-plugins/emeeks/adjacency-matrix",
+;define("d3/plugins/emeeks/adjacency-matrix",
   ["d3","exports"],
   function(__dependency1__, __exports__) {
     "use strict";

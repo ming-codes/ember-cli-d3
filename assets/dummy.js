@@ -337,9 +337,11 @@ define('dummy/components/cart-grouped-bars', ['exports', 'ember', 'd3', 'ember-c
   });
 
 });
-define('dummy/components/cart-lines', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, version, css) {
+define('dummy/components/cart-lines', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'dummy/utils/model/dimensional', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, DimensionalModel, utils__d3, lodash, version, css) {
 
   'use strict';
+
+  var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 
   exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
     layout: Ember['default'].HTMLBars.template((function () {
@@ -390,59 +392,103 @@ define('dummy/components/cart-lines', ['exports', 'ember', 'd3', 'ember-cli-d3/m
     width: 300,
     height: 150,
 
+    onhover: null,
+
     exportedXScale: null,
-    computedXScale: version.computed('contentWidth', 'model.data', 'model.key', {
-      get: function get() {
-        var width = this.get('contentWidth');
-        var data = this.get('model.data');
-        var key = this.get('model.key');
-        var domain, scale;
+    computedXScale: version.computed('contentWidth', 'model.data', 'model.key', function () {
+      var width = this.get('contentWidth');
+      var data = this.get('model.data');
+      var key = this.get('model.key');
+      var domain, scale;
 
-        domain = !key ? data : d3['default'].extent(data, function (record) {
-          return Ember['default'].get(record, key);
-        });
-        domain = domain.length ? domain : [0, 1];
+      domain = !key ? data : d3['default'].extent(data, function (record) {
+        return Ember['default'].get(record, key);
+      });
+      domain = domain.length ? domain : [0, 1];
 
-        scale = domain.reduce(function (prev, cur) {
-          return prev && cur instanceof Date;
-        }, true);
-        scale = scale ? d3['default'].time.scale() : d3['default'].scale.linear();
+      scale = domain.reduce(function (prev, cur) {
+        return prev && cur instanceof Date;
+      }, true);
+      scale = scale ? d3['default'].time.scale() : d3['default'].scale.linear();
 
-        return scale.domain(domain).range([0, width]);
-      }
+      return scale.domain(domain).range([0, width]);
     }).readOnly(),
     exportedYScale: null,
-    computedYScale: version.computed('contentHeight', 'model.extent', {
-      get: function get() {
-        var height = this.get('contentHeight');
-        var extent = this.get('model.extent');
+    computedYScale: version.computed('contentHeight', 'model.extent', function () {
+      var height = this.get('contentHeight');
+      var extent = this.get('model.extent');
 
-        extent[0] = Math.min(extent[0], 0);
-        extent[1] = Math.max(extent[1], 0);
+      extent[0] = Math.min(extent[0], 0);
+      extent[1] = Math.max(extent[1], 0);
 
-        if (extent[0] === extent[1]) {
-          extent[1]++;
-        }
-
-        return d3['default'].scale.linear().domain(extent).range([0, -height]);
+      if (extent[0] === extent[1]) {
+        extent[1]++;
       }
+
+      return d3['default'].scale.linear().domain(extent).range([0, -height]);
     }).readOnly(),
 
-    call: function call(sel) {
+    call: function call(selection) {
       var context = this;
       var top = this.get('margin.top');
       var left = this.get('margin.left');
       var height = this.get('contentHeight');
       var elementId = context.elementId;
 
-      sel.each(function () {
-        context.series(d3['default'].select(this).attr('id', elementId).attr('transform', 'translate(' + left + ' ' + (top + height) + ')'));
+      selection.each(function () {
+        var selection = d3['default'].select(this);
+
+        context.series(selection.attr('id', elementId).attr('transform', 'translate(' + left + ' ' + (top + height) + ')'));
+
+        context.tracker(d3['default'].select(this));
       });
     },
 
+    tracker: utils__d3.join([0], 'rect.backdrop', {
+      update: function update(selection) {
+        var self = this;
+        var onhover = this.get('onhover');
+        var data = this.get('model.data');
+        var series = self.get('model.series');
+        var key = this.get('model.key');
+
+        var width = this.get('contentWidth');
+        var height = this.get('contentHeight');
+        var margin = this.get('margin');
+
+        var xScale = this.get('computedXScale');
+        var domain = xScale.range();
+        var ticks = data.map(utils__d3.accessor(key));
+        var band = (domain[1] - domain[0]) / ticks.length;
+
+        var scale = d3['default'].scale.quantize().domain([domain[0] - band / 2, domain[1] + band / 2]).range(ticks.map(lodash.identity(1)));
+
+        selection.style('fill', 'transparent').attr('transform', 'translate(0 ' + -height + ')').attr('width', width).attr('height', height);
+
+        function closestData(_ref) {
+          var _ref2 = _slicedToArray(_ref, 2);
+
+          var x = _ref2[0];
+          var y = _ref2[1];
+
+          return data[scale(x)];
+        }
+
+        // This is quite expensive; only do this if we're watching
+        if (onhover) {
+          selection.on('mousemove.tracker', function () {
+            onhover({ data: [closestData(d3['default'].mouse(this))], series: series, key: key });
+          });
+          selection.on('mouseout.tracker', function () {
+            onhover({ data: [], series: series, key: key });
+          });
+        }
+      }
+    }),
+
     series: utils__d3.join('model.series', '.series', {
       enter: function enter(sel) {
-        sel.append('g').attr('class', 'series').append('path');
+        sel.append('g').attr('class', 'series').append('path').attr('class', 'shape');
       },
 
       update: function update(sel) {
@@ -454,8 +500,8 @@ define('dummy/components/cart-lines', ['exports', 'ember', 'd3', 'ember-cli-d3/m
 
         var color = this.get('stroke');
 
-        sel.style('stroke', function (_ref) {
-          var metricPath = _ref.metricPath;
+        sel.style('stroke', function (_ref3) {
+          var metricPath = _ref3.metricPath;
           return color(metricPath);
         }).each(function (series) {
           var path = d3['default'].transition(d3['default'].select(this).select('path').datum(data).style('fill', 'none').style('stroke-width', 5));
@@ -811,6 +857,86 @@ define('dummy/components/cart-stacked-bars', ['exports', 'ember', 'd3', 'ember-c
   });
 
 });
+define('dummy/components/cart-tracker', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/utils/d3'], function (exports, Ember, d3, GraphicSupport, utils__d3) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], {
+    requiredProperties: ['xScale', 'yScale', 'model'],
+
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 9
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'yield', ['loc', [null, [1, 0], [1, 9]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
+
+    model: null,
+
+    width: null,
+    height: null,
+    xScale: null,
+    yScale: null,
+    offsetX: Ember['default'].computed('xScale', function () {
+      return d3['default'].extent(this.get('xScale').range())[0];
+    }),
+    offsetY: Ember['default'].computed('yScale', function () {
+      return d3['default'].extent(this.get('yScale').range())[0];
+    }),
+
+    line: utils__d3.join('model.data[model.key]', 'line.track-line', {
+      update: function update(selection) {
+        var data = this.get('model.data');
+        var key = this.get('model.key');
+        var scale = this.get('xScale');
+
+        selection.style('stroke', 'red').style('stroke-width', 2).attr('y1', 0).attr('y2', this.get('height')).attr('x1', xPos).attr('x2', xPos);
+
+        function xPos(datum) {
+          return scale(datum[key]);
+        }
+      }
+    }),
+
+    call: function call(selection) {
+      selection.attr('transform', 'translate(' + this.get('offsetX') + ' ' + this.get('offsetY') + ')');
+
+      this.line(selection);
+    }
+  });
+
+});
 define('dummy/components/cart-waterfall-bars', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3', 'ember-cli-d3/utils/lodash', 'ember-cli-d3/utils/version', 'ember-cli-d3/utils/css'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3, lodash, version, css) {
 
   'use strict';
@@ -1044,6 +1170,164 @@ define('dummy/components/markdown-document', ['exports', 'ember', 'dummy/templat
   });
 
 });
+define('dummy/components/polar-sunburst', ['exports', 'ember', 'd3', 'ember-cli-d3/mixins/d3-support', 'ember-cli-d3/mixins/margin-convention', 'ember-cli-d3/utils/d3'], function (exports, Ember, d3, GraphicSupport, MarginConvention, utils__d3) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend(GraphicSupport['default'], MarginConvention['default'], {
+    layout: Ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.0.2+a7f49eab',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 9
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'yield', ['loc', [null, [1, 0], [1, 9]]]]],
+        locals: [],
+        templates: []
+      };
+    })()),
+
+    radius: Ember['default'].computed('contentWidth', 'contentHeight', function () {
+      return Math.min(this.get('contentWidth'), this.get('contentHeight')) / 2;
+    }).readOnly(),
+
+    xScale: Ember['default'].computed(function () {
+      return d3['default'].scale.linear().range([0, 2 * Math.PI]);
+    }).readOnly(),
+
+    yScale: Ember['default'].computed('radius', function () {
+      return d3['default'].scale.sqrt().range([0, this.get('radius')]);
+    }).readOnly(),
+
+    treeModel: Ember['default'].computed('model.data', 'model.series', 'model.key', function () {
+      var data = this.get('model.data');
+      var series = this.get('model.series');
+      var key = this.get('model.key');
+
+      return {
+        name: 'root',
+        children: data.map(function (datum) {
+          return {
+            name: datum[key],
+            size: series.reduce(function (accum, _ref) {
+              var metricPath = _ref.metricPath;
+
+              return accum + Ember['default'].get(datum, metricPath);
+            }, 0),
+            children: series.map(function (_ref2) {
+              var format = _ref2.format;
+              var metricPath = _ref2.metricPath;
+
+              return {
+                name: format,
+                size: Ember['default'].get(datum, metricPath),
+                children: []
+              };
+            })
+          };
+        })
+      };
+    }),
+
+    partitionLayout: Ember['default'].computed(function () {
+      return d3['default'].layout.partition().sort(null).value(d3['default'].functor(1));
+    }),
+
+    arcGenerator: Ember['default'].computed('xScale', 'yScale', function () {
+      var xScale = this.get('xScale');
+      var yScale = this.get('yScale');
+
+      return d3['default'].svg.arc().startAngle(function (_ref3) {
+        var x = _ref3.x;
+        return Math.max(0, Math.min(2 * Math.PI, xScale(x)));
+      }).endAngle(function (_ref4) {
+        var x = _ref4.x;
+        var dx = _ref4.dx;
+        return Math.max(0, Math.min(2 * Math.PI, xScale(x + dx)));
+      }).innerRadius(function (_ref5) {
+        var y = _ref5.y;
+        return Math.max(0, yScale(y));
+      }).outerRadius(function (_ref6) {
+        var y = _ref6.y;
+        var dy = _ref6.dy;
+        return Math.max(0, yScale(y + dy));
+      });
+    }),
+
+    call: function call(selection) {
+      var width = this.get('contentWidth');
+      var height = this.get('contentHeight');
+
+      selection.datum(this.get('treeModel')).classed('sunburst', true).attr('transform', 'translate(' + width / 2 + ' ' + (height / 2 + this.get('margin.top')) + ')');
+
+      this.innerLayer(selection);
+    },
+
+    innerLayer: utils__d3.join('partitionLayout.nodes', 'path.arc', {
+      update: function update(selection) {
+        var arc = this.get('arcGenerator');
+        var color = d3['default'].scale.category20c();
+        var node;
+
+        selection.attr('d', arc).style('fill', function (datum) {
+          return color((datum.children ? datum : datum.parent).name);
+        })
+        //.on("click", function (d) {
+        //  node = d;
+        //  path.transition()
+        //    .duration(1000)
+        //    .attrTween("d", arcTweenZoom(d));
+        //})
+        .each(stash);
+
+        // Setup for switching data: stash the old values for transition.
+        function stash(d) {
+          d.x0 = d.x;
+          d.dx0 = d.dx;
+        }
+
+        // When zooming: interpolate the scales.
+        //function arcTweenZoom(d) {
+        //  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+        //      yd = d3.interpolate(y.domain(), [d.y, 1]),
+        //      yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+        //  return function(d, i) {
+        //    return i
+        //        ? function(t) { return arc(d); }
+        //        : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+        //  };
+        //}
+      }
+    })
+  });
+
+});
 define('dummy/controllers/array', ['exports', 'ember'], function (exports, Ember) {
 
 	'use strict';
@@ -1100,11 +1384,42 @@ define('dummy/controllers/gallery/lines', ['exports', 'ember', 'dummy/utils/mode
     series: ['dogs', 'cats'],
     key: 'timestamp',
 
+    tracked: null,
+
+    dimensionalData: version.computed('data', 'series', 'key', {
+      get: function get() {
+        return DimensionalDataModel['default'].create(this.getProperties('data', 'series', 'key'));
+      }
+    }),
+
+    actions: {
+      track: function track(model) {
+        this.set('tracked', model);
+      }
+    }
+  });
+
+});
+define('dummy/controllers/gallery/sunburst', ['exports', 'ember', 'dummy/utils/model/dimensional', 'ember-cli-d3/utils/version'], function (exports, Ember, DimensionalDataModel, version) {
+
+  'use strict';
+
+
+  exports['default'] = Ember['default'].Controller.extend({
+    visual: null,
+
+    dataSource: Ember['default'].inject.service('dimensional-data-source'),
+
+    data: Ember['default'].computed.alias('dataSource.data'),
+    series: ['dogs', 'cats'],
+    key: 'state',
+
     dimensionalData: version.computed('data', 'series', 'key', {
       get: function get() {
         return DimensionalDataModel['default'].create(this.getProperties('data', 'series', 'key'));
       }
     })
+
   });
 
 });
@@ -1325,6 +1640,20 @@ define('dummy/initializers/export-application-global', ['exports', 'ember', 'dum
   };
 
 });
+define('dummy/mixins/gallery-route-mixin', ['exports', 'ember'], function (exports, Ember) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Mixin.create({
+    model: function model() {
+      return this.store.findRecord('visual', this.routeName);
+    },
+    setupController: function setupController(controller, model) {
+      this.controllerFor(this.routeName.split('.').slice(0, 2).join('/')).setProperties({ model: model });
+    }
+  });
+
+});
 define('dummy/mixins/route-class', ['exports', 'ember'], function (exports, Ember) {
 
   'use strict';
@@ -1389,6 +1718,14 @@ define('dummy/models/visual', ['exports', 'ember', 'ember-data'], function (expo
       modelType: 'temporal',
       variations: [],
       description: '\n        Line chart shows quantatative data over a numerical\n        interval. The slope the lines gives you visual indication\n        on the rate of change from one tick to the next\n      '
+    }, {
+      id: 'gallery.sunburst',
+      name: 'Sunburst',
+      alias: [],
+      component: 'polar-sunburst',
+      modelType: 'dimensional',
+      variations: [],
+      description: '\n      '
     }]
   });
 
@@ -1416,25 +1753,19 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
       this.route('area');
       this.route('stacked');
       //this.route('histogram');
+      //this.route('scatter-plot');
+      this.route('sunburst');
     });
   });
 
   exports['default'] = Router;
 
 });
-define('dummy/routes/gallery/bars/grouped', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+define('dummy/routes/gallery/bars/grouped', ['exports', 'ember', 'dummy/mixins/route-class', 'dummy/mixins/gallery-route-mixin'], function (exports, Ember, AttachClassName, Gallery) {
 
-  'use strict';
+	'use strict';
 
-  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
-    model: function model() {
-      return this.store.findRecord('visual', 'gallery.bars.grouped');
-    },
-
-    setupController: function setupController(controller, model) {
-      this.controllerFor('gallery/bars').setProperties({ model: model });
-    }
-  });
+	exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], Gallery['default'], {});
 
 });
 define('dummy/routes/gallery/bars/index', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
@@ -1448,34 +1779,25 @@ define('dummy/routes/gallery/bars/index', ['exports', 'ember', 'dummy/mixins/rou
   });
 
 });
-define('dummy/routes/gallery/bars/stacked', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+define('dummy/routes/gallery/bars/stacked', ['exports', 'ember', 'dummy/mixins/route-class', 'dummy/mixins/gallery-route-mixin'], function (exports, Ember, AttachClassName, Gallery) {
 
-  'use strict';
+	'use strict';
 
-  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
-    model: function model() {
-      return this.store.findRecord('visual', 'gallery.bars.stacked');
-    },
-
-    setupController: function setupController(controller, model) {
-      this.controllerFor('gallery/bars').setProperties({ model: model });
-    }
-  });
+	exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], Gallery['default'], {});
 
 });
-define('dummy/routes/gallery/bars/waterfall', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
+define('dummy/routes/gallery/bars/waterfall', ['exports', 'ember', 'dummy/mixins/route-class', 'dummy/mixins/gallery-route-mixin'], function (exports, Ember, AttachClassName, Gallery) {
 
-  'use strict';
+	'use strict';
 
-  exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], {
-    model: function model() {
-      return this.store.findRecord('visual', 'gallery.bars.waterfall');
-    },
+	exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], Gallery['default'], {});
 
-    setupController: function setupController(controller, model) {
-      this.controllerFor('gallery/bars').setProperties({ model: model });
-    }
-  });
+});
+define('dummy/routes/gallery/histogram', ['exports', 'ember'], function (exports, Ember) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Route.extend({});
 
 });
 define('dummy/routes/gallery/lines/index', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
@@ -1491,6 +1813,20 @@ define('dummy/routes/gallery/lines/index', ['exports', 'ember', 'dummy/mixins/ro
       this.controllerFor('gallery/lines').setProperties({ model: model });
     }
   });
+
+});
+define('dummy/routes/gallery/scatter-plot', ['exports', 'ember'], function (exports, Ember) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Route.extend({});
+
+});
+define('dummy/routes/gallery/sunburst', ['exports', 'ember', 'dummy/mixins/route-class', 'dummy/mixins/gallery-route-mixin'], function (exports, Ember, AttachClassName, Gallery) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Route.extend(AttachClassName['default'], Gallery['default'], {});
 
 });
 define('dummy/routes/gallery', ['exports', 'ember', 'dummy/mixins/route-class'], function (exports, Ember, AttachClassName) {
@@ -2244,6 +2580,53 @@ define('dummy/templates/components/markdown-document', ['exports'], function (ex
   }()));
 
 });
+define('dummy/templates/components/polar-sunburst', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components/polar-sunburst.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","yield",["loc",[null,[1,0],[1,9]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
 define('dummy/templates/gallery/bars/waterfall', ['exports'], function (exports) {
 
   'use strict';
@@ -2768,6 +3151,53 @@ define('dummy/templates/gallery/bars', ['exports'], function (exports) {
   }()));
 
 });
+define('dummy/templates/gallery/histogram', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/gallery/histogram.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","outlet",["loc",[null,[1,0],[1,10]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
 define('dummy/templates/gallery/index', ['exports'], function (exports) {
 
   'use strict';
@@ -2886,7 +3316,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
                   "column": 4
                 },
                 "end": {
-                  "line": 14,
+                  "line": 18,
                   "column": 4
                 }
               },
@@ -2901,6 +3331,10 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
               dom.appendChild(el0, el1);
               var el1 = dom.createComment("");
               dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n\n      ");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createComment("");
+              dom.appendChild(el0, el1);
               var el1 = dom.createTextNode("\n      ");
               dom.appendChild(el0, el1);
               var el1 = dom.createComment("");
@@ -2910,16 +3344,18 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
               return el0;
             },
             buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-              var morphs = new Array(2);
+              var morphs = new Array(3);
               morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
               morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
+              morphs[2] = dom.createMorphAt(fragment,5,5,contextualElement);
               return morphs;
             },
             statements: [
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[7,37],[7,53]]]]],[],["loc",[null,[7,25],[7,54]]]],"scale",["subexpr","@mut",[["get","x-scale",["loc",[null,[7,61],[7,68]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[8,43],[8,49]]]]],[],["loc",[null,[8,33],[8,50]]]],"ticks",8,"tickPadding",6],["loc",[null,[7,6],[9,8]]]],
-              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[10,37],[10,53]]]]],[],["loc",[null,[10,25],[10,54]]]],"scale",["subexpr","@mut",[["get","y-scale",["loc",[null,[10,61],[10,68]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[11,41],[11,46]]]]],[],["loc",[null,[11,31],[11,47]]]],"tickPadding",6],["loc",[null,[10,6],[12,8]]]]
+              ["inline","cart-tracker",[],["select",["subexpr","@mut",[["get","svg.chart.tracker",["loc",[null,[7,28],[7,45]]]]],[],[]],"model",["subexpr","@mut",[["get","tracked",["loc",[null,[7,52],[7,59]]]]],[],[]],"xScale",["subexpr","@mut",[["get","xScale",["loc",[null,[8,15],[8,21]]]]],[],[]],"yScale",["subexpr","@mut",[["get","yScale",["loc",[null,[8,29],[8,35]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[8,42],[8,47]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[8,55],[8,61]]]]],[],[]]],["loc",[null,[7,6],[9,8]]]],
+              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.x-axis",["loc",[null,[11,37],[11,53]]]]],[],["loc",[null,[11,25],[11,54]]]],"scale",["subexpr","@mut",[["get","xScale",["loc",[null,[11,61],[11,67]]]]],[],[]],"orient","bottom","tickSize",["subexpr","negative",[["get","height",["loc",[null,[12,43],[12,49]]]]],[],["loc",[null,[12,33],[12,50]]]],"ticks",8,"tickPadding",6],["loc",[null,[11,6],[13,8]]]],
+              ["inline","cart-axis",[],["select",["subexpr","transition",[["get","svg.chart.y-axis",["loc",[null,[14,37],[14,53]]]]],[],["loc",[null,[14,25],[14,54]]]],"scale",["subexpr","@mut",[["get","yScale",["loc",[null,[14,61],[14,67]]]]],[],[]],"orient","left","tickSize",["subexpr","negative",[["get","width",["loc",[null,[15,41],[15,46]]]]],[],["loc",[null,[15,31],[15,47]]]],"tickPadding",6],["loc",[null,[14,6],[16,8]]]]
             ],
-            locals: ["selection","x-scale","y-scale","width","height"],
+            locals: ["selection","xScale","yScale","width","height"],
             templates: []
           };
         }());
@@ -2933,7 +3369,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
                 "column": 2
               },
               "end": {
-                "line": 15,
+                "line": 19,
                 "column": 2
               }
             },
@@ -2956,7 +3392,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 30 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]]],0,null,["loc",[null,[3,4],[14,19]]]]
+            ["block","cart-lines",[],["select",["subexpr","transition",[["get","svg.chart",["loc",[null,[3,37],[3,46]]]]],[],["loc",[null,[3,25],[3,47]]]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,54],[3,69]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,76],[3,81]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,89],[3,95]]]]],[],[]],"margin","10 30 25 65","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,38],[4,64]]]],"onhover",["subexpr","action",["track"],[],["loc",[null,[4,73],[4,89]]]]],0,null,["loc",[null,[3,4],[18,19]]]]
           ],
           locals: ["svg","width","height"],
           templates: [child0]
@@ -2972,7 +3408,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 16,
+              "line": 20,
               "column": 0
             }
           },
@@ -2995,7 +3431,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["block","data-visual",[],[],0,null,["loc",[null,[2,2],[15,18]]]]
+          ["block","data-visual",[],[],0,null,["loc",[null,[2,2],[19,18]]]]
         ],
         locals: [],
         templates: [child0]
@@ -3011,7 +3447,7 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 17,
+            "line": 21,
             "column": 0
           }
         },
@@ -3034,7 +3470,214 @@ define('dummy/templates/gallery/lines', ['exports'], function (exports) {
         return morphs;
       },
       statements: [
-        ["block","block-page",[],["visual",["subexpr","@mut",[["get","model",["loc",[null,[1,21],[1,26]]]]],[],[]]],0,null,["loc",[null,[1,0],[16,15]]]]
+        ["block","block-page",[],["visual",["subexpr","@mut",[["get","model",["loc",[null,[1,21],[1,26]]]]],[],[]]],0,null,["loc",[null,[1,0],[20,15]]]]
+      ],
+      locals: [],
+      templates: [child0]
+    };
+  }()));
+
+});
+define('dummy/templates/gallery/scatter-plot', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/gallery/scatter-plot.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","outlet",["loc",[null,[1,0],[1,10]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('dummy/templates/gallery/sunburst', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    var child0 = (function() {
+      var child0 = (function() {
+        var child0 = (function() {
+          return {
+            meta: {
+              "revision": "Ember@2.0.2+a7f49eab",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 3,
+                  "column": 4
+                },
+                "end": {
+                  "line": 7,
+                  "column": 4
+                }
+              },
+              "moduleName": "dummy/templates/gallery/sunburst.hbs"
+            },
+            arity: 5,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes() { return []; },
+            statements: [
+
+            ],
+            locals: ["selection","x-scale","y-scale","width","height"],
+            templates: []
+          };
+        }());
+        return {
+          meta: {
+            "revision": "Ember@2.0.2+a7f49eab",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 2,
+                "column": 2
+              },
+              "end": {
+                "line": 8,
+                "column": 2
+              }
+            },
+            "moduleName": "dummy/templates/gallery/sunburst.hbs"
+          },
+          arity: 3,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [
+            ["block","polar-sunburst",[],["select",["subexpr","@mut",[["get","svg.chart",["loc",[null,[3,29],[3,38]]]]],[],[]],"model",["subexpr","@mut",[["get","dimensionalData",["loc",[null,[3,45],[3,60]]]]],[],[]],"width",["subexpr","@mut",[["get","width",["loc",[null,[3,67],[3,72]]]]],[],[]],"height",["subexpr","@mut",[["get","height",["loc",[null,[3,80],[3,86]]]]],[],[]],"margin","10","stroke",["subexpr","color-scale",["category10"],[],["loc",[null,[4,29],[4,55]]]]],0,null,["loc",[null,[3,4],[7,23]]]]
+          ],
+          locals: ["svg","width","height"],
+          templates: [child0]
+        };
+      }());
+      return {
+        meta: {
+          "revision": "Ember@2.0.2+a7f49eab",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 9,
+              "column": 0
+            }
+          },
+          "moduleName": "dummy/templates/gallery/sunburst.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [
+          ["block","data-visual",[],[],0,null,["loc",[null,[2,2],[8,18]]]]
+        ],
+        locals: [],
+        templates: [child0]
+      };
+    }());
+    return {
+      meta: {
+        "revision": "Ember@2.0.2+a7f49eab",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 10,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/gallery/sunburst.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
+      statements: [
+        ["block","block-page",[],["visual",["subexpr","@mut",[["get","model",["loc",[null,[1,21],[1,26]]]]],[],[]]],0,null,["loc",[null,[1,0],[9,15]]]]
       ],
       locals: [],
       templates: [child0]
@@ -3429,6 +4072,16 @@ define('dummy/tests/components/cart-stacked-bars.jshint', function () {
   });
 
 });
+define('dummy/tests/components/cart-tracker.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - components');
+  QUnit.test('components/cart-tracker.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/cart-tracker.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/components/cart-waterfall-bars.jshint', function () {
 
   'use strict';
@@ -3449,6 +4102,16 @@ define('dummy/tests/components/markdown-document.jshint', function () {
   });
 
 });
+define('dummy/tests/components/polar-sunburst.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - components');
+  QUnit.test('components/polar-sunburst.js should pass jshint', function(assert) { 
+    assert.ok(true, 'components/polar-sunburst.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/controllers/gallery/bars.jshint', function () {
 
   'use strict';
@@ -3466,6 +4129,16 @@ define('dummy/tests/controllers/gallery/lines.jshint', function () {
   QUnit.module('JSHint - controllers/gallery');
   QUnit.test('controllers/gallery/lines.js should pass jshint', function(assert) { 
     assert.ok(true, 'controllers/gallery/lines.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/controllers/gallery/sunburst.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - controllers/gallery');
+  QUnit.test('controllers/gallery/sunburst.js should pass jshint', function(assert) { 
+    assert.ok(true, 'controllers/gallery/sunburst.js should pass jshint.'); 
   });
 
 });
@@ -3864,6 +4537,16 @@ define('dummy/tests/integration/components/cart-grouped-bars-test.jshint', funct
   });
 
 });
+define('dummy/tests/mixins/gallery-route-mixin.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - mixins');
+  QUnit.test('mixins/gallery-route-mixin.js should pass jshint', function(assert) { 
+    assert.ok(true, 'mixins/gallery-route-mixin.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/mixins/route-class.jshint', function () {
 
   'use strict';
@@ -3934,6 +4617,16 @@ define('dummy/tests/routes/gallery/bars/waterfall.jshint', function () {
   });
 
 });
+define('dummy/tests/routes/gallery/histogram.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes/gallery');
+  QUnit.test('routes/gallery/histogram.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery/histogram.js should pass jshint.'); 
+  });
+
+});
 define('dummy/tests/routes/gallery/lines/index.jshint', function () {
 
   'use strict';
@@ -3941,6 +4634,26 @@ define('dummy/tests/routes/gallery/lines/index.jshint', function () {
   QUnit.module('JSHint - routes/gallery/lines');
   QUnit.test('routes/gallery/lines/index.js should pass jshint', function(assert) { 
     assert.ok(true, 'routes/gallery/lines/index.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/routes/gallery/scatter-plot.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes/gallery');
+  QUnit.test('routes/gallery/scatter-plot.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery/scatter-plot.js should pass jshint.'); 
+  });
+
+});
+define('dummy/tests/routes/gallery/sunburst.jshint', function () {
+
+  'use strict';
+
+  QUnit.module('JSHint - routes/gallery');
+  QUnit.test('routes/gallery/sunburst.js should pass jshint', function(assert) { 
+    assert.ok(true, 'routes/gallery/sunburst.js should pass jshint.'); 
   });
 
 });
@@ -4554,7 +5267,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.6.0+4a5fee77"});
+  require("dummy/app")["default"].create({"name":"ember-cli-d3","version":"0.7.0+088cd07c"});
 }
 
 /* jshint ignore:end */

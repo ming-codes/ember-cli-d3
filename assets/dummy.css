@@ -68,6 +68,9 @@
 .tick line {
   stroke: black; }
 
+.sunburst .arc {
+  stroke: white; }
+
 .guides td, .guides th {
   border: 1px solid;
   padding: 4px; }
