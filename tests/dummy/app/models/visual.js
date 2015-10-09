@@ -8,8 +8,13 @@ const VisualModel = DS.Model.extend({
   description: DS.attr('string'),
   variations: DS.hasMany('visual'),
   component: DS.attr('string'),
+  stage: DS.attr(),
   modelType: DS.attr('string')
 });
+
+function use(type) {
+  return { [ type ]: true };
+}
 
 VisualModel.reopenClass({
   FIXTURES: [
@@ -18,6 +23,7 @@ VisualModel.reopenClass({
       name: 'Grouped Bar Chart',
       alias: [],
       component: 'cart-grouped-bars',
+      stage: use('svg'),
       modelType: 'dimensional',
       variations: [ 'gallery.bars.stacked', 'gallery.bars.waterfall' ],
       description: `
@@ -36,6 +42,7 @@ VisualModel.reopenClass({
       name: 'Stacked Bars',
       alias: [],
       component: 'cart-stacked-bars',
+      stage: use('svg'),
       modelType: 'dimensional',
       variations: [ 'gallery.bars.grouped', 'gallery.bars.waterfall' ],
       description: `
@@ -53,6 +60,7 @@ VisualModel.reopenClass({
       name: 'Waterfall',
       alias: [],
       component: 'cart-waterfall-bars',
+      stage: use('svg'),
       modelType: 'dimensional',
       variations: [ 'gallery.bars.grouped', 'gallery.bars.stacked' ],
       description: `
@@ -63,6 +71,7 @@ VisualModel.reopenClass({
       name: 'Lines',
       alias: [],
       component: 'cart-lines',
+      stage: use('svg'),
       modelType: 'temporal',
       variations: [],
       description: `
@@ -76,7 +85,19 @@ VisualModel.reopenClass({
       name: 'Sunburst',
       alias: [],
       component: 'polar-sunburst',
+      stage: use('svg'),
       modelType: 'dimensional',
+      variations: [],
+      description: `
+      `
+    },
+    {
+      id: 'gallery.albers-usa',
+      name: 'Albers USA Projection',
+      alias: [],
+      component: 'geo-albers-usa',
+      stage: use('canvas'),
+      modelType: 'geospatial',
       variations: [],
       description: `
       `

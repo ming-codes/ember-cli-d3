@@ -1,0 +1,8 @@
+{{#block-page visual=model}}
+  {{#data-visual as |ctx width height|}}
+    {{#geo-albers-usa select=ctx.canvas model=geospatialData width=width height=height
+          margin="10" stroke=(color-scale "category10")}}
+
+    {{/geo-albers-usa}}
+  {{/data-visual}}
+{{/block-page}}

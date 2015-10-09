@@ -56,11 +56,18 @@ There are few classes that are considered to be core and will be used by most da
 
 ## `data-visual` Component
 
-You'll need a `data-visual` component to act as a container for your visual. For the most part, this component is just an SVG element that also yields properies: `svg`, `width`, and `height`.
+You'll need a `data-visual` component to act as a container for your visual. This component acts as the stage where you render your visual. It yields properies: `ctx`, `width`, and `height`.
 
-`svg` is a "magic" object. Accessing properties on this object will create a `<g>` element under the `<svg>` with class name automatically set. Property access can be nested. `svg.chart.axis` will create `<svg><g class="chart"><g class="axis"></g></g></svg>`.
+`width` and `height` are the dimensions of the container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.
 
-`width` and `height` are the dimensions of the SVG container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.
+`ctx` is a context object where you can access different kind of contexts. There are a few predefined contexts: `svg`, `canvas` and `webgl`. You can extend it to add your own. Context creation is lazily created where they're only created when you tries to access it.
+
+### `svg` Context
+
+The `svg` context contains two subcontext: `select` and `defs`.
+
+* `select` is a "magic" object. Accessing properties on this object will create a `<g>` element under the `<svg>` with class name automatically set. Property access can be nested. For example, `ctx.svg.select.chart.axis` will create nested tags like this `<svg><g class="chart"><g class="axis"></g></g></svg>`. Passing these selections into `select` attribute of `d3-support` components will pass that selection into `call`. See `d3-support` for more on this.
+* `defs` is the `<defs>` tag selection on the `svg`. You can pass this to `d3-support` components to generate markers or gradients.
 
 ## `d3-support` Mixin
 

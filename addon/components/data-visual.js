@@ -1,19 +1,28 @@
 import Ember from 'ember';
-import d3 from 'd3';
 import layout from '../templates/components/data-visual';
 
-import SelectionProxy from '../system/selection-proxy';
+import Stage from '../system/stage';
 
 export default Ember.Component.extend({
-  tagName: 'svg',
   classNames: [ 'data-visual' ],
   layout,
 
   width: 300,
   height: 150,
 
-  initElementProxy() {
-    this.set('proxy', SelectionProxy.create({ selection: d3.select(this.element) }));
+  stage: null,
+
+  initializeGraphicsContext() {
+    var element = this.element;
+    var fragment = document.createDocumentFragment();
+
+    Stage.stages.forEach(stage => {
+      fragment.appendChild(document.createComment(stage));
+    });
+
+    element.insertBefore(fragment, element.firstChild);
+
+    this.set('stage', Stage.create({ element }));
     this.measure();
   },
 
@@ -25,7 +34,7 @@ export default Ember.Component.extend({
   didInsertElement() {
     Ember.$(window).on(`resize.${this.get('elementId')}`, Ember.run.bind(this, this.measure));
 
-    Ember.run.scheduleOnce('afterRender', this, this.initElementProxy);
+    Ember.run.scheduleOnce('render', this, this.initializeGraphicsContext);
   },
 
   willDestroyElement() {

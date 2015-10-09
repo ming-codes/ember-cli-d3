@@ -17,11 +17,7 @@ const GraphicSupport = Ember.Mixin.create({
     var selection = this.get('select');
 
     if (selection && !this.isDestroying && this.get('requiredProperties').map(prop => Boolean(!!this.get(prop))).reduce(((prev, cur) => prev && cur), true)) {
-      if (Ember.typeOf(selection) === 'instance') {
-        selection = selection.get('selection');
-      }
-
-      Ember.run.scheduleOnce('afterRender', this, this.get('call'), selection);
+      Ember.run.scheduleOnce('afterRender', selection, selection.call, this);
     }
   }
 });

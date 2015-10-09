@@ -1,10 +1,22 @@
 <div class="aspect-ratio aspect-ratio-21-9">
   {{#link-to visual.route classNames="thumbnail"}}
-    {{#data-visual as |svg width height|}}
-      {{component visual.component
-        select=svg.chart model=model width=width height=height
-        margin="10" stroke=(color-scale "category10")
-      }}
-    {{/data-visual}}
+    {{#if visual.stage.svg}}
+      {{#data-visual as |ctx width height|}}
+        {{component visual.component
+          select=ctx.svg.select.chart model=model width=width height=height
+          margin="10" stroke=(color-scale "category10")
+        }}
+      {{/data-visual}}
+    {{else if visual.stage.canvas}}
+      {{#data-visual as |ctx width height|}}
+        {{component visual.component
+          select=ctx.canvas model=model width=width height=height
+          margin="10" stroke=(color-scale "category10")
+        }}
+      {{/data-visual}}
+    {{else}}
+      Visual Model stage type not set:
+      {{log visual.stage}}
+    {{/if}}
   {{/link-to}}
 </div>

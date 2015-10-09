@@ -20,6 +20,7 @@ Router.map(function() {
     //this.route('histogram');
     //this.route('scatter-plot');
     this.route('sunburst');
+    this.route('albers-usa');
   });
 });
 
