@@ -41,9 +41,15 @@
 <h1>Core Classes</h1>
 <p>There are few classes that are considered to be core and will be used by most data visuals.</p>
 <h2><code>data-visual</code> Component</h2>
-<p>You'll need a <code>data-visual</code> component to act as a container for your visual. For the most part, this component is just an SVG element that also yields properies: <code>svg</code>, <code>width</code>, and <code>height</code>.</p>
-<p><code>svg</code> is a &quot;magic&quot; object. Accessing properties on this object will create a <code>&lt;g&gt;</code> element under the <code>&lt;svg&gt;</code> with class name automatically set. Property access can be nested. <code>svg.chart.axis</code> will create <code>&lt;svg&gt;&lt;g class=&quot;chart&quot;&gt;&lt;g class=&quot;axis&quot;&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;</code>.</p>
-<p><code>width</code> and <code>height</code> are the dimensions of the SVG container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.</p>
+<p>You'll need a <code>data-visual</code> component to act as a container for your visual. This component acts as the stage where you render your visual. It yields properies: <code>ctx</code>, <code>width</code>, and <code>height</code>.</p>
+<p><code>width</code> and <code>height</code> are the dimensions of the container. Use these to calculate positioning of the inner content. They are bound properties and will update accordly when its size changes.</p>
+<p><code>ctx</code> is a context object where you can access different kind of contexts. There are a few predefined contexts: <code>svg</code>, <code>canvas</code> and <code>webgl</code>. You can extend it to add your own. Context creation is lazily created where they're only created when you tries to access it.</p>
+<h3><code>svg</code> Context</h3>
+<p>The <code>svg</code> context contains two subcontext: <code>select</code> and <code>defs</code>.</p>
+<ul>
+<li><code>select</code> is a &quot;magic&quot; object. Accessing properties on this object will create a <code>&lt;g&gt;</code> element under the <code>&lt;svg&gt;</code> with class name automatically set. Property access can be nested. For example, <code>ctx.svg.select.chart.axis</code> will create nested tags like this <code>&lt;svg&gt;&lt;g class=&quot;chart&quot;&gt;&lt;g class=&quot;axis&quot;&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;</code>. Passing these selections into <code>select</code> attribute of <code>d3-support</code> components will pass that selection into <code>call</code>. See <code>d3-support</code> for more on this.</li>
+<li><code>defs</code> is the <code>&lt;defs&gt;</code> tag selection on the <code>svg</code>. You can pass this to <code>d3-support</code> components to generate markers or gradients.</li>
+</ul>
 <h2><code>d3-support</code> Mixin</h2>
 <p>All components that are going to render SVG elements must implement this mixin. There is only 1 method on it that must be implemented: <code>call</code>. The <code>call</code> method will be invoked with <code>select</code> element as argument, passed in as a D3 selection.</p>
 <h2><code>join</code> Util</h2>
