@@ -11,8 +11,6 @@
 
 Just like D3 itself, it is not the goal of this project to become a widget library. Instead, this project will provide a framework to integrate D3 visuals into Ember application. This includes integrating `d3.timer` with Ember's run loop, `graph` test helper to aid with visuals with transitions, and easy way to import [many d3-plugins](https://github.com/ming-codes/d3-plugins-dist).
 
-Please note that this project is in beta stage and I'm seeking feedback on how it can be improved.
-
 [Documentation](http://ming-codes.github.io/ember-cli-d3/#/guides) and [Demo](http://ming-codes.github.io/ember-cli-d3/#/gallery) can be found on the [github pages](http://ming-codes.github.io/ember-cli-d3/#/).
 
 ## Resources
