@@ -14,6 +14,7 @@ const GraphicSupport = Ember.Mixin.create({
   call() {},
 
   didReceiveAttrs() {
+    this._super(...arguments);
     var selection = this.get('select');
 
     if (selection && !this.isDestroying && this.get('requiredProperties').map(prop => Boolean(!!this.get(prop))).reduce(((prev, cur) => prev && cur), true)) {
