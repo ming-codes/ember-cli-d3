@@ -33,7 +33,7 @@
     "broccoli-asset-rev": "^2.0.2",
     "broccoli-caching-writer": "^2.0.1",
     "commonmark": "^0.22.0",
-    "ember-cli": "1.13.8",
+    "ember-cli": "1.13.11",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-auto-register-helpers": "~1.0.2",
     "ember-cli-content-security-policy": "0.4.0",
@@ -57,8 +57,8 @@
     "d3"
   ],
   "dependencies": {
-    "broccoli-funnel": "^0.2.8",
-    "broccoli-merge-trees": "^0.2.3",
+    "broccoli-funnel": "^1.0.0",
+    "broccoli-merge-trees": "^1.0.0",
     "ember-cli-htmlbars": "^1.0.0",
     "ember-cli-babel": "^5.0.0",
     "d3": "^3.0.0",
