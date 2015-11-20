@@ -1,4 +1,5 @@
 /* jshint node: true */
+var plugins = require('d3-plugins-dist');
 
 module.exports = function(environment) {
   var ENV = {
@@ -16,6 +17,12 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+
+    d3: {
+      plugins: plugins.map(function (plugin) {
+        return 'd3/plugins/' + plugin.author + '/' + plugin.name;
+      })
     }
   };
 
