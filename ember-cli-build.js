@@ -2,6 +2,7 @@
 /* global require, module */
 
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+var plugins = require('d3-plugins-dist');
 var writer = require('broccoli-caching-writer');
 var md = require('commonmark');
 var fs = require('fs');
@@ -41,10 +42,12 @@ DocWriter.prototype.build = function() {
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
     d3: {
-      plugins: {
-        'mbostock': [ 'sankey', 'topojson' ],
-        'emeeks': [ 'adjacency-matrix' ]
-      }
+      plugins: plugins.reduce(function (accum, plugin) {
+        accum[plugin.author] = accum[plugin.author] || [];
+        accum[plugin.author].push(plugin.name);
+
+        return accum;
+      }, {})
     },
     sassOptions: {
       extension: 'scss'

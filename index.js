@@ -4,8 +4,7 @@ var merge = require('broccoli-merge-trees');
 
 var path = require('path');
 
-var $reduce = require('lodash/collection/reduce');
-var $each = require('lodash/collection/each');
+var plugins = require('d3-plugins-dist');
 
 /* jshint node: true */
 'use strict';
@@ -34,17 +33,12 @@ module.exports = {
       files: [ 'd3.js', 'd3.min.js' ]
     });
 
-    var pluginPath = path.join(path.dirname(require.resolve('d3-plugins-dist')), 'dist');
-    var plugins = $reduce(require('d3-plugins-dist'), function (accum, plugins, author) {
-      return accum.concat($reduce(plugins, function (accum, type, plugin) {
-        return accum.concat(funnel(pluginPath, {
-          destDir: path.join('d3-plugins-dist', 'dist'),
-          files: [ path.join(author, plugin, 'named-amd', 'main.js' ) ]
-        }));
-      }, []));
-    }, []);
-
-    return merge([].concat(d3, shim, ext, plugins));
+    return merge([].concat(d3, shim, ext, funnel(plugins.toTree(), {
+      destDir: 'd3-plugins-dist',
+      files: plugins.map(function (plugin) {
+        return plugin.pathFor('named-amd')
+      })
+    })));
   },
   treeForTestSupport: function () {
     return funnel(path.join(__dirname, 'tests'), {
@@ -57,6 +51,19 @@ module.exports = {
   included: function(app) {
     var options = app.options.d3 || {};
 
+    var plugins = (function () {
+      var list = app.options.d3.plugins || {};
+      var ret = [];
+
+      for (var author in list) {
+        (list[author] || []).forEach(function (plugin) {
+          ret.push(path.join(author, plugin));
+        });
+      }
+
+      return ret;
+    })();
+
     this._super.included(app);
 
     app.import({
@@ -67,10 +74,9 @@ module.exports = {
     app.import(path.join('vendor', 'ember-d3-ext', 'ember-d3-ext.js'));
     // DO NOT FORGET to include them in package.json too
 
-    $each(options.plugins || {}, function (plugins, author) {
-      $each(plugins, function (plugin) {
-        app.import(path.join('vendor', 'd3-plugins-dist', 'dist', author, plugin, 'named-amd', 'main.js'));
-      });
+
+    plugins.forEach(function (plugin) {
+        app.import(path.join('vendor', 'd3-plugins-dist', plugin, 'named-amd', 'main.js'));
     });
   },
 };
