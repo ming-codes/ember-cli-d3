@@ -23,11 +23,6 @@
   };
 
   if (!d3.select('head base').empty()) {
-    sProto.style = wrap(sProto.style, urlRefShim);
-    tProto.style = wrap(tProto.style, urlRefShim);
-    sProto.attr = wrap(sProto.attr, urlRefShim);
-    tProto.attr = wrap(tProto.attr, urlRefShim);
-
     function urlRefShim(fn, name, value, priority) {
       if (~urlStyles.indexOf(name)) {
         value = d3.functor(value);
@@ -46,6 +41,11 @@
 
       return fn.call(this, name, value, priority);
     }
+    
+    sProto.style = wrap(sProto.style, urlRefShim);
+    tProto.style = wrap(tProto.style, urlRefShim);
+    sProto.attr = wrap(sProto.attr, urlRefShim);
+    tProto.attr = wrap(tProto.attr, urlRefShim);
   }
 
   // TODO
