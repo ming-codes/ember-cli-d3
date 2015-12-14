@@ -52,7 +52,7 @@ module.exports = {
     var options = app.options.d3 || {};
 
     var plugins = (function () {
-      var list = app.options.d3.plugins || {};
+      var list = options.plugins || {};
       var ret = [];
 
       for (var author in list) {
