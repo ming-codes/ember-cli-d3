@@ -1,6 +1,6 @@
 {{#block-page visual=model}}
   {{#data-visual as |ctx width height|}}
-    {{#cart-lines select=(transition ctx.svg.select.chart) model=dimensionalData width=width height=height
+    {{#cart-lines select=(transition ctx.svg.select.chart) model=dimensional.timeSeriesModel width=width height=height
           margin="10 30 25 65" stroke=(color-scale "category10") onhover=(action "track")
         as |selection xScale yScale width height|}}
 
@@ -13,7 +13,7 @@
       }}
 
       {{cart-axis select=(transition ctx.svg.select.chart.y-axis) scale=yScale
-        orient="left" tickSize=(negative width) tickPadding=6
+        orient="left" tickSize=(negative width) tickPadding=6 tickFormat="s"
       }}
 
     {{/cart-lines}}

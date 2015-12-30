@@ -9,20 +9,10 @@ export default Ember.Controller.extend({
 
   app: Ember.inject.controller('application'),
 
-  dataSource: Ember.inject.service('dimensional-data-source'),
+  dimensional: Ember.inject.service('dimensional-data-source'),
 
   isGrouped: Ember.computed.equal('app.currentRouteName', 'gallery.bars.grouped'),
   isStacked: Ember.computed.equal('app.currentRouteName', 'gallery.bars.stacked'),
-  isWaterfall: Ember.computed.equal('app.currentRouteName', 'gallery.bars.waterfall'),
-
-  data: Ember.computed.alias('dataSource.data'),
-  series: [ 'dogs', 'cats' ],
-  key: 'state',
-
-  dimensionalData: computed('data', 'series', 'key', {
-    get() {
-      return DimensionalDataModel.create(this.getProperties('data', 'series', 'key'));
-    }
-  }),
+  isWaterfall: Ember.computed.equal('app.currentRouteName', 'gallery.bars.waterfall')
 
 });

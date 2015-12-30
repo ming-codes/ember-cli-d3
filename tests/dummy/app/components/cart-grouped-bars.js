@@ -56,7 +56,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var band = this.get('xScale').rangeBand();
 
       return d3.scale.ordinal()
-        .domain(series.map(({ metricPath }) => metricPath))
+        .domain(series)
         .rangePoints([ 0, band ], 1);
     }
   }).readOnly(),
@@ -80,9 +80,9 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var zScale = this.get('zScale');
 
       selection.append('g')
-          .style('stroke', ({ metricPath }) => color(metricPath))
+          .style('stroke', color)
           .attr('class', 'series')
-          .attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
+          .attr('transform', (series) => `translate(${zScale(series)} 0)`)
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -93,8 +93,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      d3.transition(selection).attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
-        .style('stroke', ({ metricPath }) => color(metricPath))
+      d3.transition(selection).attr('transform', (series) => `translate(${zScale(series)} 0)`)
+        .style('stroke', (series) => color(series))
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -135,7 +135,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           .attr('x1', 0)
           .attr('x2', 0)
           .attr('y1', zero)
-          .attr('y2', data => yScale(data[series.metricPath]));
+          .attr('y2', data => yScale(data[series]));
     }
   })
 });

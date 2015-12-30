@@ -15,6 +15,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
   defaultMargin: box(60),
 
+  model: null,
+
   layoutValues: computed('model.data', 'model.series', 'model.key', {
     get() {
       var data = this.get('model.data');
@@ -24,14 +26,14 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var base = 0;
 
       return data.reduce((accum, datum) => {
-        accum[datum[key]] = series.reduce((accum, { metricPath }) => {
-          var change = datum[metricPath];
+        accum[datum[key]] = series.reduce((accum, series) => {
+          var change = datum[series];
           var start = base;
           var end = base + change;
 
           base += change;
 
-          accum[metricPath] = { start, end, change };
+          accum[series] = { start, end, change };
 
           return accum;
         }, {});
@@ -60,8 +62,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var extent = [ base, base ];
 
       data.forEach(datum => {
-        series.forEach(({ metricPath }) => {
-          base += datum[metricPath];
+        series.forEach((series) => {
+          base += datum[series];
 
           extent[0] = Math.min(extent[0], base);
           extent[1] = Math.max(extent[1], base);
@@ -79,7 +81,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var band = this.get('xScale').rangeBand();
 
       return d3.scale.ordinal()
-        .domain(series.map(({ metricPath }) => metricPath))
+        .domain(series.map((series) => series))
         .rangePoints([ 0, band ], 1);
     }
   }).readOnly(),
@@ -105,9 +107,9 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var zScale = this.get('zScale');
 
       sel.append('g')
-          .style('stroke', ({ metricPath }) => color(metricPath))
+          .style('stroke', (series) => color(series))
           .attr('class', 'series')
-          .attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
+          .attr('transform', (series) => `translate(${zScale(series)} 0)`)
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -118,8 +120,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var color = this.get('stroke');
       var zScale = this.get('zScale');
 
-      d3.transition(sel).attr('transform', ({ metricPath }) => `translate(${zScale(metricPath)} 0)`)
-        .style('stroke', ({ metricPath }) => color(metricPath))
+      d3.transition(sel).attr('transform', (series) => `translate(${zScale(series)} 0)`)
+        .style('stroke', (series) => color(series))
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -144,7 +146,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           .attr('y1', zero)
           .attr('y2', zero);
     },
-    update(sel, { metricPath }) {
+    update(sel, series) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
@@ -156,8 +158,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
         .select('.shape')
           .attr('x1', 0)
           .attr('x2', 0)
-          .attr('y1', record => yScale(layout[record[key]][metricPath].start))
-          .attr('y2', record => yScale(layout[record[key]][metricPath].end));
+          .attr('y1', record => yScale(layout[record[key]][series].start))
+          .attr('y2', record => yScale(layout[record[key]][series].end));
     }
   })
 });

@@ -16,6 +16,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   ticks: 4,
   tickSize: 6,
   tickFormat: null,
+  tickTimeFormat: null,
   tickPadding: null,
 
   scale: null,
@@ -23,6 +24,10 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   axis: computed('scale', 'orient', 'tickCount', 'tickSize', 'tickFormat', 'tickPadding', {
     get() {
       var props = this.getProperties('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding', 'ticks');
+
+      if (typeof props.tickFormat === 'string') {
+        props.tickFormat = d3.format(props.tickFormat);
+      }
 
       return props.scale && assign(d3.svg.axis(), props);
     }

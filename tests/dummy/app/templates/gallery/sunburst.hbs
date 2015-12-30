@@ -1,6 +1,6 @@
 {{#block-page visual=model}}
   {{#data-visual as |ctx width height|}}
-    {{#polar-sunburst select=ctx.svg.select.chart model=dimensionalData width=width height=height
+    {{#polar-sunburst select=ctx.svg.select.chart model=dimensional.partitionModel width=width height=height
           margin="10" stroke=(color-scale "category10")
         as |selection x-scale y-scale width height|}}
 

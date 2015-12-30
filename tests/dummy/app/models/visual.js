@@ -86,7 +86,7 @@ VisualModel.reopenClass({
       alias: [],
       component: 'polar-sunburst',
       stage: use('svg'),
-      modelType: 'dimensional',
+      modelType: 'partition',
       variations: [],
       description: `
       `

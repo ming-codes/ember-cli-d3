@@ -24,30 +24,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       .range([0, this.get('radius')]);
   }).readOnly(),
 
-  treeModel: Ember.computed('model.data', 'model.series', 'model.key', function () {
-    var data = this.get('model.data');
-    var series = this.get('model.series');
-    var key = this.get('model.key');
-
-    return {
-      name: 'root',
-      children: data.map(datum => {
-        return {
-          name: datum[key],
-          size: series.reduce((accum, { metricPath }) => {
-            return accum + Ember.get(datum, metricPath);
-          }, 0),
-          children: series.map(({ format, metricPath }) => {
-            return {
-              name: format,
-              size: Ember.get(datum, metricPath),
-              children: []
-            };
-          })
-        };
-      })
-    };
-  }),
+  model: null,
 
   partitionLayout: Ember.computed(function () {
     return d3.layout.partition()
@@ -70,7 +47,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     var width = this.get('contentWidth');
     var height = this.get('contentHeight');
 
-    selection.datum(this.get('treeModel'))
+    selection.datum(this.get('model'))
         .classed('sunburst', true)
         .attr('transform', `translate(${width / 2} ${height / 2 + this.get('margin.top')})`);
 
