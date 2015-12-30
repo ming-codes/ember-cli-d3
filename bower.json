@@ -12,7 +12,8 @@
     "loader.js": "ember-cli/loader.js#3.2.0",
     "qunit": "~1.17.1",
     "ember-data": "components/ember-data#release",
-    "faker": "Faker#~3.0.1"
+    "faker": "Faker#~3.0.1",
+    "lodash": "~3.10.0"
   },
   "devDependencies": {
     "bootstrap": "~3.3.5",
