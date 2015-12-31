@@ -11,10 +11,17 @@ import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
-  layout: hbs`{{yield seriesSel xScale yScale contentWidth contentHeight}}`,
+  requiredProperties: [ 'model' ],
+  layout: hbs`
+    {{#if model}}
+      {{yield seriesSel xScale yScale contentWidth contentHeight}}
+    {{/if}}
+  `,
 
   defaultMargin: box(60),
   orient: null, // TODO
+
+  model: null,
 
   signedValues: computed('model.data', 'model.series', {
     get() {
@@ -27,8 +34,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
         positives.length = negatives.length = series.length;
 
-        series.forEach(({ metricPath }, index) => {
-          var value = Ember.get(record, metricPath);
+        series.forEach((series, index) => {
+          var value = Ember.get(record, series);
 
           (value > 0 ? positives : negatives)[index] = value;
         });
@@ -66,7 +73,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           var keyValue = Ember.get(data[index], key);
 
           accum[keyValue] = bySeries.reduce((accum, { series, start, end }) => {
-            accum[series.metricPath] = { start, end };
+            accum[series] = { start, end };
 
             return accum;
           }, {});
@@ -130,7 +137,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var color = this.get('stroke');
 
       selection.append('g')
-          .style('stroke', ({ metricPath }) => color(metricPath))
+          .style('stroke', (series) => color(series))
           .attr('class', 'series')
           .attr('transform', () => 'translate(0 0)')
         .each(function (data) {
@@ -143,7 +150,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var color = this.get('stroke');
 
       d3.transition(selection).attr('transform', () => `translate(0 0)`)
-        .style('stroke', ({ metricPath }) => color(metricPath))
+        .style('stroke', (series) => color(series))
         .each(function (data) {
           context.bars(d3.select(this), data);
         });
@@ -168,7 +175,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           .attr('y1', zero)
           .attr('y2', zero);
     },
-    update(selection, { metricPath }) {
+    update(selection, series) {
       var xScale = this.get('xScale');
       var yScale = this.get('yScale');
       var key = this.get('model.key');
@@ -183,8 +190,8 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
           .style('marker-end', null)
           .attr('x1', 0)
           .attr('x2', 0)
-          .attr('y1', record => yScale(layout[record[key]][metricPath].start))
-          .attr('y2', record => yScale(layout[record[key]][metricPath].end));
+          .attr('y1', record => yScale(layout[record[key]][series].start))
+          .attr('y2', record => yScale(layout[record[key]][series].end));
     }
   })
 });

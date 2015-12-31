@@ -5,8 +5,6 @@ import hbs from 'htmlbars-inline-precompile';
 import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
-import DimensionalModel from 'dummy/utils/model/dimensional';
-
 import { join, accessor } from 'ember-cli-d3/utils/d3';
 import { identity } from 'ember-cli-d3/utils/lodash';
 import { computed } from 'ember-cli-d3/utils/version';
@@ -34,7 +32,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     var key = this.get('model.key');
     var domain, scale;
 
-    domain = !key ? data : d3.extent(data, record => Ember.get(record, key));
+    domain = !key ? data : d3.extent(data, record => record[key]);
     domain = domain.length ? domain : [ 0, 1 ];
 
     scale = domain.reduce(((prev, cur) => prev && cur instanceof Date), true);
@@ -138,7 +136,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
       var color = this.get('stroke');
 
       sel
-        .style('stroke', ({ metricPath }) => color(metricPath))
+        .style('stroke', (series) => color(series))
         .each(function (series) {
           var path = d3.transition(d3.select(this)
             .select('path').datum(data)
@@ -147,7 +145,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
           var line = d3.svg.line()
               .x(record => xScale(record[key]))
-              .y(record => yScale(Ember.get(record, series.metricPath)));
+              .y(record => yScale(record[series]));
 
           if (!(path.delay && path.duration)) {
             path.attr('d', line);
