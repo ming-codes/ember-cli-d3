@@ -2,7 +2,6 @@ import d3 from 'd3';
 import { dimensional } from 'dummy/tests/helpers/data-generator';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import DimensiontalModel from 'dummy/utils/model/dimensional';
 import graph from 'dummy/tests/helpers/graph';
 
 moduleForComponent('cart-grouped-bars', 'Integration | Component | cart grouped bars', {
@@ -10,12 +9,11 @@ moduleForComponent('cart-grouped-bars', 'Integration | Component | cart grouped 
 });
 
 test('it renders alone', function(assert) {
+  let source = this.container.lookup('service:dimensional-data-source');
+  let model = source.get('crossSectionModel');
+
   return graph(this, assert)
-    .update('model', DimensiontalModel.create({
-      series: [ 'dogs', 'cats' ],
-      key: 'state',
-      data: dimensional([ 'dogs', 'cats' ])
-    }))
+    .update('model', model)
     .render(hbs`
       {{#data-visual as |ctx width height|}}
         {{#cart-grouped-bars id="bars" select=(transition ctx.svg.select.chart) model=model width=width height=height

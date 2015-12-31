@@ -5,8 +5,6 @@ import hbs from 'htmlbars-inline-precompile';
 import GraphicSupport from 'ember-cli-d3/mixins/d3-support';
 import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
-import DimensionalModel from 'dummy/utils/model/dimensional';
-
 import { join, accessor } from 'ember-cli-d3/utils/d3';
 import { identity } from 'ember-cli-d3/utils/lodash';
 import { computed } from 'ember-cli-d3/utils/version';

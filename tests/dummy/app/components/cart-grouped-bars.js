@@ -10,7 +10,12 @@ import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
-  layout: hbs`{{yield seriesSel xScale yScale contentWidth contentHeight}}`,
+  requiredProperties: [ 'model' ],
+  layout: hbs`
+    {{#if model}}
+      {{yield seriesSel xScale yScale contentWidth contentHeight}}
+    {{/if}}
+  `,
 
   model: null,
 
@@ -22,7 +27,7 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   width: 300,
   height: 150,
 
-  xScale: computed('contentWidth', 'model.data', 'model.key', {
+  xScale: computed('contentWidth', 'model.{data,key}', {
     get() {
       var width = this.get('contentWidth');
       var data = this.get('model.data');

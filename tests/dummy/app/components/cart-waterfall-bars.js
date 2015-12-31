@@ -11,7 +11,12 @@ import { computed } from 'ember-cli-d3/utils/version';
 import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
-  layout: hbs`{{yield seriesSelection xScale yScale contentWidth contentHeight}}`,
+  requiredProperties: [ 'model' ],
+  layout: hbs`
+    {{#if model}}
+      {{yield seriesSelection xScale yScale contentWidth contentHeight}}
+    {{/if}}
+  `,
 
   defaultMargin: box(60),
 
