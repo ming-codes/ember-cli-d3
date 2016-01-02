@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { computed } from '../utils/version';
 
 export function box(expr) {
   if (typeof expr !== 'object') {
@@ -33,13 +32,3 @@ export function box(expr) {
     right: 0
   };
 }
-
-box.asSet = (name, value) => box(value);
-box.asComputed = (defaultProp) => {
-  return computed({
-    set: box.asSet,
-    get(name) {
-      return this.cacheFor(name) || this.get(defaultProp);
-    }
-  });
-};
