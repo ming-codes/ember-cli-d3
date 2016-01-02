@@ -18,4 +18,17 @@ test('css#box', function(assert) {
 
     assert.deepEqual(actual, expected, 'Behave same as CSS box model');
   }
+
+  var asHash = box({
+    top: 123,
+    bottom: 456
+  });
+
+  assert.deepEqual(asHash, {
+    top: 123,
+    bottom: 456,
+    left: 0,
+    right: 0
+  });
+
 });

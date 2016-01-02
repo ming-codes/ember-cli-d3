@@ -21,16 +21,14 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
   scale: null,
 
-  axis: computed('scale', 'orient', 'tickCount', 'tickSize', 'tickFormat', 'tickPadding', {
-    get() {
-      var props = this.getProperties('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding', 'ticks');
+  axis: computed('scale', 'orient', 'tickCount', 'tickSize', 'tickFormat', 'tickPadding', function () {
+    var props = this.getProperties('scale', 'orient', 'tickSize', 'tickFormat', 'tickPadding', 'ticks');
 
-      if (typeof props.tickFormat === 'string') {
-        props.tickFormat = d3.format(props.tickFormat);
-      }
-
-      return props.scale && assign(d3.svg.axis(), props);
+    if (typeof props.tickFormat === 'string') {
+      props.tickFormat = d3.format(props.tickFormat);
     }
+
+    return props.scale && assign(d3.svg.axis(), props);
   }).readOnly(),
 
   call(sel) {
