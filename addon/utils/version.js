@@ -21,21 +21,22 @@ export function helper(fn) {
 }
 
 export function computed(...deps) {
-  var options = deps.pop();
+  var fn = deps.pop();
+  var hasSetter = fn.length > 1;
 
   // old computed
   if (MAJOR === 1 && MINOR < 12) {
-    return Ember.computed(...deps, options);
+    return Ember.computed(...deps, fn);
   }
 
   // new computed
   return Ember.computed(...deps, {
     get() {
-      return options.apply(this, arguments);
+      return fn.apply(this, arguments);
     },
 
-    set() {
-      return options.apply(this, arguments);
+    set: !hasSetter ? null : function () {
+      return fn.apply(this, arguments);
     }
   });
 }
