@@ -23,17 +23,19 @@ export function helper(fn) {
 export function computed(...deps) {
   var options = deps.pop();
 
+  // old computed
   if (MAJOR === 1 && MINOR < 12) {
-    return Ember.computed.apply(null, deps.concat(function () {
-      var { set, get } = options;
-
-      if (arguments.length > 1) {
-        return set && set.apply(this, arguments);
-      }
-
-      return get && get.apply(this, arguments);
-    }));
+    return Ember.computed(...deps, options);
   }
 
-  return Ember.computed.apply(null, deps.concat(options));
+  // new computed
+  return Ember.computed(...deps, {
+    get() {
+      return options.apply(this, arguments);
+    },
+
+    set() {
+      return options.apply(this, arguments);
+    }
+  });
 }
