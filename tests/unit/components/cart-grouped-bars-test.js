@@ -8,17 +8,19 @@ moduleForComponent('cart-grouped-bars', 'Unit | Component | cart grouped bars', 
   beforeEach() {
     this.subject().setProperties({
       width: 800,
-      height: 600,
-
-      margin: '20 30 40 50'
+      height: 600
     });
   }
 });
 
-test('margin-convention#contentWidth', function(assert) {
-  assert.equal(this.subject().get('contentWidth'), 720);
-});
+test('mixins/margin-convention', function (assert) {
+  let subject = this.subject();
 
-test('margin-convention#contentHeight', function(assert) {
+  assert.equal(subject.get('contentWidth'), 680);
+  assert.equal(subject.get('contentHeight'), 480);
+
+  subject.set('margin', '20 30 40 50');
+
+  assert.equal(this.subject().get('contentWidth'), 720);
   assert.equal(this.subject().get('contentHeight'), 540);
 });
