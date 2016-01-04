@@ -1,8 +1,16 @@
 import Ember from 'ember';
-import { computed } from '../utils/version';
 
 export function box(expr) {
-  expr = String(expr).split(/\s+/).map(Number);
+  if (typeof expr !== 'object') {
+    expr = String(expr).split(/\s+/).map(Number);
+  }
+  else {
+    return [ 'left', 'right', 'top', 'bottom' ].reduce((accum, dir) => {
+      accum[dir] = expr[dir] || 0;
+
+      return accum;
+    }, {});
+  }
 
   Ember.assert('Box expr must be have 1-4 numbers', expr.reduce((prev, expr) => prev && !isNaN(expr)));
 
@@ -24,13 +32,3 @@ export function box(expr) {
     right: 0
   };
 }
-
-box.asSet = (name, value) => box(value);
-box.asComputed = (defaultProp) => {
-  return computed({
-    set: box.asSet,
-    get(name) {
-      return this.cacheFor(name) || this.get(defaultProp);
-    }
-  });
-};

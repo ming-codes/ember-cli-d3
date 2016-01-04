@@ -8,7 +8,6 @@ import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 import { join, translateX } from 'ember-cli-d3/utils/d3';
 import { scan } from 'ember-cli-d3/utils/lodash';
 import { computed } from 'ember-cli-d3/utils/version';
-import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   requiredProperties: [ 'model' ],
@@ -18,77 +17,69 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
     {{/if}}
   `,
 
-  defaultMargin: box(60),
+  defaultMargin: 60,
 
   model: null,
 
-  layoutValues: computed('model.data', 'model.series', 'model.key', {
-    get() {
-      var data = this.get('model.data');
-      var series = this.get('model.series');
-      var key = this.get('model.key');
+  layoutValues: computed('model.{data,series,key}', function () {
+    var data = this.get('model.data');
+    var series = this.get('model.series');
+    var key = this.get('model.key');
 
-      var base = 0;
+    var base = 0;
 
-      return data.reduce((accum, datum) => {
-        accum[datum[key]] = series.reduce((accum, series) => {
-          var change = datum[series];
-          var start = base;
-          var end = base + change;
+    return data.reduce((accum, datum) => {
+      accum[datum[key]] = series.reduce((accum, series) => {
+        var change = datum[series];
+        var start = base;
+        var end = base + change;
 
-          base += change;
+        base += change;
 
-          accum[series] = { start, end, change };
-
-          return accum;
-        }, {});
+        accum[series] = { start, end, change };
 
         return accum;
       }, {});
-    }
+
+      return accum;
+    }, {});
   }).readOnly(),
-  xScale: computed('contentWidth', 'model.data', 'model.key', {
-    get() {
-      var width = this.get('contentWidth');
-      var data = this.get('model.data');
-      var key = this.get('model.key');
+  xScale: computed('contentWidth', 'model.{data,key}', function () {
+    var width = this.get('contentWidth');
+    var data = this.get('model.data');
+    var key = this.get('model.key');
 
-      return d3.scale.ordinal()
-        .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangeBands([ 0, width ], 0.5);
-    }
+    return d3.scale.ordinal()
+      .domain(!key ? data : data.map((data) => Ember.get(data, key)))
+      .rangeBands([ 0, width ], 0.5);
   }).readOnly(),
-  yScale: computed('contentHeight', 'model.data', 'model.series', {
-    get() {
-      var height = this.get('contentHeight');
-      var data = this.get('model.data');
-      var series = this.get('model.series');
-      var base = 0;
-      var extent = [ base, base ];
+  yScale: computed('contentHeight', 'model.data', 'model.series', function () {
+    var height = this.get('contentHeight');
+    var data = this.get('model.data');
+    var series = this.get('model.series');
+    var base = 0;
+    var extent = [ base, base ];
 
-      data.forEach(datum => {
-        series.forEach((series) => {
-          base += datum[series];
+    data.forEach(datum => {
+      series.forEach((series) => {
+        base += datum[series];
 
-          extent[0] = Math.min(extent[0], base);
-          extent[1] = Math.max(extent[1], base);
-        });
+        extent[0] = Math.min(extent[0], base);
+        extent[1] = Math.max(extent[1], base);
       });
+    });
 
-      return d3.scale.linear()
-        .domain(extent)
-        .range([ 0, -height ]);
-    }
+    return d3.scale.linear()
+      .domain(extent)
+      .range([ 0, -height ]);
   }).readOnly(),
-  zScale: computed('xScale', 'model.series', {
-    get() {
-      var series = this.get('model.series');
-      var band = this.get('xScale').rangeBand();
+  zScale: computed('xScale', 'model.series', function () {
+    var series = this.get('model.series');
+    var band = this.get('xScale').rangeBand();
 
-      return d3.scale.ordinal()
-        .domain(series.map((series) => series))
-        .rangePoints([ 0, band ], 1);
-    }
+    return d3.scale.ordinal()
+      .domain(series.map((series) => series))
+      .rangePoints([ 0, band ], 1);
   }).readOnly(),
 
   call(selection) {

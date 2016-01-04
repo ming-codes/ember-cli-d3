@@ -7,7 +7,6 @@ import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 
 import { join, translateX } from 'ember-cli-d3/utils/d3';
 import { computed } from 'ember-cli-d3/utils/version';
-import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   requiredProperties: [ 'model' ],
@@ -21,49 +20,43 @@ export default Ember.Component.extend(GraphicSupport, MarginConvention, {
 
   stroke: d3.scale.category10(),
 
-  defaultMargin: box(60),
+  defaultMargin: 60,
   orient: null, // TODO
 
   width: 300,
   height: 150,
 
-  xScale: computed('contentWidth', 'model.{data,key}', {
-    get() {
-      var width = this.get('contentWidth');
-      var data = this.get('model.data');
-      var key = this.get('model.key');
+  xScale: computed('contentWidth', 'model.{data,key}', function () {
+    var width = this.get('contentWidth');
+    var data = this.get('model.data');
+    var key = this.get('model.key');
 
-      return d3.scale.ordinal()
-        .domain(!key ? data : data.map((data) => Ember.get(data, key)))
-        .rangeBands([ 0, width ], 0.5);
-    }
+    return d3.scale.ordinal()
+      .domain(!key ? data : data.map((data) => Ember.get(data, key)))
+      .rangeBands([ 0, width ], 0.5);
   }).readOnly(),
-  yScale: computed('contentHeight', 'model.extent', {
-    get() {
-      var height = this.get('contentHeight');
-      var extent = this.get('model.extent');
+  yScale: computed('contentHeight', 'model.extent', function () {
+    var height = this.get('contentHeight');
+    var extent = this.get('model.extent');
 
-      extent[0] = Math.min(extent[0], 0);
-      extent[1] = Math.max(extent[1], 0);
+    extent[0] = Math.min(extent[0], 0);
+    extent[1] = Math.max(extent[1], 0);
 
-      if (extent[0] === extent[1]) {
-        extent[1]++;
-      }
-
-      return d3.scale.linear()
-        .domain(extent)
-        .range([ 0, -height ]);
+    if (extent[0] === extent[1]) {
+      extent[1]++;
     }
+
+    return d3.scale.linear()
+      .domain(extent)
+      .range([ 0, -height ]);
   }).readOnly(),
-  zScale: computed('xScale', 'model.series', {
-    get() {
-      var series = this.get('model.series');
-      var band = this.get('xScale').rangeBand();
+  zScale: computed('xScale', 'model.series', function () {
+    var series = this.get('model.series');
+    var band = this.get('xScale').rangeBand();
 
-      return d3.scale.ordinal()
-        .domain(series)
-        .rangePoints([ 0, band ], 1);
-    }
+    return d3.scale.ordinal()
+      .domain(series)
+      .rangePoints([ 0, band ], 1);
   }).readOnly(),
 
   call(selection) {

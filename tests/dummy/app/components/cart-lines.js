@@ -8,7 +8,6 @@ import MarginConvention from 'ember-cli-d3/mixins/margin-convention';
 import { join, accessor } from 'ember-cli-d3/utils/d3';
 import { identity } from 'ember-cli-d3/utils/lodash';
 import { computed } from 'ember-cli-d3/utils/version';
-import { box } from 'ember-cli-d3/utils/css';
 
 export default Ember.Component.extend(GraphicSupport, MarginConvention, {
   layout: hbs`{{yield seriesSel exportedXScale exportedYScale contentWidth contentHeight}}`,
