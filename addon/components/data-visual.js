@@ -1,16 +1,27 @@
+
 import Ember from 'ember';
-import layout from '../templates/components/data-visual';
 
 import Stage from '../system/stage';
+
+const htmlbars = '{{yield content.stage content.width content.height}}';
+const handlebars = '{{view template=template context=content tagName=""}}';
+
+const layout = Ember.tryInvoke(Ember.HTMLBars, 'compile', [ htmlbars ]) || Ember.tryInvoke(Ember.Handlebars, 'compile', [ handlebars ]);
 
 export default Ember.Component.extend({
   classNames: [ 'data-visual' ],
   layout,
 
-  width: 300,
-  height: 150,
+  content: Ember.computed(function () {
+	  return Ember.ObjectProxy.create({
+		  content: this.get('context'),
 
-  stage: null,
+		  width: 300,
+		  height: 150,
+
+		  stage: null
+	  });
+  }).readOnly(),
 
   initializeGraphicsContext() {
     var element = this.element;
@@ -22,13 +33,13 @@ export default Ember.Component.extend({
 
     element.insertBefore(fragment, element.firstChild);
 
-    this.set('stage', Stage.create({ element }));
+    this.set('content.stage', Stage.create({ element }));
     this.measure();
   },
 
   measure() {
-    this.set('width', this.$().width());
-    this.set('height', this.$().height());
+    this.set('content.width', this.$().width());
+    this.set('content.height', this.$().height());
   },
 
   didInsertElement() {
