@@ -1,27 +1,15 @@
 
 import Ember from 'ember';
 
+import YieldSupport from '../mixins/yield-support';
 import Stage from '../system/stage';
 
-const htmlbars = '{{yield content.stage content.width content.height}}';
-const handlebars = '{{view template=template context=content tagName=""}}';
+const Mixin = Ember.Mixin.create(YieldSupport, {
+  yieldProperties: [ 'stage', 'width', 'height' ]
+});
 
-const layout = Ember.tryInvoke(Ember.HTMLBars, 'compile', [ htmlbars ]) || Ember.tryInvoke(Ember.Handlebars, 'compile', [ handlebars ]);
-
-export default Ember.Component.extend({
+export default Ember.Component.extend(Mixin, {
   classNames: [ 'data-visual' ],
-  layout,
-
-  content: Ember.computed(function () {
-	  return Ember.ObjectProxy.create({
-		  content: this.get('context'),
-
-		  width: 300,
-		  height: 150,
-
-		  stage: null
-	  });
-  }).readOnly(),
 
   initializeGraphicsContext() {
     var element = this.element;
@@ -33,13 +21,13 @@ export default Ember.Component.extend({
 
     element.insertBefore(fragment, element.firstChild);
 
-    this.set('content.stage', Stage.create({ element }));
+    this.set('stage', Stage.create({ element }));
     this.measure();
   },
 
   measure() {
-    this.set('content.width', this.$().width());
-    this.set('content.height', this.$().height());
+    this.set('width', this.$().width());
+    this.set('height', this.$().height());
   },
 
   didInsertElement() {
