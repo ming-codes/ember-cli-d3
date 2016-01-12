@@ -1,14 +1,9 @@
 
 import Ember from 'ember';
 
-import YieldSupport from '../mixins/yield-support';
 import Stage from '../system/stage';
 
-const Mixin = Ember.Mixin.create(YieldSupport, {
-  yieldProperties: [ 'stage', 'width', 'height' ]
-});
-
-export default Ember.Component.extend(Mixin, {
+export default Ember.Component.extend({
   classNames: [ 'data-visual' ],
 
   initializeGraphicsContext() {
