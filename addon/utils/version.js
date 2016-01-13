@@ -8,6 +8,8 @@ export var hasGlimmer = MAJOR >= 2 || MINOR === 13;
 
 export var hasHTMLBars = MAJOR >= 2 || MINOR >= 10;
 
+export var hasYieldForward = MAJOR >= 2 || MINOR >= 10;
+
 export function helper(fn) {
   if (Ember.Helper) {
     return Ember.Helper.helper(fn);
