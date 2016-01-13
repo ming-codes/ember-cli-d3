@@ -1,16 +1,10 @@
+
 import Ember from 'ember';
-import layout from '../templates/components/data-visual';
 
 import Stage from '../system/stage';
 
 export default Ember.Component.extend({
   classNames: [ 'data-visual' ],
-  layout,
-
-  width: 300,
-  height: 150,
-
-  stage: null,
 
   initializeGraphicsContext() {
     var element = this.element;
