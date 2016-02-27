@@ -50,7 +50,6 @@
     "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.0",
     "ember-export-application-global": "^1.0.2",
-    "ember-getowner-polyfill": "1.0.0",
     "ember-try": "0.0.8"
   },
   "keywords": [
@@ -62,6 +61,7 @@
     "broccoli-merge-trees": "^1.0.0",
     "ember-cli-htmlbars": "^1.0.0",
     "ember-cli-babel": "^5.0.0",
+    "ember-getowner-polyfill": "1.0.0",
     "d3": "^3.0.0",
     "d3-plugins-dist": "^3.0.0"
   },
