@@ -52,17 +52,17 @@ if (!d3.select('head base').empty()) {
 if (!hasGlimmer) {
   GraphicSupport.reopen({
     init() {
-      var key, index;
-
       this._super(...arguments);
 
-      for (key in this) {
-        if ((index = key.indexOf('Binding')) > 0 && key[0] !== '_') {
+      Object.keys(this).forEach(key => {
+        let index = key.indexOf('Binding');
+
+        if (key[0] !== '_' && index > 0) {
           this.addObserver(key.substring(0, index), this, () => {
             Ember.run.scheduleOnce('render', this, this.didReceiveAttrs);
           });
         }
-      }
+      });
 
     },
 
