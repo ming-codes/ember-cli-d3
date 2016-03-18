@@ -6,13 +6,13 @@ export function box(expr) {
   }
   else {
     return [ 'left', 'right', 'top', 'bottom' ].reduce((accum, dir) => {
-      accum[dir] = expr[dir] || 0;
+      accum[dir] = Number(expr[dir]) || 0;
 
       return accum;
     }, {});
   }
 
-  Ember.assert('Box expr must be have 1-4 numbers', expr.reduce((prev, expr) => prev && !isNaN(expr)));
+  Ember.assert('Box expr must be have 1-4 numbers', !expr.filter(isNaN).length);
 
   switch (expr.length) {
     // 1 value = all four sides

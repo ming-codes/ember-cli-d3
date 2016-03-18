@@ -8,7 +8,10 @@ test('css#box', function(assert) {
     '60': { top: 60, right: 60, bottom: 60, left: 60 },
     '20 30': { top: 20, right: 30, bottom: 20, left: 30 },
     '20 30 40': { top: 20, right: 30, bottom: 40, left: 30 },
-    '20 30 40 50': { top: 20, right: 30, bottom: 40, left: 50 }
+    '20 30 40 50': { top: 20, right: 30, bottom: 40, left: 50 },
+    '0': { top: 0, right: 0, bottom: 0, left: 0 },
+    '0 10': { top: 0, right: 10, bottom: 0, left: 10 },
+    '0 10 20 30': { top: 0, right: 10, bottom: 20, left: 30 }
   };
   var expr, expected, actual;
 
@@ -29,6 +32,10 @@ test('css#box', function(assert) {
     bottom: 456,
     left: 0,
     right: 0
+  });
+
+  assert.throws(() => {
+    box('random');
   });
 
 });
