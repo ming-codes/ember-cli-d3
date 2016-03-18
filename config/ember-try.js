@@ -35,7 +35,8 @@ module.exports = {
   }, {
     name: 'ember-beta',
     dependencies: {
-      'ember': 'components/ember#beta'
+      'ember': 'components/ember#beta',
+      'ember-cli-shims': '0.1.1'
     },
     resolutions: {
       'ember': 'beta'
@@ -43,7 +44,8 @@ module.exports = {
   }, {
     name: 'ember-canary',
     dependencies: {
-      'ember': 'components/ember#canary'
+      'ember': 'components/ember#canary',
+      'ember-cli-shims': '0.1.1'
     },
     resolutions: {
       'ember': 'canary'

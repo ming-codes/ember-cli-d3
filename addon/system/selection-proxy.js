@@ -4,13 +4,13 @@ import d3 from 'd3';
 
 import { assign } from '../utils/d3';
 
-var SelectionProxy = Ember.Object.extend({
+const SelectionProxy = Ember.Object.extend({
   unknownProperty(key) {
     return SelectionProxy.proxyElement(this, 'g', key);
   },
 
   transition(options) {
-    var ret = TransitionSelectionProxy.create({});
+    let ret = TransitionSelectionProxy.create({});
 
     ret._selection = this.get('selection');
     ret._options = options;
@@ -23,11 +23,12 @@ var SelectionProxy = Ember.Object.extend({
   },
 
   toString() {
-    var guid = Ember.guidFor(this);
-    var node = (this.get('_selection') || this.get('selection')).node();
-    var tagName = node.tagName;
-    var id = node.id ? `#${node.id}` : '';
-    var cls = node.classList[0] ? `.${node.classList[0]}` : '';
+    let guid = Ember.guidFor(this);
+    let selection = this.get('_selection');
+    let node = (SelectionProxy.detectInstance(selection) ? selection.get('selection') : selection).node();
+    let tagName = node.tagName;
+    let id = node.id ? `#${node.id}` : '';
+    let cls = node.classList[0] ? `.${node.classList[0]}` : '';
 
     return `<ember-cli-d3@selection-proxy:${guid}::${tagName}${id}${cls}>`;
   }
@@ -35,8 +36,8 @@ var SelectionProxy = Ember.Object.extend({
 
 SelectionProxy.reopenClass({
   proxyElement(proxy, tagName, className) {
-    var selection = proxy.get('selection');
-    var proxied = selection.select(`${tagName}.${className}`);
+    let selection = proxy.get('selection');
+    let proxied = selection.select(`${tagName}.${className}`);
 
     if (proxied.empty()) {
       proxied = selection.append(tagName).classed(className, true);
@@ -46,7 +47,7 @@ SelectionProxy.reopenClass({
   }
 });
 
-var TransitionSelectionProxy = SelectionProxy.extend({
+let TransitionSelectionProxy = SelectionProxy.extend({
   _selection: null,
   _options: null,
 
@@ -65,12 +66,12 @@ export default Ember.Object.extend({
     });
   }).readOnly(),
   defs: Ember.computed('element', function () {
-    var element = this.get('element');
-    var node = element.firstChild;
+    let element = this.get('element');
+    let node = element.firstChild;
 
     Ember.assert('selection-proxy#defs shouldnt be called second time', node.nodeType === Node.COMMENT_NODE && node.textContent === 'defs');
 
-    var defs = document.createElementNS(d3.ns.prefix.svg, 'defs');
+    let defs = document.createElementNS(d3.ns.prefix.svg, 'defs');
 
     element.replaceChild(defs, node);
 
@@ -86,9 +87,8 @@ export default Ember.Object.extend({
   },
 
   swapContainer() {
-    console.log('swap');
-    var fragment = this.get('container');
-    var svg = this.get('element').querySelector('svg');
+    let fragment = this.get('container');
+    let svg = this.get('element').querySelector('svg');
 
     svg.appendChild(fragment);
 
