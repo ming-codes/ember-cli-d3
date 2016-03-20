@@ -19,19 +19,23 @@ module('Unit | Extensions', {
 });
 
 test('d3.selection.prototype#style set url as string', function (assert) {
-  let expected = `url(${location.pathname}${location.search}#target)`;
+  let expected = `${location.pathname}${location.search}#target`;
   let actual = this.rect
     .style('fill', 'url(#target)')
-    .style('fill');
+    .style('fill')
+    .replace(/^url\(/, '')
+    .replace(/\)$/, '');
 
   assert.equal(actual, expected);
 });
 
 test('d3.selection.prototype#style set url as hash', function (assert) {
-  let expected = `url(${location.pathname}${location.search}#target)`;
+  let expected = `${location.pathname}${location.search}#target`;
   let actual = this.rect
     .style({ 'fill': 'url(#target)' })
-    .style('fill');
+    .style('fill')
+    .replace(/^url\(/, '')
+    .replace(/\)$/, '');
 
   assert.equal(actual, expected);
 });
