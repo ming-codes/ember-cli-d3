@@ -39,7 +39,7 @@
         });
       }
 
-      return fn.call(this, name, value, priority);
+      return fn.apply(this, slice.call(arguments, 1));
     }
     
     sProto.style = wrap(sProto.style, urlRefShim);
