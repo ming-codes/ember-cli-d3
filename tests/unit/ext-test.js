@@ -18,24 +18,6 @@ module('Unit | Extensions', {
   }
 });
 
-test('d3.selection.prototype#style string setter', function (assert) {
-  let expected = 'rgb(0, 0, 0)';
-  let actual = this.rect
-    .style('fill', expected)
-    .style('fill');
-
-  assert.equal(actual, expected);
-});
-
-test('d3.selection.prototype#style hash setter', function (assert) {
-  let expected = 'rgb(0, 0, 0)';
-  let actual = this.rect
-    .style({ fill: expected })
-    .style('fill');
-
-  assert.equal(actual, expected);
-});
-
 test('d3.selection.prototype#style set url as string', function (assert) {
   let expected = `url(${location.pathname}${location.search}#target)`;
   let actual = this.rect
@@ -56,14 +38,14 @@ test('d3.selection.prototype#style set url as hash', function (assert) {
 
 test('d3.transition.prototype#style string setter', function (assert) {
   return new Ember.RSVP.Promise(resolve => {
-    let expected = 'rgb(255, 255, 255)';
+    let expected = '20px';
 
     this.rect
-      .style('fill', 'rgb(0, 0, 0)')
+      .style('stroke-width', 0)
       .transition()
-      .style('fill', expected)
+      .style('stroke-width', expected)
       .each('end', function () {
-        let actual = d3.select(this).style('fill');
+        let actual = d3.select(this).style('stroke-width');
 
         assert.equal(actual, expected);
 
@@ -74,14 +56,14 @@ test('d3.transition.prototype#style string setter', function (assert) {
 
 test('d3.transition.prototype#style hash setter', function (assert) {
   return new Ember.RSVP.Promise(resolve => {
-    let expected = 'rgb(255, 255, 255)';
+    let expected = '20px';
 
     this.rect
-      .style({ fill: 'rgb(0, 0, 0)' })
+      .style({ 'stroke-width': 0 })
       .transition()
-      .style({ fill: expected })
+      .style({ 'stroke-width': expected })
       .each('end', function () {
-        let actual = d3.select(this).style('fill');
+        let actual = d3.select(this).style('stroke-width');
 
         assert.equal(actual, expected);
 
