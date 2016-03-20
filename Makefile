@@ -17,3 +17,9 @@ github-pages:
 clean:
 	-rm -rf tmp
 	-rm -rf dist
+	-rm -rf node_modules
+	-rm -rf bower_components
+
+install:
+	npm install
+	bower install
