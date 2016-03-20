@@ -36,6 +36,24 @@ test('d3.selection.prototype#style hash setter', function (assert) {
   assert.equal(actual, expected);
 });
 
+test('d3.selection.prototype#style set url as string', function (assert) {
+  let expected = `url(${location.pathname}${location.search}#target)`;
+  let actual = this.rect
+    .style('fill', 'url(#target)')
+    .style('fill');
+
+  assert.equal(actual, expected);
+});
+
+test('d3.selection.prototype#style set url as hash', function (assert) {
+  let expected = `url(${location.pathname}${location.search}#target)`;
+  let actual = this.rect
+    .style({ 'fill': 'url(#target)' })
+    .style('fill');
+
+  assert.equal(actual, expected);
+});
+
 test('d3.transition.prototype#style string setter', function (assert) {
   return new Ember.RSVP.Promise(resolve => {
     let expected = 'rgb(255, 255, 255)';

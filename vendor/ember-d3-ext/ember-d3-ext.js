@@ -23,7 +23,7 @@
   };
 
   if (!d3.select('head base').empty()) {
-    function urlRefShim(fn, name, value, priority) {
+    function wrapValue(name, value) {
       if (~urlStyles.indexOf(name)) {
         value = d3.functor(value);
         value = wrap(value, function (fn, data, inner, outer) {
@@ -39,6 +39,23 @@
         });
       }
 
+      return value;
+    }
+
+    function urlRefShim(fn, name, value, priority) {
+      if (typeof name !== 'object') {
+        value = wrapValue(name, value);
+      }
+      else {
+        name = Object.create(name); // Not mutate original object
+
+        for (var key in name) {
+          name[key] = wrapValue(key, name[key]);
+        }
+      }
+
+      // Unsure about this, argument reassignment
+      // may fail in some browser
       return fn.apply(this, slice.call(arguments, 1));
     }
     
