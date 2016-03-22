@@ -79,7 +79,7 @@ export function join(dataExpr, cssExpr, { update, enter, exit }) {
 
   function visual(sel, ...parentData) {
     var context = this;
-    var data = inlineData || this.get(dataPath);
+    var data = [].concat(inlineData || this.get(dataPath) || []);
     var key = keyPath && this.get(keyPath);
 
     if (keyPath) {
