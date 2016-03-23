@@ -19,9 +19,9 @@ module('Unit | Extensions', {
 });
 
 test('d3.selection.prototype#style set url as string', function (assert) {
-  let expected = `${location.pathname}${location.search}#target`;
+  let expected = `${location.pathname}${location.search}#t-arge_t0:.`;
   let actual = this.rect
-    .style('fill', 'url(#target)')
+    .style('fill', 'url(#t-arge_t0:.)')
     .style('fill')
     .replace(/^url\(/, '')
     .replace(/\)$/, '');
@@ -30,9 +30,9 @@ test('d3.selection.prototype#style set url as string', function (assert) {
 });
 
 test('d3.selection.prototype#style set url as hash', function (assert) {
-  let expected = `${location.pathname}${location.search}#target`;
+  let expected = `${location.pathname}${location.search}#t-arge_t0:.`;
   let actual = this.rect
-    .style({ 'fill': 'url(#target)' })
+    .style({ 'fill': 'url(#t-arge_t0:.)' })
     .style('fill')
     .replace(/^url\(/, '')
     .replace(/\)$/, '');
