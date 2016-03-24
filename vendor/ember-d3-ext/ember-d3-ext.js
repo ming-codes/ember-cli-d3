@@ -28,8 +28,9 @@
         value = d3.functor(value);
         value = wrap(value, function (fn, data, inner, outer) {
           var result = fn.call(this, data, inner, outer);
-          var match = typeof result === 'string' && result[0] === 'u' && result.match(/^url\((#\w+)\)$/) || {};
+          var match = typeof result === 'string' && result[0] === 'u' && result.match(/^url\((#[A-Za-z][A-Za-z0-9_:.-]*)\)$/) || {};
           var name = match[1];
+
 
           if (name) {
             result = 'url(' + location.pathname + location.search + name + ')';
