@@ -19,7 +19,9 @@ const SelectionProxy = Ember.Object.extend({
   },
 
   call(component) {
-    return component.get('call').call(component, this.get('selection'));
+    if (!component.isDestroying) {
+      return component.get('call').call(component, this.get('selection'));
+    }
   },
 
   toString() {
