@@ -30,7 +30,7 @@ const SelectionProxy = Ember.Object.extend({
     let node = (SelectionProxy.detectInstance(selection) ? selection.get('selection') : selection).node();
     let tagName = node.tagName;
     let id = node.id ? `#${node.id}` : '';
-    let cls = node.classList[0] ? `.${node.classList[0]}` : '';
+    let cls = (node.classList && node.classList[0]) ? `.${node.classList[0]}` : '';
 
     return `<ember-cli-d3@selection-proxy:${guid}::${tagName}${id}${cls}>`;
   }
