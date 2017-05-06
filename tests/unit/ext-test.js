@@ -23,6 +23,7 @@ test('d3.selection.prototype#style set url as string', function (assert) {
   let actual = this.rect
     .style('fill', 'url(#t-arge_t0:.)')
     .style('fill')
+    .replace(/"/g, '')
     .replace(/^url\(/, '')
     .replace(/\)$/, '');
 
@@ -34,6 +35,7 @@ test('d3.selection.prototype#style set url as hash', function (assert) {
   let actual = this.rect
     .style({ 'fill': 'url(#t-arge_t0:.)' })
     .style('fill')
+    .replace(/"/g, '')
     .replace(/^url\(/, '')
     .replace(/\)$/, '');
 

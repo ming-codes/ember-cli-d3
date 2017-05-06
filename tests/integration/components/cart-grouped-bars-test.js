@@ -1,5 +1,5 @@
 import d3 from 'd3';
-import getOwner from 'ember-getowner-polyfill';
+import Ember from 'ember';
 import { dimensional } from 'dummy/tests/helpers/data-generator';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -10,7 +10,7 @@ moduleForComponent('cart-grouped-bars', 'Integration | Component | cart grouped 
 });
 
 test('it renders alone', function(assert) {
-  let source = getOwner(this).lookup('service:dimensional-data-source');
+  let source = Ember.getOwner(this).lookup('service:dimensional-data-source');
   let model = source.get('crossSectionModel');
 
   return graph(this, assert)

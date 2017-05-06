@@ -59,7 +59,7 @@
       // may fail in some browser
       return fn.apply(this, slice.call(arguments, 1));
     }
-    
+
     sProto.style = wrap(sProto.style, urlRefShim);
     tProto.style = wrap(tProto.style, urlRefShim);
     sProto.attr = wrap(sProto.attr, urlRefShim);
