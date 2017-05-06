@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import getOwner from 'ember-getowner-polyfill';
 import d3 from 'd3';
 import { hasGlimmer } from 'ember-cli-d3/utils/version';
 
@@ -32,7 +31,7 @@ if (!d3.select('head base').empty()) {
     },
 
     didInsertElement() {
-      var router = getOwner(this).lookup('router:main');
+      var router = Ember.getOwner(this).lookup('router:main');
 
       this._super(...arguments);
 
@@ -40,7 +39,7 @@ if (!d3.select('head base').empty()) {
     },
 
     willDestroyElement() {
-      var router = getOwner(this).lookup('router:main');
+      var router = Ember.getOwner(this).lookup('router:main');
 
       this._super(...arguments);
 
@@ -77,7 +76,7 @@ if (!hasGlimmer) {
 else {
   GraphicSupport.reopen({
     didInsertElement() {
-      var index = getOwner(this).lookup("-view-registry:main");
+      var index = Ember.getOwner(this).lookup("-view-registry:main");
 
       this._super(...arguments);
 
@@ -85,7 +84,7 @@ else {
     },
 
     willDestroyElement() {
-      var index = getOwner(this).lookup("-view-registry:main");
+      var index = Ember.getOwner(this).lookup("-view-registry:main");
 
       this._super(...arguments);
 
