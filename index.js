@@ -49,7 +49,8 @@ module.exports = {
     });
   },
   included: function(app) {
-    var options = app.options.d3 || {};
+    var appOptions = app.options || {};
+    var options = appOptions.d3 || {};
 
     var plugins = (function () {
       var list = options.plugins || {};
