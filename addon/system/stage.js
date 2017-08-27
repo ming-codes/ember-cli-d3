@@ -3,6 +3,7 @@ import d3 from 'd3';
 
 import SelectionProxy from '../system/selection-proxy';
 import CanvasProxy from '../system/canvas-proxy';
+import HtmlProxy from '../system/html-proxy';
 
 const Stage = Ember.Object.extend({
   svg: Ember.computed('element', function () {
@@ -34,7 +35,14 @@ const Stage = Ember.Object.extend({
       element,
       context: element.getContext('2d')
     });
+  }).readOnly(),
+
+  html: Ember.computed('element', function () {
+    var element = this.get('element');
+
+    return HtmlProxy.create({ element });
   }).readOnly()
+
   //webgl: Ember.computed('element', function () {
   //  var div = this.get('element');
   //  var element = document.createElement('canvas');
@@ -74,6 +82,6 @@ Stage.reopenClass({
 //Stage.stages[1597] = 'webgl';
 Stage.stages[2584] = 'canvas';
 Stage.stages[4181] = 'svg';
-//Stage.stages[6765] = 'html';
+Stage.stages[6765] = 'html';
 
 export default Stage;
